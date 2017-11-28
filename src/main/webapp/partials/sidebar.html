@@ -1,10 +1,10 @@
 
-<div uib-collapse="!$root.showgraphSidebar"  class="maritimeweb-sidebar col-xs-9 col-sm-5  col-md-5 sidebar"> <!-- uib-collapse="showgraphSidebar" -->
+<div id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar" ng-class="{false:'sidebar-normal', true:'sidebar-minimized'}[sidebarCollapsed]" class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
     <uib-tabset type="pills" justified="true" active="activeTabIndex" index="$index">
 
 
         <!-- NW-NM tab -->
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading>
                 <img src="/img/nwnm/nw.png" height="16"/>
                 NW-NM
@@ -12,7 +12,7 @@
             </uib-tab-heading>
 
             <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
-                <div class="panel-heading">Navigationel Warnings and Notices to Mariners
+                <div class="panel-heading cursor-default" ng-click="sidebarUncollapse()">Navigationel Warnings and Notices to Mariners
                     <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
                            ng-click="refreshNwNmServices()"></small>
 
@@ -53,23 +53,22 @@
 
 
 
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading ng-class="(NoGoServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> No-Go
                 <!--<span class="badge sidebar-badge" ng-bind="mapNoGoLayer.getLayers().getArray().length"></span>-->
-
             </uib-tab-heading>
-            <div ng-if="!loggedIn" class="sidebar-panel">
+            <div ng-if="!loggedIn" class="sidebar-panel"  ng-click="sidebarUncollapse()">
                 <div class="well">
-                    <p>Log in to access No-Go services</p>
+                    <p class="cursor-default">Log in to access No-Go services</p>
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
             </div>
 
 
-            <div class="panel" ng-if="loggedIn" ng-class="(NoGoServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+            <div class="panel" ng-if="loggedIn" ng-class="(NoGoServicesStatus=='true') ? 'panel-primary' : 'panel-default'" ng-click="sidebarUncollapse()">
 
-                <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> No-Go services
+                <div class="panel-heading cursor-default"><span class="glyphicon glyphicon-globe"></span> No-Go services
                     <button ng-if="nogo.loading"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></button>
                 </div>
                 <div class="panel-body">
@@ -132,15 +131,14 @@
 
 
 
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> Satellite
                 <span class="badge sidebar-badge" ng-bind="mapWeatherLayers.getLayers().getArray().length"></span>
-
             </uib-tab-heading>
-            <div ng-if="!loggedIn" class="sidebar-panel">
+            <div ng-if="!loggedIn" class="sidebar-panel" ng-click="sidebarUncollapse()">
                 <div class="well">
-                    <p>Log in to access satellite services</p>
+                    <p class="cursor-default">Log in to access satellite services</p>
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
             </div>
@@ -148,9 +146,9 @@
 
             <div class="panel" ng-if="loggedIn" ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
 
-                <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> Nasa Satellite images
+                <div class="panel-heading cursor-default" ng-click="sidebarUncollapse()"><span class="glyphicon glyphicon-globe"></span> Nasa Satellite images
                 </div>
-                <div class="panel-body">
+                <div class="panel-body cursor-default">
                     <p>Browse satellite imagery from the last days</p>
                 </div>
 
@@ -183,25 +181,26 @@
 
 
         <!-- Vessels tab -->
-        <uib-tab classes="btn-sm">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading classes="btn-sm" >
                 <img src="/img/vessel_gray.png"/>
                 &nbsp;Vessels
-                <span class="badge sidebar-badge" ng-bind="vessels.length"></span>
+                <span class="badge sidebar-badge" ng-if="vessels.length>0" >{{vessels.length}} <i ng-if="vesselsinfo.maxnumberexceeded" class="fa fa-plus" aria-hidden="true"></i> </span>
             </uib-tab-heading>
             <div class="sidebar-panel">
 
-                <div ng-if="!loggedIn" class="well">
-                    <p>Log in to access vessel data</p>
+                <div ng-if="!loggedIn" class="well" ng-click="sidebarUncollapse()">
+                    <p class="cursor-default">Log in to access vessel data</p>
                     <button class="btn btn-default" ng-click="login()">Login</button>
                 </div>
 
-                <div class="panel panel-default" ng-if="loggedIn" >
+                <div class="panel panel-default" ng-if="loggedIn" ng-click="sidebarUncollapse()">
 
-                    <div class="panel-heading"><span class="glyphicon glyphicon-globe"></span> AIS information
+                    <div class="panel-heading cursor-default"><span class="glyphicon glyphicon-globe"></span> AIS information
                     </div>
                     <div class="panel-body">
-                        <p><i class="fa fa-ship" aria-hidden="true"></i> Position information from AIS providers</p>
+                        <p class="cursor-default"><i class="fa fa-ship" aria-hidden="true"></i> Position information from AIS providers</p>
+                        <p class="small" ng-if="vesselsinfo.maxnumberexceeded">Note that the actual number of vessels in the areas is {{vesselsinfo.actualnumberofvessels}} but the number is reduced to {{vessels.length}} in order to increase performance. Zoom in to see all vessels in an area.</p>
                     </div>
 
                     <!-- Table -->
@@ -247,14 +246,14 @@
 
 
         <!-- VTS report tab tab -->
-        <uib-tab classes="btn-sm" >
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading>
                 <span class="glyphicon glyphicon-globe"></span>
                 &nbsp;VTS
                 <span class="badge sidebar-badge" ng-bind="vtsAreasArr.length"></span>
             </uib-tab-heading>
-            <div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
-                <div class="panel-heading">Vessel Traffic Service Reporting areas</div>
+            <div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'" ng-click="sidebarUncollapse()">
+                <div class="panel-heading cursor-default">Vessel Traffic Service Reporting areas</div>
 
                 <div class="panel-body">
                     <input type="checkbox" ng-model="vts_map_show" ng-change="vtsMapToggle()" />
@@ -269,8 +268,8 @@
                     <!--Display only VTS centres on route-->
                 </div>
             </div>
-            <div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
-                <p ng-repeat="p in vtsAreasArr">{{p.shortname}}</p>
+            <div class="panel vts-padding-4-20" ng-class="(1==1) ? 'panel-primary' : 'panel-default'" ng-click="sidebarUncollapse()">
+                <p class="" ng-repeat="p in vtsAreasArr" id="vtsAreasSidePanelListItem{{p.id}}">{{p.shortname}} </p>
             </div>
         </uib-tab>
 
@@ -278,7 +277,7 @@
 
 
         <!-- Route tab -->
-        <uib-tab ng-if="$root.route_id" classes="btn-sm">
+        <uib-tab ng-if="$root.route_id" classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading>
                 <span>Route <span class="badge sidebar-badge">1</span></span>
             </uib-tab-heading>

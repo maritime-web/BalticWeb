@@ -13,6 +13,14 @@ angular.module('maritimeweb.app')
                 }
             });
 
+            $scope.$watch(function(){
+                return MapService.sidebarCollapsed; //collapsed state, map-directive -> map-service -> here
+            }, function (newValue) {
+                $scope.sidebarCollapsed = MapService.sidebarCollapsed;
+            });
+            $scope.sidebarUncollapse = function(){ //map-directive collapses on map click
+                MapService.sidebarUnCollapse(); //is watched to change state in $scope
+            };
 
             $scope.welcomeToBalticWebModal = function (size) {
                 $uibModal.open({
@@ -28,8 +36,6 @@ angular.module('maritimeweb.app')
             /** Logs the user in via Keycloak **/
             $scope.login = function () {
                 Auth.authz.login();
-                //TODO sample Stena Danica 265177000. You can change this to anything you want, or even better take it from the login token.
-                $window.localStorage.setItem('mmsi', 265177000);
             };
 
             /** Logs the user out via Keycloak **/
@@ -40,9 +46,9 @@ angular.module('maritimeweb.app')
 
             /** Returns the user name ,**/
             $scope.userName = function () {
-                if (Auth.authz.idTokenParsed) {
-                    return Auth.authz.idTokenParsed.name
-                        || Auth.authz.idTokenParsed.preferred_username;
+                if (Auth.authz.tokenParsed) {
+                    return Auth.authz.tokenParsed.name
+                        || Auth.authz.tokenParsed.preferred_username;
                 }
                 return undefined;
             };
@@ -82,6 +88,10 @@ angular.module('maritimeweb.app')
 
             // Vessels
             $scope.vessels = [];
+            $scope.vesselsinfo = {};
+            $scope.vesselsinfo.maxnumberexceeded = false; // flag to indicate if more vessels are presented than displayed.
+            $scope.vesselsinfo.actualnumberofvessels = 0;
+
 
             /** Returns the icon to use for the given vessel **/
             $scope.iconForVessel = function (vo) {
@@ -99,6 +109,7 @@ angular.module('maritimeweb.app')
             /**************************************/
 
             $scope.activateVTSForm = function (size) {
+                if(!size) size='lg';
                 growl.info('Activating Vessel Traffic Control');
                 $uibModal.open({
                     animation: 'true',
@@ -107,6 +118,16 @@ angular.module('maritimeweb.app')
                     size: size
                 })
             };
+
+            function checkToActivateVTSForm() { //if refresh without proper close, open form again in same area.
+                var vts_current_id = $window.localStorage['vts_current_id'];
+                try {
+                    if (vts_current_id && parseInt(vts_current_id) > 0){
+                        $scope.activateVTSForm();
+                    }
+                }catch(undefinedError){}
+            }
+            setTimeout(function(){ checkToActivateVTSForm(); }, 2000);
 
 
             /**********************************************/
@@ -134,8 +155,6 @@ angular.module('maritimeweb.app')
             };
             /** populate the sidebar with VTS areas on map as selectable list **/
 
-
-
             /** Toggle the enabled status of the layer **/
             $scope.vtsMapToggle = function () {
                 $scope.vts_map_show = mapVtsAreaService.toggleVtsAreasLayerEnabled(); //also saves to localstorage
@@ -151,7 +170,6 @@ angular.module('maritimeweb.app')
 
             /**
              * TODO:
-             * make toggle for "on route" only if a route is loaded, and make method for only display areas which intersect with route
              * make areas clickable for more info and option to send vts report
              */
 
@@ -168,11 +186,9 @@ angular.module('maritimeweb.app')
                                 var textB = b.shortname.toUpperCase();
                                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                             });
-
-                            console.log($scope.vtsAreasArr);
+                            // console.log($scope.vtsAreasArr);
                         }
                         $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
-                        // console.log("vtsRouteWKT:",$scope.vtsRouteWKT);
                     })
                     .error(function (error) {
                         $log.debug("Error getting VTS service. Reason=" + error);
@@ -183,16 +199,10 @@ angular.module('maritimeweb.app')
                 $scope.reloadVtsAreas();
             }
 
-
-
-
             /**************************************/
             /** NOGO Service                     **/
             /**************************************/
-            const top_nw_lon = 56.30;
-            const bottom_se_lon = 54.4;
-            const right_nw_lat = 13.0;
-            const left_se_lat = 10.0;
+
             $scope.nogo = {};
             $scope.nogo.ship = {};
             $scope.nogo.ship.draught = 6;
@@ -206,7 +216,6 @@ angular.module('maritimeweb.app')
                 $log.info("main app controller - check no go service");
                 $scope.mapNoGoLayer.setVisible(false);
                 $scope.mapNoGoLayer.setVisible(true);
-
             };
 
             $scope.disableNoGoService = function () {
@@ -381,6 +390,9 @@ angular.module('maritimeweb.app')
                 (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
                 if (layer.getVisible()) {
                     growl.info('Activating ' + layer.get('title') + ' layer');
+                    $window.localStorage.setItem(layer.get('title'), true);
+                }else{
+                    $window.localStorage.setItem(layer.get('title'), false);
                 }
             };
 
@@ -417,7 +429,7 @@ angular.module('maritimeweb.app')
                             $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true); // default to standard map when disabling
                         }
                     });
-                    growl.info('Activating combined  nautical chart');
+                    growl.info('Activating combined nautical chart');
                 } else {
                     growl.info("You need to login to access Nautical charts");
                     $scope.mapBackgroundLayers.getLayers().getArray()[0].setVisible(true);
@@ -460,7 +472,7 @@ angular.module('maritimeweb.app')
                 $log.debug("redirect to Frontpage");
                 var redirect = function () {
                     //$rootScope.showgraphSidebar = true; // rough enabling of the sidebar
-
+                    // TODO use routing...
                     $scope.loading = false;
                     $window.location.href = '#';
                 };

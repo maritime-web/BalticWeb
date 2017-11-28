@@ -591,6 +591,11 @@ angular.module('maritimeweb.map')
                         scope.$$phase || scope.$apply();
                     });
 
+                    map.on('click', function (evt) { //minimize the right side menu (sidebar) on click - not on drag.
+                        MapService.sidebarCollapse();
+                        scope.$apply();
+                    });
+
                     scope.clickToggleDisplayType = function () {
                         scope.displayAsDecimalDegrees = !scope.displayAsDecimalDegrees; //toggle decimal degrees
                         (scope.displayAsDecimalDegrees) ? scope.filterPos = false : scope.filterPos = true;

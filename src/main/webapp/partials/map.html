@@ -1,5 +1,7 @@
 <div ng-include="'partials/sidebar.html'"></div>
-
+<div >
+    <span id="loadingspinner"><a href ng-if="loadingData"><i class="fa fa-cog fa-spin fa-lg fa-fw fa-5x"></i><span class="sr-only">Loading...</span></a></span>
+</div>
 <div id="wrap">
     <ol-map class="map col-xs-12 col-sm-12 col-md-12 col-lg-12" map-state="mapState" minzoom="3" swlon="-31" swlat="30" nelon="61" nelat="80">
         <map-layer-group layer-group="mapSeaMapLayer"></map-layer-group>
@@ -8,11 +10,9 @@
         <map-layer-group layer-group="mapMiscLayers"></map-layer-group>
         <!--<map-layer-group layer-group="mapMCLayers" ></map-layer-group>-->
         <map-nw-nm-layer message-list="nwNmMessages" services="nwNmServices" name="NW-NM"></map-nw-nm-layer>
+        <map-vessel-layer vessels="vessels" name="Vessels" alerts="alerts" vesselsinfo="vesselsinfo" maxnumberofvessels="1000"></map-vessel-layer>
         <map-vts-area-layer vts-route="vtsRouteWKT" vts-areas="vtsAreasArr" vts-onroute-only="vtsShowIntersecting" vts-visible="vtsLayerEnabled"></map-vts-area-layer>
         <map-no-go-layer name="No-Go"></map-no-go-layer>
-        <!--map-weather-layer name="Weather"></map-weather-layer-->
-
-        <map-vessel-layer vessels="vessels" name="Vessels" alerts="alerts"></map-vessel-layer>
         <!--<map-current-pos-btn></map-current-pos-btn>-->
         <map-current-pos-orientation-btn></map-current-pos-orientation-btn>
         <map-scale-line units="nautical"></map-scale-line>

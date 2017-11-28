@@ -17,7 +17,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
 
 
-
         //Populate the interface using json object from service - anon allowed
         var VTSData = []; //local array
         var getInterfaceObjectsFromService = function () {
@@ -39,6 +38,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         angular.element(document.querySelector(".datetime-input.date .display .date")).html(moment().format('DD MMM YYYY')); //update timepicker display with now
                         angular.element(document.querySelector(".datetime-input.time .display .time")).html(moment.utc().format('HH : mm')); //update timepicker display with now
                         VtsHelperService.miniMapLoad(); //must be loaded before populating
+                        $scope.reOpenFormOnRefresh(); //checks for localstorage state
                     },
                     function (data) { // error
                         growl.error("VTS interface population service could not be contacted. Please check your internet connection and try again.\nRetrying in 5 seconds.");
@@ -52,6 +52,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         };
         $scope.isLoggedIn = Auth.loggedIn; //declare scope login state
         $scope.showReportInterface = true;
+        $scope.userEmail = "";
+        try{
+            $scope.userEmail = Auth.authz.tokenParsed.email;
+        }catch(userEmailError){/*do nothing*/}
+        console.log("userEmail:",$scope.userEmail)
 
 
         //Declarations and settings ********************************************************************************
@@ -141,6 +146,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.vtsvesseltypeholder = "";
         $scope.vtsvesselfuelquantityinput = "";
         $scope.vtsvesselspeedinput = "";
+        $scope.vtsvesselemailreportcopy = ""; //sends copy of vts report to this email
 
         //fuel information
         $scope.vtsvesselfueltype00_0input = "";
@@ -388,6 +394,14 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         };
 
+        $scope.displayVtsCenterData = false;
+        $scope.toggleDisplayVtsCenterData = function(){ //can be forced from outside
+          if($scope.displayVtsCenterData){
+              $scope.displayVtsCenterData = false;
+          }else{
+              $scope.displayVtsCenterData = true;
+          }
+        };
 
         $scope.toggleDateValid = function (valid) {
             $scope.setvtsvesseletaTimeDateValid = valid;
@@ -412,8 +426,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         };
 
         $scope.validateEtaTimeDate = function () {
-            var isSameDay = moment(moment($scope.vtsLocalDate, 'DD MMM YYYY')).isSame(moment(moment().format('MMM DD YYYY')));
-            var isAfterDay = moment(moment($scope.vtsLocalDate, 'DD MMM YYYY')).isAfter(moment(moment().format('YYYY-MM-DD')));
+            var isSameDay = moment(moment($scope.vtsDateStamp, 'DD MMM YYYY')).isSame(moment(moment().format('MMM DD YYYY')));
+            var isAfterDay = moment(moment($scope.vtsDateStamp, 'DD MMM YYYY')).isAfter(moment(moment().format('YYYY-MM-DD')));
             var isAfterTime = $scope.vtsUtcTime.replace(":", "").replace("  ", "") > moment.utc().format('HH:mm').replace(":", "");
             if (isAfterDay) {
                 $scope.toggleDateValid(true);
@@ -430,18 +444,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 $scope.toggleTimeValid(false);
             }
         };
-
-        // $scope.dateInputChange = function (now) {
-        //     $scope.vtsLocalDate = moment(now._d).format('DD MMM YYYY');
-        //     console.log("date:",$scope.vtsLocalDate);
-        //     $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + $scope.vtsLocalDate;
-        //     console.log("date2:",$scope.vtsDateStamp);
-        //
-        //     //angular.element(document.querySelector("#timedateutclabel")).html($scope.vtsLocalDate); //force to short month name
-        //     angular.element(document.querySelector(".datetime-input.date .display .date")).html(moment().format('DD MMM YYYY')); //update timepicker display with now
-        //     $scope.validateEtaTimeDate();
-        // };
-
 
 
         $scope.dateInputChange = function (now) {
@@ -1078,20 +1080,21 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         //Change VTS center dropdown **********************************************************************************
 
         //clicking on dropdown menu to open the VTS form reates the input html according to VTSCenterData available - made as html insert because so many unknowns.
-        $scope.selectVTSCenterChange = function (selectedItem) {
-
-            //For debug purposes
-            // $scope.isLoggedIn = true; //
-
+        $scope.selectVTSCenterChange = function (selectedItem,storageId) {
             var html = "",
                 vtsID = 0;
-            for (var i = 1; i != VTSData.length; i++) {
-                console.log("ID:", i," becomes:", VTSData[i].id);
-                if (selectedItem == VTSData[i].shortname) {
-                    console.log("ID:", i," becomes:", VTSData[i].id ," - ", selectedItem, " - ", VTSData[i].shortname);
-                    vtsID = VTSData[i].id;
-                    $scope.VTSID = vtsID;
+            if(!storageId || parseInt(storageId) == 0){
+                for (var i = 1; i != VTSData.length; i++) {
+                    console.log("ID:", i," becomes:", VTSData[i].id);
+                    if (selectedItem == VTSData[i].shortname) {
+                        console.log("ID:", i," becomes:", VTSData[i].id ," - ", selectedItem, " - ", VTSData[i].shortname);
+                        vtsID = VTSData[i].id;
+                        $scope.VTSID = vtsID;
+                    }
                 }
+            }else{
+                vtsID = parseInt(storageId);
+                $scope.VTSID = vtsID;
             }
 
             //field logic - some fields are not required by certain VTS
@@ -1108,7 +1111,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.showTrueCourse = VTSData[vtsID].showTrueCourse;
             $scope.showPortOfDestination = VTSData[vtsID].showPortOfDestination;
             $scope.showRoute = VTSData[vtsID].showRoute;
-
 
             //reset validations
             $scope.VTSVesselDraughtValidation(false);
@@ -1137,7 +1139,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.VTSSelectedTrafficCenterName = VTSData[vtsID].name;
             if (VTSData[vtsID].iconImage != "") {
                 html = "<span style='min-width:24px;display: inline-block; text-align: left; '><img style='height:20px;' src='" + VTSData[vtsID].iconImage + "'></span>";
-                $scope.VTSSelectedTrafficCenterLogo = $sce.trustAsHtml(html);
+                $scope.VTSSelectedTrafficCenterLogo = VTSData[vtsID].iconImage;
+                    //$sce.trustAsHtml(html);
                 html = "";
             }
             if (VTSData[vtsID].VTSGuideLink != "") {
@@ -1184,34 +1187,55 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             angular.element(document.querySelector(".datetime-input.date .display")).addClass("vts-datetime-picker-box-highlight-invalid");
             angular.element(document.querySelector(".datetime-input.time .display")).addClass("vts-datetime-picker-box-highlight-invalid");
 
-            $scope.VTSSelectedTrafficCenterData = $sce.trustAsHtml(html);
+            // $scope.VTSSelectedTrafficCenterData = $sce.trustAsHtml(html);
             $scope.VTSSelectedTrafficCenterShortname = $sce.trustAsHtml(VTSData[vtsID].shortname);
 
             $scope.VTSFuelTypeValidation(); //disables all fuel inputs if nothing
-            $scope.VTSValidationAllDone(); //make sure to see if is ready to send
 
             //places VTS area in minimap
             VtsHelperService.miniMapUpdate(VTSData[vtsID].areaWKT, null, null);
 
-            //gets ETA from route if loaded
+            //gets ETA from route if loaded, and if route actually intersects currently selected VTS
             $scope.detectedRouteETA = VtsHelperService.returnDetectedRouteETA();
-            if($scope.detectedRouteETA && $scope.detectedRouteETA.length>10){
+            $scope.detectedRouteIntersect = VtsHelperService.returnDetectedRouteIntersect();
+            if($scope.detectedRouteETA && $scope.detectedRouteETA.length>10 && $scope.detectedRouteIntersect){
                 var routeETATime = $scope.detectedRouteETA.substring(14,$scope.detectedRouteETA.length);
                 var routeETADate = $scope.detectedRouteETA.substring(0, 11);
                 $scope.vtsTimeStamp = routeETATime;
                 $scope.vtsDateStamp = routeETADate;
                 angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsDateStamp); //update timepicker display with now
                 angular.element(document.querySelector(".datetime-input.time .display .time")).html($scope.vtsTimeStamp); //update timepicker display with now
+                $scope.validateEtaTimeDate();
+            }else{
+                // $scope.toggleDateValid(false);
+                // $scope.toggleTimeValid(false);
+                $scope.vtsTimeStamp = moment.utc().format('HH : mm');//display date and time in utc
+                $scope.vtsDateStamp = moment().utc().format('DD MMM YYYY');
+
+                angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsDateStamp); //update timepicker display with now
+                angular.element(document.querySelector(".datetime-input.time .display .time")).html($scope.vtsTimeStamp); //update timepicker display with now
+                $scope.validateEtaTimeDate();
 
             }
 
-            console.log("ReturningETA:",$scope.detectedRouteETA );
-
+// TODO: Make flag for manual ETA change, ignore route ETA if so, add warning for loading ETA of route when swapping VTS area in dropdown, add button for inserting ETA from route, if manual has been performed.");
             //debugging
             $scope.vtsvesselmmsiinput = "265177000";
             $scope.VTSVesselMMSIValidation();
 
+            $scope.VTSValidationAllDone(); //make sure to see if is ready to send
+
         };
+
+        //force load of a an area if is defined in localstorage
+        $scope.vts_current_id = $window.localStorage['vts_current_id'];
+        $scope.reOpenFormOnRefresh = function(){
+            if($scope.vts_current_id && parseInt($scope.vts_current_id)>0){
+                $scope.selectVTSCenterChange(null,$scope.vts_current_id);
+            }
+        };
+
+
 
         $scope.selectedVesselType = "";
         $scope.vtsTotalFuel = ""; //added up and displayed from validation
@@ -1463,6 +1487,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         //Modal form control ******************************************************************************************
         $scope.hideVTSForm = function () {
+            localStorage.setItem('vts_current_id', "");
             $uibModalInstance.close();
         };
 
@@ -1509,6 +1534,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.exitInterface = function(state){
             if(state==true){
                 // alert("add function to exit after save to localstorage - also load from localstorage..");
+                localStorage.setItem('vts_current_id', "");
                 $uibModalInstance.close('forceclose', 'forceclose'); //close VTS interface
                 growl.error("VTS report interface was saved and exited, no report was sent.");
             }else{

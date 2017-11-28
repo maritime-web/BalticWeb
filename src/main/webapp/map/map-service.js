@@ -10,6 +10,18 @@ angular.module('maritimeweb.map')
         function ($http) {
             'use strict';
 
+            /** watched from app-ctrl to collapse/uncollapse sidebar**/
+            this.sidebarCollapsed = false;
+            this.sidebarCollapse = function(){
+                this.sidebarCollapsed = true;
+            };
+            this.sidebarUnCollapse = function(){
+                this.sidebarCollapsed = false;
+            };
+            /** watched from app-ctrl to collapse/uncollapse sidebar**/
+
+
+
             var projMercator = 'EPSG:3857';
             var proj4326 = 'EPSG:4326';
             var geoJsonFormat = new ol.format.GeoJSON();
@@ -254,7 +266,7 @@ angular.module('maritimeweb.map')
                             })
                         }),*/
                         new ol.layer.Tile({
-                            title: 'Stamen - Toner',
+                            title: 'High-contrast map',
                             type: 'base',
                             visible: false,
                             source: new ol.source.Stamen({
@@ -263,7 +275,7 @@ angular.module('maritimeweb.map')
                         }),
 
                         new ol.layer.Tile({
-                            title: 'Thunderforest - Transport Dark',
+                            title: 'Transportation map (Dark)',
                             type: 'base',
                             visible: false,
                             source: new ol.source.OSM({

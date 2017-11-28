@@ -23,6 +23,11 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             return this.detectedRouteETA;
         };
 
+        this.detectedRouteIntersect = null;
+        this.returnDetectedRouteIntersect = function() {
+            return this.detectedRouteIntersect;
+        };
+
         //DEBUG TOOLS
         var debugMode = false;
         if (debugMode == true) console.log("****** DEBUG MODE IS ON! *******");
@@ -236,16 +241,16 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                 areaAsPoly.push(tmpAreaAsPoly); //inception array
                 var vtsarea = turf.polygon(areaAsPoly);
 
-                var intersection = turf.intersect(vtsarea, routeline);
-                var stopcoord = intersection.geometry.coordinates[0];
-
-                //may be needed - pending design decision
-                // var routeDistance = (turf.lineDistance(routeline, 'kilometers') * 0.539956803);
-                // var startcoord = routeline.geometry.coordinates[0];
-                // var start = turf.point(startcoord);
-                // var stop = turf.point(stopcoord);
-                // var sliced = turf.lineSlice(start, stop, routeline); //length of the line inside the vts area poly
-                // var sliceDistance = turf.lineDistance(sliced, 'kilometers') * 0.539956803;
+                var intersection = null;
+                var stopcoord = null;
+                try{
+                    intersection = turf.intersect(vtsarea, routeline);
+                    stopcoord = intersection.geometry.coordinates[0];
+                    this.detectedRouteIntersect = true;
+                }catch(NothingToIntersect){
+                    skipIcon = true; //cannot draw intersection point if there is none
+                    this.detectedRouteIntersect = false; //tell interface that ETA can be validated according to route ETA
+                }
 
                 //Loop through all points, find the first one to be inside a poly, and the one just before as well.
                 var etaPoint1 = 0, etaPoint0 = 0;

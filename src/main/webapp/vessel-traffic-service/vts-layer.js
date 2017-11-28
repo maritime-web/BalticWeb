@@ -10,8 +10,8 @@
  */
 angular.module('maritimeweb.vts-map')
 
-    .service('mapVtsAreaService', ['$http', '$log', 'MapService', '$window', 'growl',
-        function ($http, $log, MapService, $window, growl) {
+    .service('mapVtsAreaService', ['$http', '$log', 'MapService', '$window', 'growl', 'Auth',
+        function ($http, $log, MapService, $window, growl, Auth) {
 
             this.toggleVtsAreasLayerEnabled = function () {
                 this.vts_map_show = $window.localStorage['vts_map_show'];
@@ -80,29 +80,60 @@ angular.module('maritimeweb.vts-map')
             };
         }])
 
-    .directive('mapVtsAreaLayer', ['MapService', '$window','growl',
-        function (MapService, $window, growl) {
+    .directive('mapVtsAreaLayer', ['MapService', '$window','growl', '$uibModal',
+        function (MapService, $window, growl, $uibModal) {
             return {
                 restrict: 'E',
                 require: '^olMap',
-                template: "",
+                template: '<div id="vts-info" class="ng-cloak"></div>' +
+                '<div id="popup" class="ol-popup">' +
+                '<a href id="vts-popup-closer" class="ol-popup-closer"></a>' +
+                '<h3 class="popover-title">{{vtsPopupVtsShortname}} - {{vtsPopupVtsCountry}}</h3>' +
+                '<div class="popover-content">' +
+                '<p ng-show="vtsPopupVtsCallsign.length>0">Callsign: {{vtsPopupVtsCallsign}}</p>' +
+                '<p ng-show="vtsPopupVtsVhf1.length>0">VHF: {{vtsPopupVtsVhf1}}</p>' +
+                '<p ng-show="vtsPopupVtsVhf2.length>0">VHF2: {{vtsPopupVtsVhf2}}</p>' +
+                '<p ng-show="vtsPopupVtsTel1.length>0">Tel: {{vtsPopupVtsTel1}}</p>' +
+                '<p ng-show="vtsPopupVtsEmail.length>0">Email: {{vtsPopupVtsEmail}}</p>' +
+                '<p><span><button class="btn btn-primary"  type="button" ng-click="activateVTSForm()">Send VTS report now</button></span></p>' +
+                '</div>' +
+                '</div>',
                 scope: {
-                    vtsAreas: '=?',
-                    vtsRoute: '=?',
-                    vtsVisible: '=?',
-                    vtsOnrouteOnly: '=?'
+                    vtsAreas: '=?', //VTS areas object from service endpoint
+                    vtsRoute: '=?', //route ETAs
+                    vtsVisible: '=?', //toggles layer visble or not
+                    vtsOnrouteOnly: '=?', //filter for intersecting
                 },
                 link: function (scope, element, attrs, ctrl) {
+
+
+
+
+
+                    /* popup information vars*/
+                    scope.clearVtsPopup = function(){
+                        scope.vtsPopupVtsShortname = "";
+                        scope.vtsPopupVtsCallsign = "";
+                        scope.vtsPopupVtsVhf1 = "";
+                        scope.vtsPopupVtsVhf2 = "";
+                        scope.vtsPopupVtsTel1 = "";
+                        scope.vtsPopupVtsTel2 = "";
+                        scope.vtsPopupVtsEmail = "";
+                        scope.vtsPopupVtsIconImage = "";
+                        scope.vtsPopupVtsCountry = "";
+                        scope.vtsPopupVtsVhfReserve = "";
+                    };
+                    scope.clearVtsPopup(); //init
 
                     /***************************/
                     /** VTS Layer             **/
                     /***************************/
 
                     var olScope = ctrl.getOpenlayersScope();
-                    var vtsareaLayer;
                     scope.onrouteOnly = false; //only draw VTS areas if true
 
                     olScope.getMap().then(function (map) {
+                        var vtsareaLayer;
 
                         // Clean up when the layer is destroyed
                         scope.$on('$destroy', function () {
@@ -170,6 +201,7 @@ angular.module('maritimeweb.vts-map')
                         scope.highlightColourFill ="rgba(238, 153, 0,0.4)";
                         scope.normalColourStroke ="rgba(250, 0, 0, 0.5)";
                         scope.normalColourFill ="rgba(238, 153, 0,0.2)";
+                        scope.highlightColourFillTmp = scope.highlightColourFill; //needed for zoomlevel transparency change
 
                         function styleFunctionNormal(areaName) {
                             var labelSize = 18 - (map.getView().getZoom() *.2);
@@ -198,13 +230,14 @@ angular.module('maritimeweb.vts-map')
 
                         function styleFunctionHighlight(areaName) {
                             var labelSize = 18 - (map.getView().getZoom() *.2);
+                            (zoomLevel > 5 ) ? scope.highlightColourFill = "rgba(238, 153, 0,"+(.4 / (zoomLevel/3))+")": scope.highlightColourFill = scope.highlightColourFillTmp;
                             return [
                                 new ol.style.Style({
                                     text: new ol.style.Text({
                                         font: labelSize + 'px Calibri,sans-serif',
                                         fill: new ol.style.Fill({ color: '#000' }),
                                         stroke: new ol.style.Stroke({
-                                            color: '#fff', width: 2
+                                            color: '#fff', width: 3
                                         }),
                                         // get the text from the feature - `this` is ol.Feature
                                         text: (map.getView().getZoom()>scope.maxZoom) ? areaName : ""  //areafeature.get('name')
@@ -257,6 +290,8 @@ angular.module('maritimeweb.vts-map')
                                                 areafeature.set("name",vts_areas[i].shortname);
                                                 //styling
                                                 areafeature.setStyle(styleFunctionNormal(vts_areas[i].shortname, vts_areas[i].id));
+                                                console.log("Gotta put a button in somehow");
+                                                // vtsAreasSidePanelListItem
                                                 //add to layer
                                                 vtsareaLayer.getSource().addFeature(areafeature);
                                             }
@@ -304,18 +339,84 @@ angular.module('maritimeweb.vts-map')
                         /** Returns the ID of a VTS area when click on it **/
                         scope.getIdForPixel = function (pixel) {
                             var retId = null,
-                                retFeature = null;
+                                retFeature = null, mmsi = null;
                             map.forEachFeatureAtPixel(pixel, function(feature, layer) {
                                 var id = feature.get("vtsAreaID");
+                                var mmsi = feature.get("mmsi");
                                 if ((layer == vtsareaLayer) && id) {
                                     retId = id;
                                     retFeature = feature;
+
                                 }
                             });
 
-                            return {id:retId, feature:retFeature};
+                            return {id:retId, feature:retFeature, mmsi:mmsi};
                         };
 
+                        /***************************/
+                        /** VTS Center Details    **/
+                        /***************************/
+
+                        var elm = document.getElementById('vts-info');
+
+                        var popup = new ol.Overlay({
+                            element: elm,
+                            positioning: 'bottom-center',
+                            stopEvent: false
+                        });
+                        map.addOverlay(popup);
+                        /**
+                         * Elements that make up the popup.
+                         */
+                        var container = document.getElementById('popup');
+                        var content = document.getElementById('popup-content');
+                        var closer = document.getElementById('vts-popup-closer');
+
+                        /**
+                         * Create an overlay to anchor the popup to the map.
+                         */
+                        var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+                            element: container,
+                            autoPan: true,
+                            autoPanAnimation: {
+                                duration: 250
+                            }
+                        }));
+
+                        /**
+                         * Add a click handler to hide the popup.
+                         * @return {boolean} Don't follow the href.
+                         */
+                        closer.onclick = function () { //clear and close the popup
+                            scope.vtsPopupVtsShortname = "";
+                            scope.vtsPopupVtsCallsign = "";
+                            scope.vtsPopupVtsVhf1 = "";
+                            scope.vtsPopupVtsVhf2 = "";
+                            scope.vtsPopupVtsTel1 = "";
+                            scope.vtsPopupVtsTel2 = "";
+                            scope.vtsPopupVtsEmail = "";
+                            scope.vtsPopupVtsIconImage = "";
+                            scope.vtsPopupVtsCountry = "";
+                            scope.vtsPopupVtsVhfReserve = "";
+                            overlay.setPosition(undefined);
+                            closer.blur();
+                            return false;
+                        };
+
+                        map.addOverlay(overlay);
+
+                        scope.activateVTSForm = function (size) {
+                            if(!size) size='lg';
+                            growl.info('Activating Vessel Traffic Control');
+                            $uibModal.open({
+                                animation: 'true',
+                                templateUrl: 'vessel-traffic-service/vessel-traffic-service-form.html',
+                                controller: 'VesselTrafficServiceReportCtrl',
+                                size: size
+                            });
+                            scope.clearVtsPopup();
+                            overlay.setPosition(undefined);
+                        };
 
                         /***************************/
                         /**        Listeners      **/
@@ -333,11 +434,53 @@ angular.module('maritimeweb.vts-map')
 
                         //mouse click or ontap
                         map.on('click', function(evt) { //display VTS area sidebar tab and VTS area information when click
-                            var ret = scope.getIdForPixel(map.getEventPixel(evt.originalEvent));
-                            if (ret.id != null) {
-                                // $rootScope.activeTabIndex = 4; //forces tab to display - disabled until decision made
-                                // console.log("clicked:",ret.id);
-                            }
+                            if(map.getView().getZoom() < 14) {
+                                scope.clearVtsPopup();
+                                var ret = scope.getIdForPixel(map.getEventPixel(evt.originalEvent));
+                                if (ret.id != null) {
+                                    var vts_areas_str = localStorage.getItem('vts_areas');
+                                    var vts_areas;
+                                    if (vts_areas_str && vts_areas_str.length > 0) {
+                                        vts_areas = JSON.parse(vts_areas_str);
+                                        if (vts_areas.length > 0) {
+                                            var vtsNum = 0;
+                                            for (var i = 0; i != vts_areas.length; i++) { //find in array which areas ID has ret.id
+                                                if (parseInt(vts_areas[i].id) == parseInt(ret.id)) {
+                                                    vtsNum = i;
+                                                    break;
+                                                }
+                                            }
+                                            localStorage.setItem('vts_current_id', vts_areas[i].id);
+
+                                            //Fill in the VTS info into vars needed by popup
+                                            scope.vtsPopupVtsShortname = vts_areas[vtsNum].shortname;
+                                            scope.vtsPopupVtsCountry = vts_areas[vtsNum].country;
+                                            scope.vtsPopupVtsCallsign = vts_areas[vtsNum].callsign;
+                                            scope.vtsPopupVtsVhf1 = vts_areas[vtsNum].vhfchannel1;
+                                            scope.vtsPopupVtsVhf2 = vts_areas[vtsNum].vhfchannel2;
+                                            scope.vtsPopupVtsVhfReserve = vts_areas[vtsNum].vhfreservechannel1;
+                                            scope.vtsPopupVtsTel1 = vts_areas[vtsNum].telephone;
+                                            scope.vtsPopupVtsTel2 = vts_areas[vtsNum].telephone2;
+                                            scope.vtsPopupVtsEmail = vts_areas[vtsNum].email;
+                                            scope.vtsPopupVtsIconImage = vts_areas[vtsNum].iconImage;
+                                            scope.$apply();
+
+                                            function updateTimeout() { //update bug workaround
+                                                var coordinate = evt.coordinate;
+                                                overlay.setPosition(coordinate);
+                                            }
+
+                                            setTimeout(function () {
+                                                updateTimeout();
+                                            }, 10);
+                                        }
+                                    }
+                                } else {
+                                    scope.clearVtsPopup();
+                                    overlay.setPosition(undefined);
+                                    localStorage.setItem('vts_current_id', "");
+                                }
+                            }//respect zoomlevel
                         });
 
                         //mouse over
