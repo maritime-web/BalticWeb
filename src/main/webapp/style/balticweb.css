@@ -161,7 +161,7 @@ abbr::after {
     width:0px;
     height:0px;
 }
-
+.vts-modal-body{padding:0px 15px 15px 15px;}
 .bold{font-weight:bold;}
 .italic{font-style: italic;}
 .vts-text-center{text-align: center;}
@@ -186,7 +186,7 @@ abbr::after {
 .vts-button-modifier-superslim{padding:0px 8px !important}
 .vts-button-modifier-displayinline{display:inline !important}
 .vts-button-modifier-floatright{float:right !important}
-.vts-pad-top{padding-top:8px;}
+.vts-pad-top{padding-top:5px;}
 .vts-pad-bottom{padding-bottom:8px;}
 .vts-input{width:160px;}
 .vts-input-small{width:50px;}
@@ -296,14 +296,14 @@ abbr::after {
     box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
     outline: 0 none !important;
 }
-.vts-force-spacing-50{
-    min-width:50px;
-    max-width:50px;
-    display: inline-block;
-}
 .vts-force-spacing-20{
     min-width:20px;
     max-width:20px;
+    display: inline-block;
+}
+.vts-force-spacing-50{
+    min-width:50px;
+    max-width:50px;
     display: inline-block;
 }
 .vts-force-spacing-80{

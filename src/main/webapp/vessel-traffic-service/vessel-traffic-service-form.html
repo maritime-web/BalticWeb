@@ -1,13 +1,23 @@
 <div class="modal-header vts-less-lineheight">
     <h3 class="modal-title" ng-show="showReportInterface">
-        Vessel Traffic Service - VTS report form <span ng-show="VTSSelected"> for {{VTSSelectedTrafficCenterShortname}} </span>
+        <div ng-show="VTSSelectedTrafficCenterLogo!=''" class="vts-inline-block" style='min-width:48px;width:100%'>
+            <img class="vts-inline-block" style='max-height:60px;' src='{{VTSSelectedTrafficCenterLogo}}'>
+            <div class="vts-inline-block">
+                <div class="">
+                    <strong>{{VTSSelectedTrafficCenterName}}</strong>
+                </div>
+                <div class="">
+                    <span style="font-size:14px;">Vessel Traffic Service report form<span ng-show="VTSSelected"> for {{VTSSelectedTrafficCenterShortname}} </span></span>
+                </div>
+            </div>
+        </div>
     </h3>
     <h3 class="modal-title vts-text-center vts-text-xxlarge" ng-show="!showReportInterface">
         Warning! <!-- warn on exit -->
     </h3>
 </div>
 
-<div id="modalbody" class="modal-body ng-hide">
+<div id="modalbody" class="modal-body ng-hide vts-modal-body">
     <div ng-show="showReportInterface">
         <select ng-show="showVtsCenterSelect" class="form-control   " name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
             <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
@@ -18,21 +28,13 @@
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected && showReportInterface">
         <div class="vts-pad-top vts-pad-bottom" style="position: relative;min-height:40px;">
                 <div class="vts-force-spacing-460" style="min-height:40px;">
-                    <div ng-show="VTSSelectedTrafficCenterLogo!=''" class="vts-inline-block" style='min-width:48px;max-width:48px;'>
-                        <img style='height:40px;max-width:40px;max-height:40px; ' src='{{VTSSelectedTrafficCenterLogo}}'>
-                    </div>
 
 
-                    <div class="vts-force-spacing-400 vts-inline-block" style='left:52px;'>
-                        <span ><strong>{{VTSSelectedTrafficCenterName}}</strong></span>
-                    </div>
                 </div>
                 <div class="vts-pad-top vts-force-spacing-350 vts-responsive-info-container vts-inline-block" style="">
                     <button id="contactDetailsButton" class='btn  vts-button-modifier-slim vts-inline-block'
                         ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]"
-                        ng-click="toggleDisplayVtsCenterData()" type='button'
-                        ng-mouseover="displayPopupInfo($event,'Displays contact information such as VHF channels, telephone etc.','large')"
-                        ng-mouseleave="removePopupInfo()">
+                        ng-click="toggleDisplayVtsCenterData()" type='button'>
                         Contact details <span ng-class="{false:'glyphicon glyphicon-chevron-down', true:'glyphicon glyphicon-chevron-up'}[displayVtsCenterData]"></span>
                     </button>
                     &nbsp;&nbsp;
