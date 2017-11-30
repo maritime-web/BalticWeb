@@ -27,7 +27,7 @@ angular.module('maritimeweb.serviceregistry')
                         width: 3
                     }),
                     fill: new ol.style.Fill({
-                        color: 'rgba(5, 200, 10, 0.05)'
+                        color: 'rgba(5, 200, 10, 0.005)'
                     })
                 });
 
@@ -35,10 +35,10 @@ angular.module('maritimeweb.serviceregistry')
             this.highlightServiceRed =  new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: 'rgba(255, 0, 10, 0.5)',
-                        width: 1
+                        width: 4
                     }),
                     fill: new ol.style.Fill({
-                        color: 'rgba(255, 0, 10, 0.10)'
+                        color: 'rgba(255, 0, 10, 0.005)'
                     })
                 });
 

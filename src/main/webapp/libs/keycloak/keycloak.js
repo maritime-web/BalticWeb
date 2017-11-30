@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
@@ -26,20 +25,29 @@
         var kc = this;
         var adapter;
         var refreshQueue = [];
+        var callbackStorage;
 
         var loginIframe = {
             enable: true,
-            callbackMap: [],
+            callbackList: [],
             interval: 5
         };
 
         kc.init = function (initOptions) {
             kc.authenticated = false;
 
-            if (window.Cordova) {
+            callbackStorage = createCallbackStorage();
+
+            if (initOptions && initOptions.adapter === 'cordova') {
                 adapter = loadAdapter('cordova');
-            } else {
+            } else if (initOptions && initOptions.adapter === 'default') {
                 adapter = loadAdapter();
+            } else {
+                if (window.Cordova) {
+                    adapter = loadAdapter('cordova');
+                } else {
+                    adapter = loadAdapter();
+                }
             }
 
             if (initOptions) {
@@ -79,6 +87,10 @@
                     }
                     kc.flow = initOptions.flow;
                 }
+
+                if (initOptions.timeSkew != null) {
+                    kc.timeSkew = initOptions.timeSkew;
+                }
             }
 
             if (!kc.responseMode) {
@@ -95,8 +107,8 @@
             initPromise.promise.success(function() {
                 kc.onReady && kc.onReady(kc.authenticated);
                 promise.setSuccess(kc.authenticated);
-            }).error(function() {
-                promise.setError();
+            }).error(function(errorData) {
+                promise.setError(errorData);
             });
 
             var configPromise = loadConfig(config);
@@ -145,25 +157,36 @@
                     processCallback(callback, initPromise);
                     return;
                 } else if (initOptions) {
-                    if (initOptions.token || initOptions.refreshToken) {
-                        setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
-                        kc.timeSkew = initOptions.timeSkew || 0;
+                    if (initOptions.token && initOptions.refreshToken) {
+                        setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken);
 
                         if (loginIframe.enable) {
                             setupCheckLoginIframe().success(function() {
                                 checkLoginIframe().success(function () {
+                                    kc.onAuthSuccess && kc.onAuthSuccess();
                                     initPromise.setSuccess();
                                 }).error(function () {
-                                    if (initOptions.onLoad) {
-                                        onLoad();
-                                    }
+                                    setToken(null, null, null);
+                                    initPromise.setSuccess();
                                 });
                             });
                         } else {
-                            initPromise.setSuccess();
+                            kc.updateToken(-1).success(function() {
+                                kc.onAuthSuccess && kc.onAuthSuccess();
+                                initPromise.setSuccess();
+                            }).error(function() {
+                                kc.onAuthError && kc.onAuthError();
+                                if (initOptions.onLoad) {
+                                    onLoad();
+                                } else {
+                                    initPromise.setError();
+                                }
+                            });
                         }
                     } else if (initOptions.onLoad) {
                         onLoad();
+                    } else {
+                        initPromise.setSuccess();
                     }
                 } else {
                     initPromise.setSuccess();
@@ -187,16 +210,25 @@
             var nonce = createUUID();
 
             var redirectUri = adapter.redirectUri(options);
-            if (options && options.prompt) {
-                redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'prompt=' + options.prompt;
+
+            var callbackState = {
+                state: state,
+                nonce: nonce,
+                redirectUri: encodeURIComponent(redirectUri),
             }
 
-            sessionStorage.oauthState = JSON.stringify({ state: state, nonce: nonce, redirectUri: encodeURIComponent(redirectUri) });
+            if (options && options.prompt) {
+                callbackState.prompt = options.prompt;
+            }
+
+            callbackStorage.add(callbackState);
 
             var action = 'auth';
             if (options && options.action == 'register') {
                 action = 'registrations';
             }
+
+            var scope = (options && options.scope) ? "openid " + options.scope : "openid";
 
             var url = getRealmUrl()
                 + '/protocol/openid-connect/' + action
@@ -205,10 +237,15 @@
                 + '&state=' + encodeURIComponent(state)
                 + '&nonce=' + encodeURIComponent(nonce)
                 + '&response_mode=' + encodeURIComponent(kc.responseMode)
-                + '&response_type=' + encodeURIComponent(kc.responseType);
+                + '&response_type=' + encodeURIComponent(kc.responseType)
+                + '&scope=' + encodeURIComponent(scope);
 
             if (options && options.prompt) {
                 url += '&prompt=' + encodeURIComponent(options.prompt);
+            }
+
+            if (options && options.maxAge) {
+                url += '&max_age=' + encodeURIComponent(options.maxAge);
             }
 
             if (options && options.loginHint) {
@@ -217,10 +254,6 @@
 
             if (options && options.idpHint) {
                 url += '&kc_idp_hint=' + encodeURIComponent(options.idpHint);
-            }
-
-            if (options && options.scope) {
-                url += '&scope=' + encodeURIComponent(options.scope);
             }
 
             if (options && options.locale) {
@@ -237,7 +270,7 @@
         kc.createLogoutUrl = function(options) {
             var url = getRealmUrl()
                 + '/protocol/openid-connect/logout'
-                + '?redirect_uri=' + encodeURIComponent(adapter.redirectUri(options));
+                + '?redirect_uri=' + encodeURIComponent(adapter.redirectUri(options, false));
 
             return url;
         }
@@ -336,18 +369,22 @@
                 throw 'Not authenticated';
             }
 
-            var expiresIn = kc.tokenParsed['exp'] - (new Date().getTime() / 1000) + kc.timeSkew;
+            if (kc.timeSkew == null) {
+                console.info('[KEYCLOAK] Unable to determine if token is expired as timeskew is not set');
+                return true;
+            }
+
+            var expiresIn = kc.tokenParsed['exp'] - Math.ceil(new Date().getTime() / 1000) + kc.timeSkew;
             if (minValidity) {
                 expiresIn -= minValidity;
             }
-
             return expiresIn < 0;
         }
 
         kc.updateToken = function(minValidity) {
             var promise = createPromise();
 
-            if (!kc.tokenParsed || !kc.refreshToken) {
+            if (!kc.refreshToken) {
                 promise.setError();
                 return promise.promise;
             }
@@ -355,7 +392,16 @@
             minValidity = minValidity || 5;
 
             var exec = function() {
-                if (!kc.isTokenExpired(minValidity)) {
+                var refreshToken = false;
+                if (minValidity == -1) {
+                    refreshToken = true;
+                    console.info('[KEYCLOAK] Refreshing token: forced refresh');
+                } else if (!kc.tokenParsed || kc.isTokenExpired(minValidity)) {
+                    refreshToken = true;
+                    console.info('[KEYCLOAK] Refreshing token: token expired');
+                }
+
+                if (!refreshToken) {
                     promise.setSuccess(false);
                 } else {
                     var params = 'grant_type=refresh_token&' + 'refresh_token=' + kc.refreshToken;
@@ -367,6 +413,7 @@
                         var req = new XMLHttpRequest();
                         req.open('POST', url, true);
                         req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                        req.withCredentials = true;
 
                         if (kc.clientId && kc.clientSecret) {
                             req.setRequestHeader('Authorization', 'Basic ' + btoa(kc.clientId + ':' + kc.clientSecret));
@@ -379,18 +426,21 @@
                         req.onreadystatechange = function () {
                             if (req.readyState == 4) {
                                 if (req.status == 200) {
+                                    console.info('[KEYCLOAK] Token refreshed');
+
                                     timeLocal = (timeLocal + new Date().getTime()) / 2;
 
                                     var tokenResponse = JSON.parse(req.responseText);
-                                    setToken(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], true);
 
-                                    kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
+                                    setToken(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], timeLocal);
 
                                     kc.onAuthRefreshSuccess && kc.onAuthRefreshSuccess();
                                     for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                         p.setSuccess(true);
                                     }
                                 } else {
+                                    console.warn('[KEYCLOAK] Failed to refresh token');
+
                                     kc.onAuthRefreshError && kc.onAuthRefreshError();
                                     for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                         p.setError(true);
@@ -420,7 +470,7 @@
 
         kc.clearToken = function() {
             if (kc.token) {
-                setToken(null, null, null, true);
+                setToken(null, null, null);
                 kc.onAuthLogout && kc.onAuthLogout();
                 if (kc.loginRequired) {
                     kc.login();
@@ -453,8 +503,9 @@
 
             if (error) {
                 if (prompt != 'none') {
-                    kc.onAuthError && kc.onAuthError();
-                    promise && promise.setError();
+                    var errorData = { error: error, error_description: oauth.error_description };
+                    kc.onAuthError && kc.onAuthError(errorData);
+                    promise && promise.setError(errorData);
                 } else {
                     promise && promise.setSuccess();
                 }
@@ -500,18 +551,16 @@
             function authSuccess(accessToken, refreshToken, idToken, fulfillPromise) {
                 timeLocal = (timeLocal + new Date().getTime()) / 2;
 
-                setToken(accessToken, refreshToken, idToken, true);
+                setToken(accessToken, refreshToken, idToken, timeLocal);
 
                 if ((kc.tokenParsed && kc.tokenParsed.nonce != oauth.storedNonce) ||
                     (kc.refreshTokenParsed && kc.refreshTokenParsed.nonce != oauth.storedNonce) ||
                     (kc.idTokenParsed && kc.idTokenParsed.nonce != oauth.storedNonce)) {
 
-                    console.log('invalid nonce!');
+                    console.info('[KEYCLOAK] Invalid nonce, clearing token');
                     kc.clearToken();
                     promise && promise.setError();
                 } else {
-                    kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
-
                     if (fulfillPromise) {
                         kc.onAuthSuccess && kc.onAuthSuccess();
                         promise && promise.setSuccess();
@@ -538,7 +587,7 @@
 
                 req.onreadystatechange = function () {
                     if (req.readyState == 4) {
-                        if (req.status == 200) {
+                        if (req.status == 200 || fileLoaded(req)) {
                             var config = JSON.parse(req.responseText);
 
                             kc.authServerUrl = config['auth-server-url'];
@@ -584,39 +633,14 @@
             return promise.promise;
         }
 
-        function setToken(token, refreshToken, idToken, useTokenTime) {
+        function fileLoaded(xhr) {
+            return xhr.status == 0 && xhr.responseText && xhr.responseURL.startsWith('file:');
+        }
+
+        function setToken(token, refreshToken, idToken, timeLocal) {
             if (kc.tokenTimeoutHandle) {
                 clearTimeout(kc.tokenTimeoutHandle);
                 kc.tokenTimeoutHandle = null;
-            }
-
-            if (token) {
-                kc.token = token;
-                kc.tokenParsed = decodeToken(token);
-                var sessionId = kc.realm + '/' + kc.tokenParsed.sub;
-                if (kc.tokenParsed.session_state) {
-                    sessionId = sessionId + '/' + kc.tokenParsed.session_state;
-                }
-                kc.sessionId = sessionId;
-                kc.authenticated = true;
-                kc.subject = kc.tokenParsed.sub;
-                kc.realmAccess = kc.tokenParsed.realm_access;
-                kc.resourceAccess = kc.tokenParsed.resource_access;
-
-                if (kc.onTokenExpired) {
-                    var start = useTokenTime ? kc.tokenParsed.iat : (new Date().getTime() / 1000);
-                    var expiresIn = kc.tokenParsed.exp - start;
-                    kc.tokenTimeoutHandle = setTimeout(kc.onTokenExpired, expiresIn * 1000);
-                }
-
-            } else {
-                delete kc.token;
-                delete kc.tokenParsed;
-                delete kc.subject;
-                delete kc.realmAccess;
-                delete kc.resourceAccess;
-
-                kc.authenticated = false;
             }
 
             if (refreshToken) {
@@ -633,6 +657,42 @@
             } else {
                 delete kc.idToken;
                 delete kc.idTokenParsed;
+            }
+
+            if (token) {
+                kc.token = token;
+                kc.tokenParsed = decodeToken(token);
+                kc.sessionId = kc.tokenParsed.session_state;
+                kc.authenticated = true;
+                kc.subject = kc.tokenParsed.sub;
+                kc.realmAccess = kc.tokenParsed.realm_access;
+                kc.resourceAccess = kc.tokenParsed.resource_access;
+
+                if (timeLocal) {
+                    kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
+                }
+
+                if (kc.timeSkew != null) {
+                    console.info('[KEYCLOAK] Estimated time difference between browser and server is ' + kc.timeSkew + ' seconds');
+
+                    if (kc.onTokenExpired) {
+                        var expiresIn = (kc.tokenParsed['exp'] - (new Date().getTime() / 1000) + kc.timeSkew) * 1000;
+                        console.info('[KEYCLOAK] Token expires in ' + Math.round(expiresIn / 1000) + ' s');
+                        if (expiresIn <= 0) {
+                            kc.onTokenExpired();
+                        } else {
+                            kc.tokenTimeoutHandle = setTimeout(kc.onTokenExpired, expiresIn);
+                        }
+                    }
+                }
+            } else {
+                delete kc.token;
+                delete kc.tokenParsed;
+                delete kc.subject;
+                delete kc.realmAccess;
+                delete kc.resourceAccess;
+
+                kc.authenticated = false;
             }
         }
 
@@ -687,14 +747,12 @@
 
         function parseCallback(url) {
             var oauth = new CallbackParser(url, kc.responseMode).parseUri();
+            var oauthState = callbackStorage.get(oauth.state);
 
-            var sessionState = sessionStorage.oauthState && JSON.parse(sessionStorage.oauthState);
-
-            if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
-                delete sessionStorage.oauthState;
-
-                oauth.redirectUri = sessionState.redirectUri;
-                oauth.storedNonce = sessionState.nonce;
+            if (oauthState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token)) {
+                oauth.redirectUri = oauthState.redirectUri;
+                oauth.storedNonce = oauthState.nonce;
+                oauth.prompt = oauthState.prompt;
 
                 if (oauth.fragment) {
                     oauth.newUrl += '#' + oauth.fragment;
@@ -772,26 +830,37 @@
                 setTimeout(check, loginIframe.interval * 1000);
             }
 
-            var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+            var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html';
             iframe.setAttribute('src', src );
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
 
             var messageCallback = function(event) {
-                if (event.origin !== loginIframe.iframeOrigin) {
+                if ((event.origin !== loginIframe.iframeOrigin) || (loginIframe.iframe.contentWindow !== event.source)) {
                     return;
                 }
-                var data = JSON.parse(event.data);
-                var promise = loginIframe.callbackMap[data.callbackId];
-                delete loginIframe.callbackMap[data.callbackId];
 
-                if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
-                    promise.setSuccess();
-                } else {
+                if (!(event.data == 'unchanged' || event.data == 'changed' || event.data == 'error')) {
+                    return;
+                }
+
+
+                if (event.data != 'unchanged') {
                     kc.clearToken();
-                    promise.setError();
+                }
+
+                var callbacks = loginIframe.callbackList.splice(0, loginIframe.callbackList.length);
+
+                for (var i = callbacks.length - 1; i >= 0; --i) {
+                    var promise = callbacks[i];
+                    if (event.data == 'unchanged') {
+                        promise.setSuccess();
+                    } else {
+                        promise.setError();
+                    }
                 }
             };
+
             window.addEventListener('message', messageCallback, false);
 
             var check = function() {
@@ -807,12 +876,13 @@
         function checkLoginIframe() {
             var promise = createPromise();
 
-            if (loginIframe.iframe && loginIframe.iframeOrigin) {
-                var msg = {};
-                msg.callbackId = createCallbackId();
-                loginIframe.callbackMap[msg.callbackId] = promise;
+            if (loginIframe.iframe && loginIframe.iframeOrigin ) {
+                var msg = kc.clientId + ' ' + kc.sessionId;
+                loginIframe.callbackList.push(promise);
                 var origin = loginIframe.iframeOrigin;
-                loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
+                if (loginIframe.callbackList.length == 1) {
+                    loginIframe.iframe.contentWindow.postMessage(msg, origin);
+                }
             } else {
                 promise.setSuccess();
             }
@@ -843,14 +913,18 @@
                         return createPromise().promise;
                     },
 
-                    redirectUri: function(options) {
+                    redirectUri: function(options, encodeHash) {
+                        if (arguments.length == 1) {
+                            encodeHash = true;
+                        }
+
                         if (options && options.redirectUri) {
                             return options.redirectUri;
                         } else if (kc.redirectUri) {
                             return kc.redirectUri;
                         } else {
                             var redirectUri = location.href;
-                            if (location.hash) {
+                            if (location.hash && encodeHash) {
                                 redirectUri = redirectUri.substring(0, location.href.indexOf('#'));
                                 redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'redirect_fragment=' + encodeURIComponent(location.hash.substring(1));
                             }
@@ -875,31 +949,28 @@
                         var loginUrl = kc.createLoginUrl(options);
                         var ref = window.open(loginUrl, '_blank', o);
 
-                        var callback;
-                        var error;
+                        var completed = false;
 
                         ref.addEventListener('loadstart', function(event) {
                             if (event.url.indexOf('http://localhost') == 0) {
-                                callback = parseCallback(event.url);
+                                var callback = parseCallback(event.url);
+                                processCallback(callback, promise);
                                 ref.close();
+                                completed = true;
                             }
                         });
 
                         ref.addEventListener('loaderror', function(event) {
-                            if (event.url.indexOf('http://localhost') == 0) {
-                                callback = parseCallback(event.url);
-                                ref.close();
-                            } else {
-                                error = true;
-                                ref.close();
-                            }
-                        });
-
-                        ref.addEventListener('exit', function(event) {
-                            if (error || !callback) {
-                                promise.setError();
-                            } else {
-                                processCallback(callback, promise);
+                            if (!completed) {
+                                if (event.url.indexOf('http://localhost') == 0) {
+                                    var callback = parseCallback(event.url);
+                                    processCallback(callback, promise);
+                                    ref.close();
+                                    completed = true;
+                                } else {
+                                    promise.setError();
+                                    ref.close();
+                                }
                             }
                         });
 
@@ -970,6 +1041,124 @@
             throw 'invalid adapter type: ' + type;
         }
 
+        var LocalStorage = function() {
+            if (!(this instanceof LocalStorage)) {
+                return new LocalStorage();
+            }
+
+            localStorage.setItem('kc-test', 'test');
+            localStorage.removeItem('kc-test');
+
+            var cs = this;
+
+            function clearExpired() {
+                var time = new Date().getTime();
+                for (var i = 0; i < localStorage.length; i++)  {
+                    var key = localStorage.key(i);
+                    if (key && key.indexOf('kc-callback-') == 0) {
+                        var value = localStorage.getItem(key);
+                        if (value) {
+                            try {
+                                var expires = JSON.parse(value).expires;
+                                if (!expires || expires < time) {
+                                    localStorage.removeItem(key);
+                                }
+                            } catch (err) {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                    }
+                }
+            }
+
+            cs.get = function(state) {
+                if (!state) {
+                    return;
+                }
+
+                var key = 'kc-callback-' + state;
+                var value = localStorage.getItem(key);
+                if (value) {
+                    localStorage.removeItem(key);
+                    value = JSON.parse(value);
+                }
+
+                clearExpired();
+                return value;
+            };
+
+            cs.add = function(state) {
+                clearExpired();
+
+                var key = 'kc-callback-' + state.state;
+                state.expires = new Date().getTime() + (60 * 60 * 1000);
+                localStorage.setItem(key, JSON.stringify(state));
+            };
+        };
+
+        var CookieStorage = function() {
+            if (!(this instanceof CookieStorage)) {
+                return new CookieStorage();
+            }
+
+            var cs = this;
+
+            cs.get = function(state) {
+                if (!state) {
+                    return;
+                }
+
+                var value = getCookie('kc-callback-' + state);
+                setCookie('kc-callback-' + state, '', cookieExpiration(-100));
+                if (value) {
+                    return JSON.parse(value);
+                }
+            };
+
+            cs.add = function(state) {
+                setCookie('kc-callback-' + state.state, JSON.stringify(state), cookieExpiration(60));
+            };
+
+            cs.removeItem = function(key) {
+                setCookie(key, '', cookieExpiration(-100));
+            };
+
+            var cookieExpiration = function (minutes) {
+                var exp = new Date();
+                exp.setTime(exp.getTime() + (minutes*60*1000));
+                return exp;
+            };
+
+            var getCookie = function (key) {
+                var name = key + '=';
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return '';
+            };
+
+            var setCookie = function (key, value, expirationDate) {
+                var cookie = key + '=' + value + '; '
+                    + 'expires=' + expirationDate.toUTCString() + '; ';
+                document.cookie = cookie;
+            }
+        };
+
+        function createCallbackStorage() {
+            try {
+                return new LocalStorage();
+            } catch (err) {
+            }
+
+            return new CookieStorage();
+        }
 
         var CallbackParser = function(uriToParse, responseMode) {
             if (!(this instanceof CallbackParser)) {
@@ -1015,7 +1204,7 @@
             }
 
             var handleQueryParam = function(paramName, paramValue, oauth) {
-                var supportedOAuthParams = [ 'code', 'error', 'state' ];
+                var supportedOAuthParams = [ 'code', 'state', 'error', 'error_description' ];
 
                 for (var i = 0 ; i< supportedOAuthParams.length ; i++) {
                     if (paramName === supportedOAuthParams[i]) {
@@ -1041,12 +1230,9 @@
                         case 'redirect_fragment':
                             oauth.fragment = queryParams[param];
                             break;
-                        case 'prompt':
-                            oauth.prompt = queryParams[param];
-                            break;
                         default:
                             if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
-                                oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
+                                oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + encodeURIComponent(queryParams[param]);
                             }
                             break;
                     }

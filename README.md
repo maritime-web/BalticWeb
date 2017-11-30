@@ -4,7 +4,7 @@ The live system is available at https://balticweb.e-navigation.net and the lates
 
 
 ## What
-BalticWeb is a maritime map-centric portal. BalticWeb is a prototype. The site will aggregate relevant maritime data and information and allow access for users and services by utilizing the Maritime Cloud.
+BalticWeb is a maritime map-centric portal. BalticWeb is a prototype. The site aggregates relevant maritime data and information and allow access for users and services by utilizing the Maritime Cloud.
 
 #### Services available for all:
 * Notices to Mariners and Navigational Warnings

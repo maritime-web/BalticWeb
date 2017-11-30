@@ -16,7 +16,7 @@ angular.module('maritimeweb').config(['$locationProvider', '$routeProvider',
         when('/vessel/:mmsi/route', {
             templateUrl: 'route/route-load.html'
         }).
-        when('/route-demo', {
+        when('/route-plan', {
             templateUrl: 'route/route-load.html'
         }).
         when('/service-registry', {

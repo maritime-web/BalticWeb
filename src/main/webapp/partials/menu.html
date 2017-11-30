@@ -9,11 +9,9 @@
                 <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" ng-click="redirectToFrontpage()"><i class="fa fa-anchor fa-lg" aria-hidden="true" ></i>
+            <a class="navbar-brand" ng-href="/#" ><i class="fa fa-anchor fa-lg" aria-hidden="true" ></i>
                 BalticWeb
             </a>
-            <!--<p class="navbar-text navbar-toggle" data-toggle="collapse" data-target="#myNavbar" ng-if="loadingData" > <i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></p>-->
-
         </div>
 
 
@@ -71,8 +69,8 @@
                         <li ng-repeat="aService in nwNmServices" ng-class="{'active':aService.selected}"><a href ng-click="toggleService(aService)"> {{aService.name}}</a></li>
 
                         <li role="separator" class="divider"></li>
-                        <li class="dropdown-header"> <i class="fa fa-ship" aria-hidden="true"></i> Voyage Information Service - Route Exchange</li>
-                        <li role="menuitem"><a ng-href="#/route-demo/"><span class="glyphicon glyphicon-road"></span> Route-demo</a></li>
+                        <li class="dropdown-header"> <i class="fa fa-ship" aria-hidden="true"></i> Route planing - Simulation</li>
+                        <li role="menuitem"><a ng-href="#/route-plan/"><span class="glyphicon glyphicon-road"></span> Route-plan</a></li>
 
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header"> <i class="fa" aria-hidden="true"></i>Vessel Traffic Service - notification form</li>
@@ -170,12 +168,10 @@
                 <li><a href ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
             </ul>
             <ul ng-if="loggedIn" class="nav navbar-nav navbar-right">
-                <li><a href ng-click="accountManagement()"><span class="glyphicon glyphicon-user"></span> {{userName()}}</a></li>
+                <li><a href ><span class="glyphicon glyphicon-user"></span> {{userName()}}</a></li>
                 <li><a href ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href  ng-if="loadingData"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="sr-only">Loading...</span></a></li>
-            </ul>
+
         </div>
     </div>
 </nav>
