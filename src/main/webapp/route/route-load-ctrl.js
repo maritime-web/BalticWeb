@@ -153,7 +153,6 @@ angular.module('maritimeweb.route')
              * Generate a openlayers features array, animated features and ol path points array from the transformed RTZ JSON.
              * @param json_result transformed RTZ JSON from an RTZ xml
              */
-            console.log("PETERPIPER");
 
             var createOpenLayersFeatFromRTZ = function (json_result) {
                 $scope.rtzJSON = json_result; // used for debugging.
@@ -311,7 +310,6 @@ angular.module('maritimeweb.route')
                         }
 
                         addFeatureToCharts(feature);
-                        // console.log("ROB:",feature);
                         $scope.oLfeatures.push($scope.createWaypointFeature(feature));
                         $scope.oLanimatedfeatures.push($scope.createAnimatedWaypointFeature(feature));
 
@@ -344,7 +342,6 @@ angular.module('maritimeweb.route')
                     });
                 }
             };
-            console.log("PETERPIPER 2");
 
             /**
              * store all features in local storge, on a server or right now. Throw them on the root scope.
@@ -377,7 +374,6 @@ angular.module('maritimeweb.route')
                 };
                 $timeout( redirect, 3000);
             };
-            console.log("PETERPIPER 3");
 
             /**
              * store all features in local storge, on a server or right now. Throw them on the root scope.
@@ -408,8 +404,6 @@ angular.module('maritimeweb.route')
                 };
                 $timeout( redirect, 3000);
             };
-
-            console.log("PETERPIPER 4");
 
 
             /**
@@ -577,10 +571,6 @@ angular.module('maritimeweb.route')
             };
 
 
-
-            console.log("PETERPIPER 5");
-
-
             /**
              * method for optimizing route. At the moment and ONLY for illustrative purposes we just fiddle and randomizes
              * the data in order to create the illusion
@@ -743,20 +733,14 @@ angular.module('maritimeweb.route')
                 $timeout( simulateOptimization, 3000);
             };
 
-            console.log("PETERPIPER 6");
-
-
             /**
              * convience method for loading a sample rtz route
              */
             $scope.autoPreloadRTZfile = function () {
-                console.log("MIKE");
                 $http.get('/route/sample-rtz-files/' + $scope.sampleFile, {
                     transformResponse: function (data, headers) {
                         $scope.rtzXML = data;
-console.log("HERE");
                         $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(data);
-console.log("HERE BOB");
                         return $scope.rtzJSON;
                     }
                 }).then(function (result) {
@@ -775,9 +759,6 @@ console.log("HERE BOB");
 
                 });
             };
-
-
-            console.log("PETERPIPER 7");
 
 
             /**
@@ -869,8 +850,6 @@ console.log("HERE BOB");
                 });
 
             };
-
-            console.log("PETERPIPER 8");
 
 
             /** Create a waypoint feature, with  lat,lon,. */
@@ -1053,7 +1032,6 @@ console.log("HERE BOB");
 
             }, true);
 
-            console.log("PETERPIPER 9");
 
 
             // SPEED Charts
