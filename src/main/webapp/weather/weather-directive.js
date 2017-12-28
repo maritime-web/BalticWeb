@@ -10,10 +10,20 @@ angular.module('maritimeweb.weather')
                 require: '^olMap',
                 template: "<form class='map-weather-box'>" +
 
+                "<div class='container'>" +
 
+                //"<span class='map-weather btn btn-primary btn-large' ng-click='drawLineString()'>line</span>" +
+                "<span class=' btn btn-success btn-large' ng-click='animateWeatherOverTime()' tooltip='increase 1 hour' data-toggle='tooltip' " +
+                "data-placement='right' title='Animate' > Animate <i class='fa fa-play' aria-hidden='true'></i></span> " +
+                "<span class='btn btn-primary btn-large' ng-click='getWeatherAreaUI()' tooltip='Get METOC data in area' data-toggle='tooltip' " +
+                "data-placement='right' title='Get METOC data in area' > " +
+                " <i class='fa fa-download' aria-hidden='true'></i></span>" +
+                "</div>" +
+                "<div>" +
+                "</div>" +
 
-                "<div> {{time}} </div>" +
-                "<div><input type='number' ng-model='hoursOffset' min='0' max='72' /> hours from now</div>" +
+                "<h1> {{time}} </h1>" +
+                "<h3><input type='number' ng-model='hoursOffset' min='0' max='72' /> hours from now</h3>" +
                 " <div class='btn-group' data-toggle='buttons'>" +
                     "<div class=''>"+
                         "<label>Wind <input type='radio' ng-model='typeForecast.name' value='wind'></label>" +
@@ -29,19 +39,9 @@ angular.module('maritimeweb.weather')
                         "<label>Sea level <input type='radio' ng-model='typeForecast.name' value='sealevel'></label>" +
                     "</div>" +
                 "</div>" +
-                //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
 
                 "</span>" +
-                "<div>" +
-                "<span class='btn btn-primary btn-large' ng-click='getWeatherAreaUI()' tooltip='Get METOC data in area' data-toggle='tooltip' " +
-                "data-placement='right' title='Get METOC data in area' > " +
-                " Retrieve METOC <i class='fa fa-download' aria-hidden='true'></i></span> information from DMI" +
-                "</div>" +
-                "<div>" +
-                //"<span class='map-weather btn btn-primary btn-large' ng-click='drawLineString()'>line</span>" +
-                "<span class=' btn btn-success btn-large' ng-click='animateWeatherOverTime()' tooltip='increase 15 minuttes' data-toggle='tooltip' " +
-                "data-placement='right' title='Animate' > Animate <i class='fa fa-play' aria-hidden='true'></i></span> " +
-                "</div>" +
+
                 "</form>"
 
                 ,
@@ -63,17 +63,6 @@ angular.module('maritimeweb.weather')
                     scope.typeForecast = {
                         name: 'wind'
                     };
-
-
-                    /*const top_nw_lon = 56.36316;
-                     const bottom_se_lon = 54.36294;
-                     const right_nw_lat = 13.149009;
-                     const left_se_lat = 9.419409;
-                     */
-
-
-                    // #####
-
 
                     olScope.getMap().then(function (map) {
 
