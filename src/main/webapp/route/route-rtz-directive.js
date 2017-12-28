@@ -948,14 +948,9 @@ angular.module('maritimeweb.route')
                             style: overlayInteractionStyle
                         });
 
-
-
                         map.addLayer(routeLayers);
                         //map.getInteractions().extend([select, modify]);
-                        map.getInteractions().extend([select]);
-
-
-
+                      //  map.getInteractions().extend([select]);
                     });
 
                     /** Returns the lat-lon attributesas json-object */
