@@ -341,28 +341,33 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 group4valid = false,
                 group5valid = true, //position not mandatory but subject to change
                 group6valid = true, //position not mandatory but subject to change
-                group7valid = false,
+                group7valid = true,
                 group8valid = false;
 
+
             if ($scope.setvtsvesselnameValid && $scope.setvtsvesselcallsignValid && $scope.setvtsvesselMMSIValid) group1valid = true;
+
             if ($scope.setvtsvesselIMOValid && $scope.setvtsvesselDraughtValid && $scope.setvtsvesselAirDraughtValid) group2valid = true;
+
             if ($scope.setvtsvesselPersonsValid && $scope.setvtsVesselTypeValid && $scope.setvtsVesselLengthValid) group3valid = true;
+
             if ($scope.fuelDetailsValid && $scope.setvtsCargoTypeValid) group4valid = true;
             // if($scope.setvtsvesselPosLonDegreesValid && $scope.setvtsvesselPosLatDegreesValid) group5valid = true; //position not mandatory but subject to change
             // if($scope.setvtsvesselPosLonMinutesValid && $scope.setvtsvesselPosLatMinutesValid) group6valid = true;
-            if ($scope.setvtsvesselSpeedValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
+            console.log("Port of Destination must be added and validated!");
+            // if ($scope.setvtsvesselSpeedValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
             if ($scope.setvtsvesseletaTimeDateValid) group8valid = true;
 
             VtsHelperService.displayTotalSumOfBytesInLocalStorage(); //debugmode must be enabled
             console.log("validating..");
-            // if (group1valid) console.log("group1valid", group1valid);
-            // if (group2valid) console.log("group2valid", group2valid);
-            // if (group3valid) console.log("group3valid", group3valid);
-            // if (group4valid) console.log("group4valid", group4valid);
-            // if (group5valid) console.log("group5valid", group5valid);
-            // if (group6valid) console.log("group6valid", group6valid);
-            // if (group7valid) console.log("group7valid", group7valid);
-            // if (group8valid) console.log("group8valid", group8valid);
+            if (group1valid) console.log("group1valid", group1valid);
+            if (group2valid) console.log("group2valid", group2valid);
+            if (group3valid) console.log("group3valid", group3valid);
+            if (group4valid) console.log("group4valid", group4valid);
+            if (group5valid) console.log("group5valid", group5valid);
+            if (group6valid) console.log("group6valid", group6valid);
+            if (group7valid) console.log("group7valid", group7valid);
+            if (group8valid) console.log("group8valid", group8valid);
 
             if (group1valid == false || group2valid == false || group3valid == false || group4valid == false || group5valid == false || group6valid == false || group7valid == false || group8valid == false) {
                 $scope.VTSReadyToSend = false;
@@ -555,7 +560,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         //cant be longer than 1000m
         $scope.VTSVesselLengthValidation = function (validate) {
             var test = VtsHelperService.validateNumber($scope.vtsvessellengthinput, 1, 1000, 1);
-            (test.valid == true) ? $scope.setvtsvesselLengthValid = true : $scope.setvtsvesselLengthValid = false;
+            (test.valid == true) ? $scope.setvtsVesselLengthValid = true : $scope.setvtsVesselLengthValid = false;
             $scope.vtsvessellengthinput = test.val;
             if (validate) $scope.VTSValidationAllDone();
         };
@@ -1006,6 +1011,7 @@ console.log("fix helptext at vtsvesseldefectsinput");
             if($scope.detectedRouteETA && $scope.detectedRouteETA.length>10 && $scope.detectedRouteIntersect){
                 $scope.setRouteEtaTimeDatePicker();
             }else{
+                if($scope.detectedRouteETA && $scope.detectedRouteETA!="")$scope.vtsDisplayNonIntersectWarning = true;
                 $scope.vtsTimeStamp = moment.utc().format('HH : mm');//display date and time in utc
                 $scope.vtsDateStamp = moment().utc().format('DD MMM YYYY');
                 angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsDateStamp); //update timepicker display with now
@@ -1385,26 +1391,13 @@ console.log("fix helptext at vtsvesseldefectsinput");
                 $scope.placeholderAisVesselLatDecimalMinutes = "";
             };
 
-            // $scope.setLocationByAIS = function () {
-            //     if ($scope.setvtsvesselMMSIValid && $scope.aisdataReady) {
-            //         var lon = $scope.aisData.lon;
-            //         $scope.vtsvesselposlondegreesinput = (lon + "").substring(0, (lon + "").indexOf("."));
-            //         ($scope.aisData.lon > 0) ? $scope.vtsCurrentPosCompassAppendEW = "E" : $scope.vtsCurrentPosCompassAppendEW = "W";
-            //         lon = $scope.retDecMinutesFromDecDegrees(lon);
-            //         $scope.vtsvesselposlonminutesinput = lon;
-            //         $scope.VTSVesselCurrentPositionLonDegValidation(false);
-            //         $scope.VTSVesselCurrentPositionLonMinValidation(false);
-            //
-            //         var lat = $scope.aisData.lat;
-            //         $scope.vtsvesselposlatdegreesinput = (lat + "").substring(0, (lat + "").indexOf("."));
-            //         ($scope.aisData.lat > 0) ? $scope.vtsCurrentPosCompassAppendNS = "N" : $scope.vtsCurrentPosCompassAppendNS = "S";
-            //         lat = $scope.retDecMinutesFromDecDegrees(lat);
-            //         $scope.vtsvesselposlatminutesinput = lat;
-            //         $scope.VTSVesselCurrentPositionLatDegValidation(false);
-            //         $scope.VTSVesselCurrentPositionLatMinValidation(false);
-            //     }
-            // }
+        };
 
+        $scope.vtsDisplayNonIntersectWarning = false;
+        $scope.vtsDisplayNonIntersectWarningText = false;
+        $scope.toggleDisplayNonIntersectWarningText = function(){
+            ($scope.vtsDisplayNonIntersectWarningText==true) ? $scope.vtsDisplayNonIntersectWarningText = false : $scope.vtsDisplayNonIntersectWarningText = true;
+            console.log("vtsDisplayNonIntersectWarningText:",$scope.vtsDisplayNonIntersectWarningText);
         };
 
         /**  POPUP  **/
@@ -1446,7 +1439,7 @@ console.log("fix helptext at vtsvesseldefectsinput");
 console.log("show airdraughtmax as text on title from jsobjects - make size of icon a bit larger too");
         $scope.beep=function(){
             console.log("beep");
-        }
+        };
 
         $scope.$on('modal.closing', function (event, reason, closed) {
             // console.log('modal.closing: ' + (closed ? 'close' : 'dismiss') + '(' + reason + ')');

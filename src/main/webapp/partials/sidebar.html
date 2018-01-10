@@ -1,5 +1,5 @@
 
-<div id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar" ng-class="{false:'sidebar-normal', true:'sidebar-minimized'}[sidebarCollapsed]" class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
+<div ng-mouseover="sidebarUncollapse()" id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar" ng-class="{false:'sidebar-normal', true:'sidebar-minimized'}[sidebarCollapsed]" class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
     <uib-tabset type="pills" justified="true" active="activeTabIndex" index="$index">
 
 
@@ -246,7 +246,7 @@
 
 
         <!-- VTS report tab tab -->
-        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()" >
             <uib-tab-heading>
                 <span class="glyphicon glyphicon-globe"></span>
                 &nbsp;VTS
@@ -271,14 +271,13 @@
             <div class="panel vts-padding-list"  ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
                 <div ng-repeat="item in vtsSidemenuListArr" class="vts-pad-top" style="margin-right:6px;">
                     <div class="vts-sidemenu-listitem cursor-default">
-                        <div style="overflow:hidden;float:left;padding-top:2px;max-width:69%;">{{item.shortname}}</div>
+                        <div ng-show="item.showButton" style="overflow:hidden;float:left;padding-top:2px;max-width:69%;">{{item.shortname}}</div>
                         <button ng-show="item.showButton" class='btn btn-primary vts-button-modifier-superslim vts-button-modifier-displayinline vts-button-modifier-floatright' type='button' ng-click="setActiveVtsIdAndOpenForm(item.id)">
                             Report
                         </button>
-                        <!-- NICE TO HAVE - button to fitextent of vts area on map -->
-                        <!--<button ng-show="!item.showButton" class='btn btn-default vts-button-modifier-superslim vts-button-modifier-displayinline vts-button-modifier-floatright' type='button' ng-click="mapSetInView(item.id)">-->
-                            <!--Zoom on map-->
-                        <!--</button>-->
+                        <button ng-show="!item.showButton" class='btn btn-info vts-button-modifier-superslim' style="min-width:100%;text-align: left;" type='button' ng-click="mapSetInView(item.id)">
+                            {{item.shortname}}
+                        </button>
                     </div>
                 </div>
             </div>

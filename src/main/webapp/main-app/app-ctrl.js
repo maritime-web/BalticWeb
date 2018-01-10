@@ -55,6 +55,17 @@ angular.module('maritimeweb.app')
                 return undefined;
             };
 
+            /** Returns the mrn **/
+            $scope.userMrn = function () {
+                if (Auth.authz.tokenParsed) {
+                    return Auth.authz.tokenParsed.preferred_username;
+                }
+                return undefined;
+            };
+            var lolcat = $scope.userMrn();
+            console.log("uncle ben:",lolcat)
+
+
             /** Enters the Keycloak account management **/
             $scope.accountManagement = function () {
                 Auth.authz.accountManagement();
@@ -124,6 +135,9 @@ angular.module('maritimeweb.app')
                 $scope.activateVTSForm();
             };
 
+            $scope.mapSetInView = function(id){
+                $window.localStorage.setItem('vts_zoomto_area_id', id);
+            };
 
             $scope.setActiveVtsIdAndOpenForm = function(id){
                 console.log("opening VTS with ID:",id);

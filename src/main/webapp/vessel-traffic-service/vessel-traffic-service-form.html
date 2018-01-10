@@ -1,12 +1,14 @@
 <div class="modal-header vts-less-lineheight">
     <h3 class="modal-title" ng-show="showReportInterface">
         <div ng-show="VTSSelectedTrafficCenterLogo!=''" class="vts-inline-block" style='min-width:48px;width:100%'>
-            <img class="vts-inline-block" style='max-height:60px;' src='{{VTSSelectedTrafficCenterLogo}}'>
-            <div class="vts-inline-block">
-                <div class="">
+            <div class="vts-inline-block" style="float:left">
+                <img style='max-height:60px;' src='{{VTSSelectedTrafficCenterLogo}}'>
+            </div>
+            <div class="vts-inline-block" style="position: relative;left:10px;">
+                <div style="margin-top: 9px;">
                     <strong>{{VTSSelectedTrafficCenterName}}</strong>
                 </div>
-                <div class="">
+                <div class="" style="margin-top: -13px;">
                     <span style="font-size:14px;">Vessel Traffic Service report form<span ng-show="VTSSelected"> for {{VTSSelectedTrafficCenterShortname}} </span></span>
                 </div>
             </div>
@@ -19,32 +21,26 @@
 
 <div id="modalbody" class="modal-body ng-hide vts-modal-body">
     <div ng-show="showReportInterface">
-        <select ng-show="showVtsCenterSelect" class="form-control   " name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
+        <select ng-show="showVtsCenterSelect" class="form-control" name="vts-center-select" ng-options="p.shortname as p.shortname for p in (VTSCenterData | filter:isListItemNull)" ng-model="VTSCenterData.shortname" ng-change="selectVTSCenterChange(VTSCenterData.shortname,null)">
             <option selected value="" class="ng-binding ng-scope">Please select a Vessel Traffic Service center</option>
         </select>
     </div>
 
     <!-- VTS CENTRE INFORMATION -->
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected && showReportInterface">
-        <div class="vts-pad-top vts-pad-bottom" style="position: relative;min-height:40px;">
-                <div class="vts-force-spacing-460" style="min-height:40px;">
-
-
-                </div>
-                <div class="vts-pad-top vts-force-spacing-350 vts-responsive-info-container vts-inline-block" style="">
-                    <button id="contactDetailsButton" class='btn  vts-button-modifier-slim vts-inline-block'
+        <div class="vts-pad-top vts-pad-bottom " style="position: relative;min-height:40px; padding-bottom:8px;">
+                    <button id="contactDetailsButton" class='btn  vts-button-modifier-slim' style="float:left"
                         ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]"
                         ng-click="toggleDisplayVtsCenterData()" type='button'>
                         Contact details <span ng-class="{false:'glyphicon glyphicon-chevron-down', true:'glyphicon glyphicon-chevron-up'}[displayVtsCenterData]"></span>
                     </button>
                     &nbsp;&nbsp;
-                    <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block' style="position: relative;"
+                    <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block' style="float:right">
                         ng-mouseover="displayPopupInfo($event,'The Masters Guide opens in a seperate window and is not part of the BalticWeb interface.','large')"
                         ng-mouseleave="removePopupInfo()"
                         ng-click="openMastersGuideNewWindow()" type='button'>
                         View Masters guide online <span class="glyphicon glyphicon-new-window"></span>
                     </button>
-                </div>
         </div>
         <div ng-hide="!displayVtsCenterData" style="position: relative;min-height:100px;margin-bottom:5px;border: 3px solid #5bc0de;border-radius:8px;padding-left: 3px;padding-right: 13px;" >
             <span style='min-width:220px;max-width:220px;display: inline-block; text-align: left;'><span class="bold">Call sign:</span> &#34;{{VtsDataCallsign}}&#34;</span>
@@ -74,14 +70,30 @@
         </div>
 
         <!-- VTS AREA MINIMAP -->
-        <div id="minimapContainer" class="vts-responsive-minimap" style="position: relative;" >
+        <div id="minimapContainer" class="vts-pad-top vts-responsive-minimap" style="position: relative;" >
             <div id='minimap' class="vts-responsive-minimap" style="position:absolute;left:0px;top:0px;" ></div>
             <div class="vts-responsive-minimap vts-absolute-top-left" style="background-color:#ffffff;opacity:0.1;cursor: default;" ng-click="doNothing()" ></div>
+
             <div class="vts-text-shadow vts-white-text vts-text-xxlarge" style="position:absolute;left:0px;top:0px;width:100%;" >
                 &nbsp;&nbsp;&nbsp;&nbsp; {{VTSSelectedTrafficCenterCountry}}
             </div>
             <div class="vts-text-shadow vts-white-text vts-text-large" style="position:absolute;text-align:right; left:0px;bottom:0px;width:100%;">
                 {{VTSSelectedTrafficCenterShortname}} reporting area &nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div ng-show="vtsDisplayNonIntersectWarning" class="vts-responsive-nonintersectwarning-container" style="min-width:200px;">
+                <div ng-click="toggleDisplayNonIntersectWarningText()" ng-class="{false:'', true:'vts-responsive-nonintersectwarning-button-active vts-responsive-nonintersectwarning-button-clickedborder'}[vtsDisplayNonIntersectWarningText]" class="vts-responsive-nonintersectwarning-button vts-inline-block">
+                    <div class="vts-responsive-nonintersectwarning-alertbox">!</div>
+                </div>
+                <div ng-show="vtsDisplayNonIntersectWarningText" class="vts-inline-block vts-responsive-nonintersectwarning-text">
+                    <div class="vts-nonintersectwarning-text-headline">Your route does not cross the VTS reporting line!</div>
+                    <div class="vts-nonintersectwarning-text-body">
+                        You have selected to send a report to <strong>{{VTSSelectedTrafficCenterShortname}}</strong>, but your route does not intersect with the reporting area.
+                        <br>
+                        <button class='btn btn-warning vts-button-modifier-superslim vts-black-text' style="position: relative;" ng-click="toggleDisplayNonIntersectWarningText()" type='button'>
+                            <span class="glyphicon glyphicon-chevron-left"></span>OK
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -118,19 +130,21 @@
         </div>
 
         <hr class="vts-hr vts-pad-top vts-pos-relative" > <!-- VESSEL INFORMATION ------------------------------------------------------------------- -->
-        <span class="bold vts-pad-top vts-pos-relative">Vessel information</span>
+        <span class="bold vts-pad-top vts-pos-relative">
+            Vessel information
+        </span>
         <div>
-            <span class="vts-force-spacing-200">{{vtsvesselmmsilabel}}</span>
+            <span class="vts-force-spacing-200">
+                {{vtsvesselmmsilabel}}
+            </span>
             <br>
-            <div style="position: relative;"
-                 >
+            <div style="position: relative;">
                 <input class="vts-input-standard vts-pos-relative" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselMMSIValid]" type="text" ng-model="vtsvesselmmsiinput" ng-change="VTSVesselMMSIValidation()" >
                 <div class="vts-pad-top vts-force-spacing-200 vts-pos-relative" ng-show="isLoggedIn">
-                    <div  style="width:124px;"id="lalala"
-                          ng-mouseenter="displayPopupInfo($event,'Inserting AIS data will overwrite previously inserted data.','large')"
-                          ng-mouseleave="removePopupInfo()">
-
-                        <button class="btn btn-default vts-less-padding"  ng-class="{false:'', true:'vts-pulse'}[setvtsvesselMMSIValid]" ng-disabled="!isLoggedIn || !setvtsvesselMMSIValid" type="button" ng-click="populateInputsWithAisData()"><i class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></i>
+                    <div  style="width:124px;" id="vtsAisPopupInfo"
+                        ng-mouseenter="displayPopupInfo($event,'Inserting AIS data will overwrite previously inserted data.','large')"
+                        ng-mouseleave="removePopupInfo()">
+                        <button class="btn btn-default vts-less-padding vts-inline-block" ng-class="{false:'', true:'vts-pulse'}[setvtsvesselMMSIValid]" ng-disabled="!isLoggedIn || !setvtsvesselMMSIValid" type="button" ng-click="populateInputsWithAisData()"><i class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></i>
                             Insert AIS data
                         </button>
                     </div>
@@ -160,7 +174,13 @@
                 <input class="vts-input-medium vts-text-center" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPersonsValid]"  ng-model="vtsvesselpersonsinput" ng-change="VTSVesselPersonsValidation(true)">
             </div>
             <div class="vts-force-spacing-200 " ng-show="showMaxDraught">
-                <span class="vts-force-spacing-200">Draught (<span ng-class="{'vtsvalid-alert': maxDraughtExceedsLimit}">max. {{VTSSelectedTrafficCenterDraughtMax}}m</span>)</span>
+                <span class="vts-force-spacing-200">Draught (<span ng-class="{'vtsvalid-alert': maxDraughtExceedsLimit}">max. {{VTSSelectedTrafficCenterDraughtMax}}m</span>)
+                    <span class="vts-force-spacing-20" ng-show="maxDraughtExceedsLimit">
+                    &nbsp;<abbr style="top:3px"  data-title="Max. draught has been exceeded. You may still send this report, please contact {{VTSSelectedTrafficCenterShortname}} as soon as possible. " class="glyphicon glyphicon-question-sign vts-warning-abbr"></abbr>
+                    </span>
+                </span>
+
+                </span>
                 <!--<span class="vts-force-spacing-200">Present max. draught (m)</span>-->
                 <!--<input class="vts-input-small vts-text-center vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDraughtValid]"  ng-model="vtsvesseldraughtinput" ng-change="VTSVesselDraughtValidation(true)" placeholder="{{placeholderAisVesselDraught}}">-->
                 <input class="vts-input-small vts-text-center vts-placeholder-highlight"
@@ -171,13 +191,17 @@
                        ng-change="VTSVesselDraughtValidation(true)"
                        placeholder="{{placeholderAisVesselDraught}}"
                 >
-                <div  class="vts-force-spacing-20">
+                <div class="vts-force-spacing-20">
                     &nbsp;<abbr data-title="Draught is the maximum depth of a vessel below waterline." class="glyphicon glyphicon-question-sign vts-abbr"></abbr>
                 </div>
             </div>
 
             <div class="vts-force-spacing-200 " ng-show="showAirDraught">
-                <span class="vts-force-spacing-200">Air draught (<span ng-class="{'vtsvalid-alert': maxAirdraughtExceedsLimit}">max. {{VTSSelectedTrafficCenterAirdraughtMax}}m</span>)</span>
+                <span class="vts-force-spacing-200">Air draught (<span ng-class="{'vtsvalid-alert': maxAirdraughtExceedsLimit}">max. {{VTSSelectedTrafficCenterAirdraughtMax}}m</span>)
+                    <span class="vts-force-spacing-20" ng-show="maxAirdraughtExceedsLimit">
+                    &nbsp;<abbr style="top:3px"  data-title="Max. air draught has been exceeded. You may still send this report, please contact {{VTSSelectedTrafficCenterShortname}} as soon as possible. " class="glyphicon glyphicon-question-sign vts-warning-abbr"></abbr>
+                    </span>
+                </span>
                 <input class="vts-input-small vts-text-center"
                     ng-class="{'vtsvalid': (setvtsvesselAirDraughtValid && maxAirdraughtExceedsLimit == false) == true,
                     'vtsinvalid': setvtsvesselAirDraughtValid == false,
@@ -208,7 +232,7 @@
             </div>
             <div class="vts-force-spacing-200 " ng-show="showVesselLength">
                 <span class="vts-force-spacing-200">Vessel length (m):</span>
-                <input class="vts-input-small vts-text-center vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselLengthValid]"  ng-model="vtsvessellengthinput" ng-change="VTSVesselLengthValidation(true)" placeholder="{{placeholderAisVesselLength}}">
+                <input class="vts-input-small vts-text-center vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsVesselLengthValid]"  ng-model="vtsvessellengthinput" ng-change="VTSVesselLengthValidation(true)" placeholder="{{placeholderAisVesselLength}}">
             </div>
             <div class="vts-force-spacing-200 " ng-show="showDeadWeightTonnage">
                 <span class="vts-force-spacing-200">Deadweight Tonnage (DWT):</span>

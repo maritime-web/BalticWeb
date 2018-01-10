@@ -259,6 +259,7 @@ angular.module('maritimeweb.vts-map')
                                     vtsareaLayer.getSource().clear(); //cleanup first
                                     /** iterate through the object to draw all areas on map **/
                                     var intersectingAreasArr = [];
+                                    var centerAreasArr = [];
                                     for(var i=0;i!=vts_areas.length;i++){
                                         var areaWKT = vts_areas[i].areaWKT; //console this for easy debugging
                                         if (!areaWKT || areaWKT == "" || areaWKT.length < 9) {
@@ -278,15 +279,16 @@ angular.module('maritimeweb.vts-map')
                                                     dataProjection: 'EPSG:4326',
                                                     featureProjection: 'EPSG:3857'
                                                 });
-                                                // //place something at center of mass of polygon - if needed (possibly a menu)
-                                                // var polygon = turf.polygon(format.readFeature(areaWKT).getGeometry().getCoordinates());
-                                                // var center = turf.centerOfMass(polygon);
+                                                //saves center of area in localstorage
+                                                var polygon = turf.polygon(format.readFeature(areaWKT).getGeometry().getCoordinates());
+                                                var center = turf.center(polygon);
+                                                centerAreasArr.push({areaId:vts_areas[i].id,areaCenter:center.geometry.coordinates})
+
+                                                //generate the areas for map layer
                                                 areafeature.set("vtsAreaID",vts_areas[i].id);
                                                 areafeature.set("name",vts_areas[i].shortname);
                                                 //styling
                                                 areafeature.setStyle(styleFunctionNormal(vts_areas[i].shortname, vts_areas[i].id));
-                                                // console.log("Gotta put a button in somehow");
-                                                // vtsAreasSidePanelListItem
                                                 //add to layer
                                                 vtsareaLayer.getSource().addFeature(areafeature);
                                             }
@@ -294,9 +296,11 @@ angular.module('maritimeweb.vts-map')
                                     }
                                     //app-ctrl watches changes to this storage itam, populates sidemenu list accordingly
                                     $window.localStorage.setItem('vts_intersectingareas', JSON.stringify(intersectingAreasArr));
+                                    $window.localStorage.setItem('vts_center_of_areas', JSON.stringify(centerAreasArr));
                                 }
                             }
                         };
+
                         /** returns true if an area is intersected by the route in localstorage (vts_areas & route_oLpoints) **/
                         scope.isAreaOnRoute = function (areaWKT) {
                             var wpPosArrArr = JSON.parse($window.localStorage.getItem('route_oLpoints'));
@@ -415,6 +419,7 @@ angular.module('maritimeweb.vts-map')
                             scope.clearVtsPopup();
                             overlay.setPosition(undefined);
                         };
+
 
                         /***************************/
                         /**        Listeners      **/
@@ -539,6 +544,63 @@ angular.module('maritimeweb.vts-map')
                                 }
                             }
                         }, true);
+
+
+                        //user clicks on any of the VTS buttons on the list - run fitextent on it
+                        scope.skipAtLoadCounter = 0; //skips this at load
+                        scope.$watch(function () { return window.localStorage['vts_zoomto_area_id']; },function(newVal,oldVal){
+                            if(newVal && newVal != "" && scope.skipAtLoadCounter > 0){
+                                var vts_center_of_areas;
+                                var tmp_vts_center_of_areas = localStorage.getItem('vts_center_of_areas');
+                                if(tmp_vts_center_of_areas && tmp_vts_center_of_areas != ""){
+                                    vts_center_of_areas = JSON.parse(tmp_vts_center_of_areas);
+                                }
+                                for(var p=0;p!=vts_center_of_areas.length;p++){ //finds the correct point on map and animates to it
+                                    if(parseInt(vts_center_of_areas[p].areaId) == parseInt(newVal)){
+                                        var setZoomLvl = 7;
+                                        if(map.getView().getZoom()<7)setZoomLvl = 7; //zoom out a bit if too close
+                                        if(map.getView().getZoom()>13)setZoomLvl = 7; //zoom out a bit if too far
+
+                                        //move the view with zoom change
+                                        map.getView().animate({
+                                            center: ol.proj.transform(vts_center_of_areas[p].areaCenter, 'EPSG:4326', 'EPSG:3857'),//vts_center_of_areas[p].areaCenter,
+                                            zoom: setZoomLvl,
+                                            duration: 1000
+                                        });
+
+                                        //cleanup
+                                        localStorage.setItem('vts_zoomto_area_id', ""); //clear this so user can re-click on the button
+                                        scope.clearVtsPopup(); //remove popup if user had clicked it
+                                        overlay.setPosition(undefined);
+                                        localStorage.setItem('vts_current_id', "");
+                                        break;
+                                    }
+                                }
+                            }
+                            scope.skipAtLoadCounter++;
+                        });
+
+
+                        // scope.$watch('vts', function (data) {
+                        //     if(data===true){
+                        //         growl.info("Displaying only VTS areas on route");
+                        //     }else{
+                        //         growl.info("Displaying all VTS areas available");
+                        //     }
+                        //     scope.onrouteOnly = data; //so zooming can figure out what to display
+                        //     scope.updateVtsAreas(data); //  data:true/false
+                        //     if(data) { //only center on areas when specifying
+                        //         try { //displays nicely on map
+                        //             var extent = vtsareaLayer.getSource().getExtent();
+                        //             map.getView().fit(extent, map.getSize());
+                        //             map.getView().setZoom(zoomLevel);
+                        //         } catch (cantExtent) {
+                        //         }
+                        //     }
+                        // }, true);
+
+
+
 
                     });
                 }

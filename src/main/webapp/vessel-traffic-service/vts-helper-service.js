@@ -122,7 +122,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             return [isValid, str];
         };
 
-
+/* May be required again - TBR March 2018
         //validates 0-90 or 0-180 degrees, 0.0001-60.0000 minutes
         this.positionDegMinValidation = function (input, testfor) {
             var output = {valid: false, value: "", decimals: 0};
@@ -151,7 +151,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                 return output;
             }
         };
-
+*/
 
         this.setSelectionRange = function (input, selectionStart, selectionEnd) {
             input = input.toString();
