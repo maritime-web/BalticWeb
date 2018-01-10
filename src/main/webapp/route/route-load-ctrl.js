@@ -77,8 +77,6 @@ angular.module('maritimeweb.route')
             ];
             $scope.sampleFile = $scope.sampleRTZdata[0].id;
 
-            console.log("RTZ:",$scope.sampleRTZdata);
-
             var resetChartArrays = function () {
                 charts.listMinSpeed.splice(0, charts.listMinSpeed.length);
                 charts.listMaxSpeed.splice(0, charts.listMaxSpeed.length);
@@ -153,8 +151,6 @@ angular.module('maritimeweb.route')
              * Generate a openlayers features array, animated features and ol path points array from the transformed RTZ JSON.
              * @param json_result transformed RTZ JSON from an RTZ xml
              */
-            console.log("PETERPIPER");
-
             var createOpenLayersFeatFromRTZ = function (json_result) {
                 $scope.rtzJSON = json_result; // used for debugging.
                 $scope.rtzName = json_result.route.routeInfo._routeName;
@@ -173,7 +169,6 @@ angular.module('maritimeweb.route')
                 var defaultWayPoint = {}; // standard waypoint
                 if (json_result.route.waypoints.defaultWaypoint) {
                     defaultWayPoint = json_result.route.waypoints.defaultWaypoint;
-                    //$log.info("defaultWayPoint" + JSON.stringify(defaultWayPoint));
                 }
 
                 var calculateDistanceAndDirection = function (key, way_value, feature) {
@@ -188,7 +183,6 @@ angular.module('maritimeweb.route')
                         var distance_meters = geolib.getDistance(current_pos, next_pos);
                         feature['distance_meters'] = distance_meters;
                         feature['distance'] = geolib.convertUnit('sm', distance_meters);
-                        // $log.log("getDistance:" + feature['distance']   );
                         $scope.totaldistance += feature['distance'];
 
                         if (feature['geometryType'] === 'Orthodrome') { // A great circle, also known as an orthodrome
@@ -206,7 +200,6 @@ angular.module('maritimeweb.route')
                             feature['direction'] = 0.0;
                             feature['radian'] = 0.0;
                             // $log.error("its undefined. Feature" + JSON.stringify(feature));
-
                         }
                     } else {
                         feature['direction'] = 0.0;
@@ -232,13 +225,13 @@ angular.module('maritimeweb.route')
                     };
 
 
-                    if(isSchedArr){ //treat as array - loop through, find first one that has ETA and use it. Can fail multiple places.
+                    if (isSchedArr) { //treat as array - loop through, find first one that has ETA and use it. Can fail multiple places.
                         var schedArr = !$scope.rtzJSON.route.schedules.schedule;
-                        for(var i=0;i!=schedArr.length;i++){ //loop through schedule
-                            if(schedArr[i].calculated){ //check if has calculated
-                                if(schedArr[i].calculated.scheduleElement){ //cehck if has scheduleElement
-                                    if(Array.isArray(schedArr[i].calculated.scheduleElement)){ //check if is array
-                                        if(schedArr[i].calculated.scheduleElement.length > 1){ //check length - must have at least start and end ETA
+                        for (var i = 0; i != schedArr.length; i++) { //loop through schedule
+                            if (schedArr[i].calculated) { //check if it has calculated
+                                if (schedArr[i].calculated.scheduleElement) { //check if has scheduleElement
+                                    if (Array.isArray(schedArr[i].calculated.scheduleElement)) { //check if is array
+                                        if (schedArr[i].calculated.scheduleElement.length > 1) { //check length - must have at least start and end ETA
                                             pushIntoRouteEtas(schedArr[i].calculated.sheduleElement); //BINGO!
                                             break; //don't use with other schedules
                                         }
@@ -311,7 +304,6 @@ angular.module('maritimeweb.route')
                         }
 
                         addFeatureToCharts(feature);
-                        // console.log("ROB:",feature);
                         $scope.oLfeatures.push($scope.createWaypointFeature(feature));
                         $scope.oLanimatedfeatures.push($scope.createAnimatedWaypointFeature(feature));
 
@@ -344,12 +336,11 @@ angular.module('maritimeweb.route')
                     });
                 }
             };
-            console.log("PETERPIPER 2");
 
             /**
              * store all features in local storge, on a server or right now. Throw them on the root scope.
              */
-            $scope.storeAllFeaturesSomewhere = function() {
+            $scope.storeAllFeaturesinLocalStorage = function() {
                 $scope.loading = true;
                 $log.debug("storing route for mmsi" + $routeParams.mmsi);
 
@@ -364,6 +355,10 @@ angular.module('maritimeweb.route')
                 $window.localStorage.setItem('route_id', $routeParams.mmsi);
                 $window.localStorage.setItem('route_name', $scope.rtzName);
                 $window.localStorage.setItem('route_oLfeatures', $scope.oLfeatures);
+
+
+                var format = new ol.format.GeoJSON();
+                $window.localStorage.setItem('route_oLfeaturesGeoJson', format.writeFeatures($scope.oLfeatures));
                 $window.localStorage.setItem('route_oLanimatedfeatures', $scope.oLanimatedfeatures);
                 $window.localStorage.setItem('route_oLpoints', JSON.stringify($scope.oLpoints));
                 $window.localStorage.setItem('route_totaldistance' , $scope.totaldistance);
@@ -371,18 +366,16 @@ angular.module('maritimeweb.route')
 
                 var redirect = function(){
                     $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
-
                     $scope.loading = false;
                     $window.location.href = '#';
                 };
-                $timeout( redirect, 3000);
+                $timeout( redirect, 2500);
             };
-            console.log("PETERPIPER 3");
 
             /**
              * store all features in local storge, on a server or right now. Throw them on the root scope.
              */
-            $scope.storeAllOptimizedFeaturesSomewhere = function() {
+/*            $scope.storeAllOptimizedFeaturesSomewhere = function () {
                 $scope.loadingoptimized = true;
                 $log.debug("storing optimized route for mmsi" + $routeParams.mmsi);
 
@@ -390,7 +383,7 @@ angular.module('maritimeweb.route')
                 $rootScope.route_name = $scope.rtzOptimizedName;
                 $rootScope.route_oLfeatures = $scope.oLOptimizedfeatures;
                 $rootScope.route_oLanimatedfeatures = $scope.oLanimatedOptimizedfeatures;
-                $rootScope.route_oLpoints =  $scope.oLOptimizedpoints;
+                $rootScope.route_oLpoints = $scope.oLOptimizedpoints;
                 $rootScope.route_totaldistance = $scope.totalOptimizedDistance;
 
                 $window.localStorage.setItem('route_id', $routeParams.mmsi);
@@ -398,18 +391,16 @@ angular.module('maritimeweb.route')
                 $window.localStorage.setItem('route_oLfeatures', $scope.oLOptimizedfeatures);
                 $window.localStorage.setItem('route_oLanimatedfeatures', $scope.oLanimatedOptimizedfeatures);
                 $window.localStorage.setItem('route_oLpoints', JSON.stringify($scope.oLOptimizedpoints));
-                $window.localStorage.setItem('route_totaldistance' , $scope.totalOptimizedDistance);
+                $window.localStorage.setItem('route_totaldistance', $scope.totalOptimizedDistance);
 
-                var redirect = function(){
+                var redirect = function () {
                     $rootScope.showgraphSidebar = true; // rough enabling of the sidebar
 
                     $scope.loadingoptimized = false;
                     $window.location.href = '#';
                 };
-                $timeout( redirect, 3000);
-            };
-
-            console.log("PETERPIPER 4");
+                $timeout(redirect, 3000);
+            };*/
 
 
             /**
@@ -431,14 +422,6 @@ angular.module('maritimeweb.route')
                 $scope.oLanimatedOptimizedfeatures = []; // openlayers animated optimized features
                 $scope.oLOptimizedpoints = [];
                 $scope.totalOptimizedDistance = 0;
-
-                /*$rootScope.route_id = $routeParams.mmsi;
-                 $rootScope.route_name = $scope.rtzName;
-                 $rootScope.route_oLfeatures = $scope.oLfeatures;
-                 $rootScope.route_oLanimatedfeatures = $scope.oLanimatedfeatures;
-                 $rootScope.route_oLpoints =  $scope.oLpoints;
-                 $rootScope.route_totaldistance = $scope.totaldistance;
-                 */
 
                 var defaultWayPoint = {}; // standard waypoint
                 if ($scope.rtzJSON.route.waypoints.defaultWaypoint) {
@@ -577,10 +560,6 @@ angular.module('maritimeweb.route')
             };
 
 
-
-            console.log("PETERPIPER 5");
-
-
             /**
              * method for optimizing route. At the moment and ONLY for illustrative purposes we just fiddle and randomizes
              * the data in order to create the illusion
@@ -626,10 +605,8 @@ angular.module('maritimeweb.route')
 
                         if (feature['geometryType'] === 'Orthodrome') { // A great circle, also known as an orthodrome
                             feature['direction'] = geolib.getBearing(current_pos, next_pos);
-                            //  $log.log("getBearing:" + feature['direction']   );
                         } else { // Loxodrome (or rhumb line) is a line crossing all meridians at a constant angle.
                             feature['direction'] = geolib.getRhumbLineBearing(current_pos, next_pos);
-                            // $log.log("getRhumbLineBearing:" + feature['direction']   );
                         }
 
                         //feature['radian'] = feature['direction'] ? ((feature['direction'] - 90) * (Math.PI / 180)) : 0;
@@ -743,20 +720,14 @@ angular.module('maritimeweb.route')
                 $timeout( simulateOptimization, 3000);
             };
 
-            console.log("PETERPIPER 6");
-
-
             /**
              * convience method for loading a sample rtz route
              */
             $scope.autoPreloadRTZfile = function () {
-                console.log("MIKE");
                 $http.get('/route/sample-rtz-files/' + $scope.sampleFile, {
                     transformResponse: function (data, headers) {
                         $scope.rtzXML = data;
-console.log("HERE");
                         $scope.rtzJSON = fileReader.transformRtzXMLtoJSON(data);
-console.log("HERE BOB");
                         return $scope.rtzJSON;
                     }
                 }).then(function (result) {
@@ -771,13 +742,10 @@ console.log("HERE BOB");
                     });*/
                     resetChartArrays();
                     createOpenLayersFeatFromRTZ(result.data);
-                   // $scope.storeAllFeaturesSomewhere();
+                   // $scope.storeAllFeaturesinLocalStorage();
 
                 });
             };
-
-
-            console.log("PETERPIPER 7");
 
 
             /**
@@ -796,7 +764,7 @@ console.log("HERE BOB");
                     //resetChartArrays();
                     //createOpenLayersFeatFromRTZ(result.data);
                     $scope.optimizeRouteHardcoded(result.data);
-                    // $scope.storeAllFeaturesSomewhere();
+                    // $scope.storeAllFeaturesinLocalStorage();
                     //return result.data;
 
                 });
@@ -869,8 +837,6 @@ console.log("HERE BOB");
                 });
 
             };
-
-            console.log("PETERPIPER 8");
 
 
             /** Create a waypoint feature, with  lat,lon,. */
@@ -1030,7 +996,7 @@ console.log("HERE BOB");
             }, true);
 
 
-            // while watch if a new active waypoint has been selected via the chart or the table. If so, we need to update the chart.
+            // watch if a new active waypoint has been selected via the chart or the table. If so, we need to update the chart.
             $rootScope.$watch("activeWayPoint", function (newValue, oldValue) {
                 if (newValue) {
                     //$log.debug("update active waypoint " + newValue + " ");
@@ -1053,7 +1019,6 @@ console.log("HERE BOB");
 
             }, true);
 
-            console.log("PETERPIPER 9");
 
 
             // SPEED Charts

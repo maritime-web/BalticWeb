@@ -948,14 +948,9 @@ angular.module('maritimeweb.route')
                             style: overlayInteractionStyle
                         });
 
-
-
                         map.addLayer(routeLayers);
                         //map.getInteractions().extend([select, modify]);
-                        map.getInteractions().extend([select]);
-
-
-
+                      //  map.getInteractions().extend([select]);
                     });
 
                     /** Returns the lat-lon attributesas json-object */
@@ -1002,7 +997,7 @@ angular.module('maritimeweb.route')
     /**
      * very simple route in a map. The key is that it doesn't have an animation.
      */
-    .directive('simpleRtzRoute', ['MapService', '$rootScope', '$log', function (MapService, $rootScope, $log) {
+    .directive('simpleRtzRoute', ['MapService', '$rootScope', '$log', '$window', function (MapService, $rootScope, $log, $window) {
         return {
             restrict: 'E',
             replace: true,
@@ -1172,6 +1167,18 @@ angular.module('maritimeweb.route')
                         name: "routeVectorLayer",
                         title: "route",
                         source: vectorSource,
+                        style:  new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 3,
+                                stroke: new ol.style.Stroke({
+                                    color: 'red',
+                                    width: 2
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [255, 0, 0, 0.5]
+                                })
+                            })
+                        }),
                         visible: true
                     });
 
@@ -1185,7 +1192,17 @@ angular.module('maritimeweb.route')
                     pathLayer.getSource().clear();
                     routeFeatureLayer.getSource().clear();
 
-                    if($rootScope.route_oLfeatures && $rootScope.route_oLfeatures.length > 0){
+                    if($window.localStorage.getItem('route_oLfeaturesGeoJson')){
+                        var geoJSONFormat = new ol.format.GeoJSON();
+                        var olFeaturesGeojson = $window.localStorage.getItem('route_oLfeaturesGeoJson');
+                        var olPointsJSON = $window.localStorage.getItem('route_oLpoints');
+
+                        $rootScope.route_oLfeatures = geoJSONFormat.readFeatures(olFeaturesGeojson);
+                        $rootScope.route_oLpoints = JSON.parse(olPointsJSON);
+                    }
+
+                    if($rootScope.route_oLfeatures ){
+                        $log.info("Loading features! ");
                         var routeFeature = new ol.Feature({
                             type: 'route',
                             geometry: new ol.geom.LineString($rootScope.route_oLpoints)
@@ -1243,12 +1260,16 @@ angular.module('maritimeweb.route')
                         map.addOverlay(overlay);
 
                         /**
-                         * Add a click handler to the map to render the popup.
+                         * Add a click handler to the map to render the popup for the waypoint marker
                          */
                         map.on('singleclick', function (evt) {
 
                             var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-                                return feature;
+                                    if(feature.get('id')){ // fixed bug were we would get a popup marker everywhere
+                                        return feature;
+                                    }
+                                    return false;
+
                             }, null, function (layer) {
                                 return layer === routeFeatureLayer;
                             });

@@ -112,8 +112,12 @@
 
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href><i class="fa fa-cloud fa-lg" aria-hidden="true"></i> Satellite <span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href><i class="fa fa-cloud fa-lg" aria-hidden="true"></i> Metoc <span class="caret"></span></a>
                     <ul class="dropdown-menu" >
+                        <li class="dropdown-header"> <i class="fa fa-cloud" aria-hidden="true"></i> <i class="fa fa-bolt" aria-hidden="true"></i> animated 72-hours weather forecasts in danish waters</li>
+                        <li ng-if="loggedIn" role="menuitem"><a ng-href="#/weather"> DMI animated Metoc</a></li>
+
+                        <li ng-if="!loggedIn" > <a href ng-click="login()"></span>Requires log in...</a></li>
                         <li class="dropdown-header"> <i class="fa fa-sun-o" aria-hidden="true"></i> <i class="fa fa-bolt" aria-hidden="true"></i> Satellite images of the Baltics</li>
                         <li ng-if="loggedIn" ng-repeat="aService in mapWeatherLayers.getLayers().getArray()" ng-class="{'active':aService.getVisible()}"><a href ng-bind="aService.get('title')" ng-click="toggleLayer(aService)"></a></li>
                         <li ng-if="!loggedIn" > <a href ng-click="login()"></span>Requires log in...</a></li>
