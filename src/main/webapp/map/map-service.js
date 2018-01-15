@@ -146,7 +146,14 @@ angular.module('maritimeweb.map')
 
 
 
-            /** Converts a GeoJSON feature to an OL feature **/
+            /** Converts a WKT feature to an OL feature **/
+            this.isWktGeometriesIntersecting = function (wktGeometryOne, wktGeometryTwo) {
+                var extentOne = this.wktToOlGeomFeature(wktGeometryOne).getExtent();
+                var extentTwo = this.wktToOlGeomFeature(wktGeometryTwo).getExtent();
+                return ol.extent.intersects(extentOne, extentTwo);
+            };
+
+            /** Converts a WKT feature to an OL feature **/
             this.wktToOlFeature = function (feature) {
                 return wktFormat.readFeature(feature, {
                     dataProjection: proj4326,

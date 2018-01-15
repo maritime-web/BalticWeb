@@ -6,8 +6,8 @@
 angular.module('maritimeweb.nw-nm')
 
     /** Service for accessing NW-NMs **/
-    .service('NwNmService', ['$http', '$uibModal',
-        function($http, $uibModal) {
+    .service('NwNmService', ['$http', '$uibModal', '$q', '$window', 'MapService',
+        function($http, $uibModal, $q, $window, MapService) {
 
             this.serviceID = function(){ return 'urn:mrn:mcl:service:design:dma:nw-nm-rest'};
             this.serviceVersion = function(){ return '0.4'};
@@ -29,6 +29,23 @@ angular.module('maritimeweb.nw-nm')
                 return $http.get('/rest/nw-nm/messages?' + params);
             };
 
+            function updateCache(response) {
+                $window.localStorage.setItem('NwNmService.EndpointCache', JSON.stringify(response.data));
+            }
+
+            function getCachedServicesForArea(wkt) {
+                var res = [];
+                var candidates = JSON.parse($window.localStorage.getItem('NwNmService.EndpointCache')) || [];
+                candidates.forEach(addIfMatchArea);
+                
+                return res.length > 0 ? res : null;
+                
+                function addIfMatchArea(service) {
+                    if (service.boundary && MapService.isWktGeometriesIntersecting(service.boundary, wkt)) {
+                        res.push(service);
+                    }
+                }
+            }
 
             /**
              * Get NW-NM services
@@ -38,7 +55,24 @@ angular.module('maritimeweb.nw-nm')
                 var pathParam1 = encodeURIComponent(this.serviceID());
                 var pathParam2 = encodeURIComponent(this.serviceVersion());
                 var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 + params;
-                return $http.get(request);
+                return $http.get(request)
+                    .then(function (response) {
+                        if (response.status === 200) {
+                            updateCache(response);
+                        }
+                        return response;
+                    })
+                    .catch(function (response) {
+                        if (response.status <= 0 || response.status >= 500) {
+                            var cachedServices = getCachedServicesForArea(wkt);
+                            if (cachedServices) {
+                                response.data = cachedServices;
+                                response.status = 200;
+                                return response;
+                            }
+                        }
+                        return $q.reject(response);
+                    });
             };
 
 

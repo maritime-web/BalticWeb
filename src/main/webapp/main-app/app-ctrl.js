@@ -304,20 +304,22 @@ angular.module('maritimeweb.app')
                 // var wkt = "POLYGON((-14.475675390625005 40.024168123114805,-14.475675390625005 68.88565248991273,59.92373867187499 68.88565248991273,59.92373867187499 40.024168123114805,-14.475675390625005 40.024168123114805))";
 
                 NwNmService.getNwNmServices(wkt)
-                    .success(function (services, status) {
+                    .then(function (response) {
+                        var services = response.data;
+                        var status = response.status;
                         //$log.debug("NVNM Status " + status);
                         $scope.nwNmServices.length = 0;
 
                         // Update the selected status from localstorage
                         var instanceIds = [];
-                        if (status == 204) {
+                        if (status === 204) {
                             $scope.nwNmServicesStatus = 'false';
                             $window.localStorage[NwNmService.serviceID()] = 'false';
                             $scope.nwNmMessages = [];
 
                         }
 
-                        if (status == 200) {
+                        if (status === 200) {
                             $scope.nwNmServicesStatus = 'true';
                             $window.localStorage[NwNmService.serviceID()] = 'true';
 
@@ -346,7 +348,8 @@ angular.module('maritimeweb.app')
                             }
                         }
                     })
-                    .error(function (error) {
+                    .catch(function (response) {
+                        var error = response.data;
                         growl.error("Error getting NW NM service from Service Register.");
                         $window.localStorage[NwNmService.serviceID()] = 'false';
                         $scope.nwNmServicesStatus = 'false';
