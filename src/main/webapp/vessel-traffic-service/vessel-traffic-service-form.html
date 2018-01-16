@@ -35,7 +35,7 @@
                         Contact details <span ng-class="{false:'glyphicon glyphicon-chevron-down', true:'glyphicon glyphicon-chevron-up'}[displayVtsCenterData]"></span>
                     </button>
                     &nbsp;&nbsp;
-                    <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block' style="float:right">
+                    <button id="mastersguideButton" class='btn btn-primary vts-button-modifier-slim vts-inline-block' style="float:right"
                         ng-mouseover="displayPopupInfo($event,'The Masters Guide opens in a seperate window and is not part of the BalticWeb interface.','large')"
                         ng-mouseleave="removePopupInfo()"
                         ng-click="openMastersGuideNewWindow()" type='button'>
@@ -52,13 +52,27 @@
                 <span ng-show="VtsDataVhf4!=''" style='min-width:140px;max-width:140px;display: inline-block;'><span class="bold">VHF ch4.</span> {{VtsDataVhf4}}</span>
             </div>
             <div ng-show="VtsDataReserveVhf1!=''" class="vts-force-spacing-350 vts-grey-text">
-                <span ng-show="VtsDataReserveVhf1!=''" style='min-width:150px;max-width:150px;display: inline-block;'><span class="bold">Reserve VHF ch1.</span> {{VtsDataReserveVhf1}}</span>
-                <span ng-show="VtsDataReserveVhf2!=''" style='min-width:150px;max-width:150px;display: inline-block;'><span class="bold">Reserve VHF ch2.</span> {{VtsDataReserveVhf2}}</span>
+                <span ng-show="VtsDataReserveVhf1!=''" style='min-width:150px;max-width:150px;display: inline-block;'><span class="bold">VHF Reserve ch1.</span> {{VtsDataReserveVhf1}}</span>
+                <span ng-show="VtsDataReserveVhf2!=''" style='min-width:150px;max-width:150px;display: inline-block;'><span class="bold">VHF Reserve ch2.</span> {{VtsDataReserveVhf2}}</span>
             </div>
             <hr class="vts-hr-seperator">
-            <div ng-show="VtsDataEmail!=''" class="vts-force-spacing-350">
-                <span class="bold">Email:</span> {{VtsDataEmail}} <span class="bold">Email:</span>
+            <div ng-show="VtsDataEmail!=''" class="vts-force-spacing-300">
+                <span class="bold">Email:</span>
+                <span class="bold">{{VtsDataEmail}}</span>
             </div>
+            <div ng-show="VtsDataTelephone1!=''" class="vts-force-spacing-300">
+                <span class="bold">Telephone:</span>
+                <span class="bold">{{VtsDataTelephone1}}</span>
+            </div>
+            <div ng-show="VtsDataTelephone2!=''" class="vts-force-spacing-300">
+                <span class="bold">Telephone 2:</span>
+                <span>{{VtsDataTelephone2}}</span>
+            </div>
+            <div ng-show="VtsDataFax!=''" class="vts-force-spacing-300">
+                <span class="bold">Fax:</span>
+                <span>{{VtsDataFax}}</span>
+            </div>
+
 
 
             <!--$scope.VtsDataEmail = VTSData[vtsID].email;-->
@@ -117,7 +131,7 @@
                     </div>
                     <span class="vts-align-utc-label">UTC</span>
                 </div>
-                <div ng-show="detectedRouteETA!=null" ng-mouseleave="removePopupInfo()">
+                <div ng-show="detectedRouteETA!=null && !vtsDisplayNonIntersectWarning" ng-mouseleave="removePopupInfo()">
                     <button id="useRouteEtaButton" class='btn btn-default vts-button-modifier-slim vts-inline-block' style="position: relative;"
                             ng-click="setRouteEtaTimeDatePicker()" type='button' >
                             <i class="glyphicon glyphicon-paste" aria-hidden="true"></i>
@@ -155,19 +169,26 @@
         <hr class="vts-hr-seperator" >
 
         <div>
-            <div class="vts-force-spacing-200 ">
+            <div class="vts-force-spacing-200 vts-pad-top">
                 <span class="vts-force-spacing-100">Vessel name:</span>
                 <input class="vts-input vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselnameValid]" type="text" ng-model="vtsvesselnameinput" ng-change="VTSVesselNameValidation(true)" placeholder="{{placeholderAisVesselName}}">
             </div>
-            <div class="vts-force-spacing-200 " >
+            <div class="vts-force-spacing-200 vts-pad-top" >
                 <span class="vts-force-spacing-100">Callsign:</span>
                 <input class="vts-input vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselcallsignValid]" type="text" ng-model="vtsvesselcallsigninput" ng-change="VTSVesselCallsignValidation(true)"  placeholder="{{placeholderAisVesselCallsign}}">
             </div>
-            <div class="vts-force-spacing-200 ">
+            <div class="vts-force-spacing-200 vts-pad-top">
                 <span class="vts-force-spacing-100" >{{vtsvesselimolabel}}</span>
                 <input class="vts-input-standard vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselIMOValid]" type="text" ng-model="vtsvesselimoinput" ng-change="VTSVesselIMOValidation(true)"  onfocus="this.value = this.value;"  placeholder="{{placeholderAisVesselImo}}">
             </div>
         </div>
+        <div>
+            <div class="vts-force-spacing-350 vts-pad-top">
+                <span class="vts-force-spacing-300">Port of destination:</span>
+                <input class="vts-input-large vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPortOfDestinationValid]" type="text" ng-model="vtsvesselportofdestinationinput" ng-change="VTSVesselPortOfDestinationValidation(true)"  placeholder="{{placeholderAisPortOfDestination}}">
+            </div>
+        </div>
+
         <div class="vts-pad-top">
             <div class="vts-force-spacing-200 ">
                 <span class="vts-force-spacing-200">Number of people on board</span>
@@ -213,7 +234,6 @@
                     &nbsp;<abbr data-title="Air Draught is the maximum height of a vessel over waterline. Please contact the VTS center directly for more information." class="glyphicon glyphicon-question-sign vts-abbr"></abbr>
                 </div>
             </div>
-
 
 
             <div  class="vts-force-spacing-300">
@@ -607,10 +627,10 @@
                     <span class="">ETA at VTS area:</span> <span class="vts-grey-text">{{vtsDisplayEtaDateTime}}</span>
                 </div>
                 <div class="" ng-show="showCourseOverGround">
-                    <span class="">Course Over Ground entering VTS:</span> <span class="vts-grey-text">{{vtsvesselcourseovergroundinput}} degrees</span>
+                    <span class="">Expected COG entering VTS area:</span> <span class="vts-grey-text">{{vtsvesselcourseovergroundinput}} degrees</span>
                 </div>
                 <div class="" ng-show="showCourseOverGround">
-                    <span class="">Expected VTS area entry point:</span> <span class="vts-grey-text">{{vtsEtaLatDegree}}&deg; {{vtsEtaLatDecMinutes}} - {{vtsEtaLonDegree}}&deg; {{vtsEtaLonDecMinutes}}</span>
+                    <span class="">Expected VTS area entry point:</span> <span class="vts-grey-text">{{vtsEtaLonDegree}}&deg; {{vtsEtaLonDecMinutes}} - {{vtsEtaLatDegree}}&deg; {{vtsEtaLatDecMinutes}}</span>
                 </div>
             </div>
         </div>

@@ -9,6 +9,12 @@ body {
     margin-bottom: 0px;
     overflow-y: scroll !important; /* fixing */
 }
+
+.modal-content{
+    min-width: 380px !important;
+}
+
+
 /* Sticky footer styles
 -------------------------------------------------- */
 
@@ -30,14 +36,23 @@ body {
     color: #888888;
     background-color: #888888;
 }
+.ol-viewport{
+    height:98.5% !important;
+}
 @media screen and (max-width: 768px) { /*assume tablet*/
     .footer{
         height:100px;
+    }
+    .ol-viewport{
+        height:95.6% !important;
     }
 }
 @media screen and (max-width: 440px) { /*assume phone*/
     .footer{
         height:124px;
+    }
+    .ol-viewport{
+        height:92.9% !important;
     }
 }
 
@@ -654,7 +669,7 @@ abbr::after {
         float:none;
     }
     .vts-responsive-nonintersectwarning-container{
-        min-height:113px;
+        min-height:104px;
     }
     .vts-responsive-nonintersectwarning-button{
         min-width:85px;
@@ -682,7 +697,7 @@ abbr::after {
 }
 @media screen and (min-width: 356px) and (max-width: 510px) {
     .vts-responsive-nonintersectwarning-container{
-        min-height:140px;
+        min-height:104px;
     }
     .vts-nonintersectwarning-text-headline{
     font-size:1em;
@@ -694,7 +709,7 @@ abbr::after {
 }
 @media screen and (min-width: 200px) and (max-width: 355px) {
     .vts-responsive-nonintersectwarning-container{
-        min-height:140px;
+        min-height:104px;
     }
     .vts-nonintersectwarning-text-headline{
         font-size:0.8em;

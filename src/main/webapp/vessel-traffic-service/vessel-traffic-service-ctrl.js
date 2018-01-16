@@ -328,7 +328,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             if (!VTSData[$scope.VTSID].showFuelDetails) $scope.fuelDetailsValid = true;
             if (!$scope.showCourseOverGround) $scope.courseOverGroundValid = true;
 
-            //if(!$scope.showRoute) $scope.setvtsvesselRouteValid = true; //TODO: import RTZ or use VTS routes from model/service.
             if (!$scope.showPortOfDestination) $scope.setvtsvesselPortOfDestinationValid = true;
 
             //exception for cargo information - subject to change
@@ -355,6 +354,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             // if($scope.setvtsvesselPosLonDegreesValid && $scope.setvtsvesselPosLatDegreesValid) group5valid = true; //position not mandatory but subject to change
             // if($scope.setvtsvesselPosLonMinutesValid && $scope.setvtsvesselPosLatMinutesValid) group6valid = true;
             console.log("Port of Destination must be added and validated!");
+            if ($scope.setvtsvesselPortOfDestinationValid) group7valid = true;
             // if ($scope.setvtsvesselSpeedValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
             if ($scope.setvtsvesseletaTimeDateValid) group8valid = true;
 
@@ -962,9 +962,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         /** END input validation area **/
 
 
-console.log("fix helptext at vtsvesseldefectsinput");
-
-
 
 
         $scope.cargoInputKeyUp = function (evt) {
@@ -1011,7 +1008,7 @@ console.log("fix helptext at vtsvesseldefectsinput");
             if($scope.detectedRouteETA && $scope.detectedRouteETA.length>10 && $scope.detectedRouteIntersect){
                 $scope.setRouteEtaTimeDatePicker();
             }else{
-                if($scope.detectedRouteETA && $scope.detectedRouteETA!="")$scope.vtsDisplayNonIntersectWarning = true;
+                if($scope.detectedRouteETA && $scope.detectedRouteETA!="") $scope.vtsDisplayNonIntersectWarning = true;
                 $scope.vtsTimeStamp = moment.utc().format('HH : mm');//display date and time in utc
                 $scope.vtsDateStamp = moment().utc().format('DD MMM YYYY');
                 angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsDateStamp); //update timepicker display with now
@@ -1117,18 +1114,13 @@ console.log("fix helptext at vtsvesseldefectsinput");
             $scope.VtsDataReserveVhf4 = VTSData[vtsID].vhfreservechannel4;
 
             $scope.VtsDataEmail = VTSData[vtsID].email;
-            $scope.VtsDataTelephone = VTSData[vtsID].telephone1;
-            $scope.VtsDataTelephon2 = VTSData[vtsID].telephone2;
+            $scope.VtsDataTelephone1 = VTSData[vtsID].telephone1;
+            $scope.VtsDataTelephone2 = VTSData[vtsID].telephone2;
             $scope.VtsDataFax = VTSData[vtsID].fax;
 
 
 
             //Email and telephone
-            if (VTSData[vtsID].email != "" || VTSData[vtsID].telephone != "" || VTSData[vtsID].telephone2 != "") html += "<div>";
-            if (VTSData[vtsID].email != "") html += "<span style='min-width:220px;max-width:200px;display: inline-block;'>Email: " + VTSData[vtsID].email + "</span>";
-            if (VTSData[vtsID].telephone != "") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:220px;max-width:220px;display: inline-block;'>Phone: " + VTSData[vtsID].telephone + "</span>";
-            if (VTSData[vtsID].telephone2 != "") html += "<span style='min-width:60px;max-width:60px;display: inline-block; text-align: center;'>-</span><span style='min-width:220px;max-width:220px;display: inline-block;'>Phone2: " + VTSData[vtsID].telephone2 + "</span>";
-            if (VTSData[vtsID].email != "" || VTSData[vtsID].telephone != "" || VTSData[vtsID].telephone2 != "") html += "</div>";
 
             //Not all VTS have a fax
             if (VTSData[vtsID].fax != "") html += "<div><span style='min-width:220px;max-width:220px;display: inline-block;'>Fax: " + VTSData[vtsID].fax + "</span></div>";
@@ -1156,8 +1148,32 @@ console.log("fix helptext at vtsvesseldefectsinput");
             $scope.vtsvesselmmsiinput = "265177000"; //TODO: Remove this eventually..
             $scope.VTSVesselMMSIValidation();
             $scope.VTSValidationAllDone(); //make sure to see if is ready to send on refreshed browser
+
+            //looks into localstorage to see if the loaded route is intersecting the selected vts area
+            $scope.vtsDisplayNonIntersectWarning = false;
+            $scope.vtsDisplayNonIntersectWarningText = false;
+            var tmpStr = $window.localStorage['vts_intersectingareas'];
+            var tmpRouteIntersectState = true;
+            try {
+                var vts_intersectingareasArr = JSON.parse(tmpStr);
+                if (vts_intersectingareasArr.length > 0) {
+                    tmpStr = $window.localStorage['vts_current_id']
+                    if(tmpStr.length > 0){
+                        for(var f=0; f!=vts_intersectingareasArr.length; f++){
+                            if(parseInt(tmpStr) == parseInt(vts_intersectingareasArr[f])){
+                                tmpRouteIntersectState = false;
+                            }
+                        }
+                    }
+                }
+                $scope.vtsDisplayNonIntersectWarning = tmpRouteIntersectState;
+            }catch(NothingInLocalstorageErr){}
+
         };
 
+        $scope.toggleDisplayNonIntersectWarningText = function(){
+            ($scope.vtsDisplayNonIntersectWarningText==true) ? $scope.vtsDisplayNonIntersectWarningText = false : $scope.vtsDisplayNonIntersectWarningText = true;
+        };
 
         //force load of a an area if is defined in localstorage
         $scope.vts_current_id = $window.localStorage['vts_current_id'];
@@ -1349,7 +1365,9 @@ console.log("fix helptext at vtsvesseldefectsinput");
                     $scope.placeholderAisVesselCallsign = $scope.aisData.vesselCallsign;
                     $scope.placeholderAisVesselImo = $scope.aisData.vesselImo;
                     $scope.placeholderAisVesselCog = $scope.aisData.vesselCog;
-                    $scope.placeholderAisVesselDestination = $scope.aisData.vesselDestination;
+
+                    $scope.placeholderAisPortOfDestination = $scope.aisData.vesselDestination;
+                    // $scope.placeholderAisVesselDestination = $scope.aisData.vesselDestination;
                     $scope.placeholderAisVesselDraught = $scope.aisData.vesselDraught;
                     $scope.placeholderAisVesselLength = $scope.aisData.vesselLength;
                     $scope.vtsvesselcourseovergroundinput = $scope.aisData.vesselCOG; //only displayed when using AIS
@@ -1381,7 +1399,8 @@ console.log("fix helptext at vtsvesseldefectsinput");
                 $scope.placeholderAisVesselCallsign = "";
                 $scope.placeholderAisVesselImo = "";
                 $scope.placeholderAisVesselCog = "";
-                $scope.placeholderAisVesselDestination = "";
+                $scope.placeholderAisPortOfDestination = "";
+                // $scope.placeholderAisVesselDestination = "";
                 $scope.placeholderAisVesselDraught = "";
                 $scope.placeholderAisVesselLength = "";
                 $scope.vtsvesselcourseovergroundinput = "";
@@ -1393,12 +1412,6 @@ console.log("fix helptext at vtsvesseldefectsinput");
 
         };
 
-        $scope.vtsDisplayNonIntersectWarning = false;
-        $scope.vtsDisplayNonIntersectWarningText = false;
-        $scope.toggleDisplayNonIntersectWarningText = function(){
-            ($scope.vtsDisplayNonIntersectWarningText==true) ? $scope.vtsDisplayNonIntersectWarningText = false : $scope.vtsDisplayNonIntersectWarningText = true;
-            console.log("vtsDisplayNonIntersectWarningText:",$scope.vtsDisplayNonIntersectWarningText);
-        };
 
         /**  POPUP  **/
         $scope.popupIsActive = false;
@@ -1433,12 +1446,7 @@ console.log("fix helptext at vtsvesseldefectsinput");
 
         //Modal form control ******************************************************************************************
         $scope.hideVTSForm = function () {
-            localStorage.setItem('vts_current_id', "");
             $uibModalInstance.close();
-        };
-console.log("show airdraughtmax as text on title from jsobjects - make size of icon a bit larger too");
-        $scope.beep=function(){
-            console.log("beep");
         };
 
         $scope.$on('modal.closing', function (event, reason, closed) {

@@ -210,7 +210,6 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             })
         });
 
-
         window.addEventListener('resize', function () { //centers vessel and area
             try {
                 var extent = vectorSource.getExtent();
