@@ -420,7 +420,11 @@ angular.module('maritimeweb.vts-map')
                             overlay.setPosition(undefined);
                         };
 
-
+                        scope.destroyVtsPopup = function(){
+                            scope.clearVtsPopup();
+                            overlay.setPosition(undefined);
+                            localStorage.setItem('vts_current_id', "");
+                        };
                         /***************************/
                         /**        Listeners      **/
                         /***************************/
@@ -437,54 +441,69 @@ angular.module('maritimeweb.vts-map')
 
                         //mouse click or ontap
                         map.on('click', function(evt) { //display VTS area sidebar tab and VTS area information when click
-                            if(map.getView().getZoom() < 14) {
-                                scope.clearVtsPopup();
-                                var ret = scope.getIdForPixel(map.getEventPixel(evt.originalEvent));
-                                if (ret.id != null) {
-                                    var vts_areas_str = localStorage.getItem('vts_areas');
-                                    var vts_areas;
-                                    if (vts_areas_str && vts_areas_str.length > 0) {
-                                        vts_areas = JSON.parse(vts_areas_str);
-                                        if (vts_areas.length > 0) {
-                                            var vtsNum = 0;
-                                            for (var i = 0; i != vts_areas.length; i++) { //find in array which areas ID has ret.id
-                                                if (parseInt(vts_areas[i].id) == parseInt(ret.id)) {
-                                                    vtsNum = i;
-                                                    break;
-                                                }
-                                            }
-                                            scope.currentlySelectedVtsArea = vts_areas[vtsNum].id;
-                                            VtsHelperService.showVtsCenterSelect = false;
-
-                                            //Fill in the VTS info into vars needed by popup
-                                            scope.vtsPopupVtsShortname = vts_areas[vtsNum].shortname;
-                                            scope.vtsPopupVtsCountry = vts_areas[vtsNum].country;
-                                            scope.vtsPopupVtsCallsign = vts_areas[vtsNum].callsign;
-                                            scope.vtsPopupVtsVhf1 = vts_areas[vtsNum].vhfchannel1;
-                                            scope.vtsPopupVtsVhf2 = vts_areas[vtsNum].vhfchannel2;
-                                            scope.vtsPopupVtsVhfReserve = vts_areas[vtsNum].vhfreservechannel1;
-                                            scope.vtsPopupVtsTel1 = vts_areas[vtsNum].telephone;
-                                            scope.vtsPopupVtsTel2 = vts_areas[vtsNum].telephone2;
-                                            scope.vtsPopupVtsEmail = vts_areas[vtsNum].email;
-                                            scope.vtsPopupVtsIconImage = vts_areas[vtsNum].iconImage;
-                                            scope.$apply();
-
-                                            function updateTimeout() { //update bug workaround
-                                                var coordinate = evt.coordinate;
-                                                overlay.setPosition(coordinate);
-                                            }
-
-                                            setTimeout(function () {
-                                                updateTimeout();
-                                            }, 10);
-                                        }
-                                    }
-                                } else {
-                                    scope.clearVtsPopup();
-                                    overlay.setPosition(undefined);
-                                    localStorage.setItem('vts_current_id', "");
+                            //ignore click if a vessel is selected
+                            var allowVtsClick = false;
+                            var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+                                if(feature.get('mmsi')){
+                                    return feature;
                                 }
-                            }//respect zoomlevel
+                                return false;
+                            },{hitTolerance: 4});
+                            if (feature && feature.get('mmsi')) {}else{allowVtsClick=true;}
+                                if(allowVtsClick) {
+
+                                //perform the click action
+                                if (map.getView().getZoom() < 14) {
+                                    scope.clearVtsPopup();
+                                    var ret = scope.getIdForPixel(map.getEventPixel(evt.originalEvent));
+                                    if (ret.id != null) {
+                                        var vts_areas_str = localStorage.getItem('vts_areas');
+                                        var vts_areas;
+                                        if (vts_areas_str && vts_areas_str.length > 0) {
+                                            vts_areas = JSON.parse(vts_areas_str);
+                                            if (vts_areas.length > 0) {
+                                                var vtsNum = 0;
+                                                for (var i = 0; i != vts_areas.length; i++) { //find in array which areas ID has ret.id
+                                                    if (parseInt(vts_areas[i].id) == parseInt(ret.id)) {
+                                                        vtsNum = i;
+                                                        break;
+                                                    }
+                                                }
+                                                scope.currentlySelectedVtsArea = vts_areas[vtsNum].id;
+                                                VtsHelperService.showVtsCenterSelect = false;
+
+                                                //Fill in the VTS info into vars needed by popup
+                                                scope.vtsPopupVtsShortname = vts_areas[vtsNum].shortname;
+                                                scope.vtsPopupVtsCountry = vts_areas[vtsNum].country;
+                                                scope.vtsPopupVtsCallsign = vts_areas[vtsNum].callsign;
+                                                scope.vtsPopupVtsVhf1 = vts_areas[vtsNum].vhfchannel1;
+                                                scope.vtsPopupVtsVhf2 = vts_areas[vtsNum].vhfchannel2;
+                                                scope.vtsPopupVtsVhfReserve = vts_areas[vtsNum].vhfreservechannel1;
+                                                scope.vtsPopupVtsTel1 = vts_areas[vtsNum].telephone;
+                                                scope.vtsPopupVtsTel2 = vts_areas[vtsNum].telephone2;
+                                                scope.vtsPopupVtsEmail = vts_areas[vtsNum].email;
+                                                scope.vtsPopupVtsIconImage = vts_areas[vtsNum].iconImage;
+                                                scope.$apply();
+
+                                                function updateTimeout() { //update bug workaround
+                                                    var coordinate = evt.coordinate;
+                                                    overlay.setPosition(coordinate);
+                                                }
+
+                                                setTimeout(function () {
+                                                    updateTimeout();
+                                                }, 10);
+                                            }
+                                        }
+                                    } else {
+                                        scope.destroyVtsPopup();
+                                    }
+                                } else {//respect zoomlevel
+                                    scope.destroyVtsPopup();
+                                }
+                            } else {//ignore if vessel is selected in VTS area
+                                scope.destroyVtsPopup();
+                            }
                         });
 
                         //mouse over

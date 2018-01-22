@@ -156,7 +156,7 @@
                 <input class="vts-input-standard vts-pos-relative" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselMMSIValid]" type="text" ng-model="vtsvesselmmsiinput" ng-change="VTSVesselMMSIValidation()" >
                 <div class="vts-pad-top vts-force-spacing-200 vts-pos-relative" ng-show="isLoggedIn">
                     <div  style="width:124px;" id="vtsAisPopupInfo"
-                        ng-mouseenter="displayPopupInfo($event,'Inserting AIS data will overwrite previously inserted data.','large')"
+                        ng-mouseenter="displayPopupInfo($event,'Inserting AIS data does not overwrite previously inserted data.','large')"
                         ng-mouseleave="removePopupInfo()">
                         <button class="btn btn-default vts-less-padding vts-inline-block" ng-class="{false:'', true:'vts-pulse'}[setvtsvesselMMSIValid]" ng-disabled="!isLoggedIn || !setvtsvesselMMSIValid" type="button" ng-click="populateInputsWithAisData()"><i class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></i>
                             Insert AIS data

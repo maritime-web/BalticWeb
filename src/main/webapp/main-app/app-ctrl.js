@@ -63,7 +63,7 @@ angular.module('maritimeweb.app')
                 return undefined;
             };
             var lolcat = $scope.userMrn();
-            console.log("uncle ben:",lolcat)
+            console.log("Pearl Seaways here:",lolcat)
 
 
             /** Enters the Keycloak account management **/
@@ -211,7 +211,7 @@ angular.module('maritimeweb.app')
                 return true;
             };
 
-            $scope.populateVtsSidemenuList = function(){ //called on load and when route changes
+            $scope.populateVtsSidemenuList = function(selectedId){ //called on load and when route changes
                 $scope.vtsSidemenuListArr = []; //reset
                 var count = $scope.vtsAreasArr.length;
                 var ins = window.localStorage['vts_intersectingareas'];
@@ -238,15 +238,16 @@ angular.module('maritimeweb.app')
                                 }
                             }
                         }else{
+                            var selected = false;
+                            if(selectedId && parseInt(selectedId)!=0 && parseInt(selectedId) == parseInt($scope.vtsAreasArr[i].id)) selected = true;
                             tmpObj = { //add all areas to arr
                                 id: $scope.vtsAreasArr[i].id,
                                 shortname: $scope.vtsAreasArr[i].shortname,
-                                showButton: false
+                                showButton: selected
                             };
                         }
                         if(tmpObj && tmpObj.id) $scope.vtsSidemenuListArr.push(tmpObj);
                     }
-
                 }
             };
 
@@ -256,6 +257,13 @@ angular.module('maritimeweb.app')
                 }else{
                     $scope.testforEnableFilterCheckbox();
                     $scope.populateVtsSidemenuList();
+                }
+            });
+
+            //when user clicks right menu, change button to allow opening reporting dialog
+            $scope.$watch(function () { return window.localStorage['vts_zoomto_area_id']; },function(newVal,oldVal){
+                if(newVal && (newVal+"")!="" && (newVal+"") != (oldVal+"")){
+                    $scope.populateVtsSidemenuList(newVal);
                 }
             });
 
@@ -273,7 +281,6 @@ angular.module('maritimeweb.app')
                                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                             });
                             $scope.populateVtsSidemenuList();
-                            // $scope.populateVtsSidemenuList(window.localStorage['vts_intersectingareas'],$scope.vtsAreasArr); //init after areas fetched from service
                         }
                         $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
                     })
@@ -285,6 +292,7 @@ angular.module('maritimeweb.app')
             if ($scope.vts_map_show) {
                 $scope.reloadVtsAreas();
             }
+
 
             /**************************************/
             /** NOGO Service                     **/
@@ -549,6 +557,14 @@ angular.module('maritimeweb.app')
                 growl.info("Vessel details retrieved");
 
             };
+
+            //disable AIS layer at refresh
+            if(($window.localStorage.getItem('Vessels - AIS') + "") == "true"){
+                $window.localStorage.setItem('Vessels - AIS',"false");
+            }
+
+
+
 
             /**
              * store all features in local storage, on a server or right now. Throw them on the root scope.
