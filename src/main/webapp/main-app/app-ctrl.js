@@ -2,8 +2,8 @@ angular.module('maritimeweb.app')
 
     .controller("AppController", [
         '$scope', '$http', '$window', '$timeout', 'Auth', 'MapService',
-        'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'mapVtsAreaService', 'growl', '$uibModal', '$log', '$interval',
-        function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, mapVtsAreaService, growl, $uibModal, $log, $interval) {
+        'VesselService', 'NwNmService', 'SatelliteService', 'ServiceRegistryService', 'mapVtsAreaService', 'growl', '$uibModal', '$log', '$interval', 'VtsHelperService',
+        function ($scope, $http, $window, $timeout, Auth, MapService, VesselService, NwNmService, SatelliteService, ServiceRegistryService, mapVtsAreaService, growl, $uibModal, $log, $interval, VtsHelperService) {
 
             // Cancel any pending NW-NN queries
             var loadTimerService = undefined;
@@ -13,6 +13,7 @@ angular.module('maritimeweb.app')
                 }
             });
 
+            /** Sidemenu collapse handler **/
             $scope.$watch(function(){
                 return MapService.sidebarCollapsed; //collapsed state, map-directive -> map-service -> here
             }, function (newValue) {
@@ -21,6 +22,7 @@ angular.module('maritimeweb.app')
             $scope.sidebarUncollapse = function(){ //map-directive collapses on map click
                 MapService.sidebarUnCollapse(); //is watched to change state in $scope
             };
+            /** END Sidemenu collapse handler **/
 
             $scope.welcomeToBalticWebModal = function (size) {
                 $uibModal.open({
@@ -52,6 +54,17 @@ angular.module('maritimeweb.app')
                 }
                 return undefined;
             };
+
+            /** Returns the mrn **/
+            $scope.userMrn = function () {
+                if (Auth.authz.tokenParsed) {
+                    return Auth.authz.tokenParsed.preferred_username;
+                }
+                return undefined;
+            };
+            var lolcat = $scope.userMrn();
+            console.log("Pearl Seaways here:",lolcat)
+
 
             /** Enters the Keycloak account management **/
             $scope.accountManagement = function () {
@@ -107,8 +120,7 @@ angular.module('maritimeweb.app')
             /**************************************/
             /** Vessel Traffic Service Report functionality      **/
             /**************************************/
-
-            $scope.activateVTSForm = function (size) {
+            $scope.activateVTSForm = function (size) { //if vts_current_id is set in localstorage, it opens that areas report form
                 if(!size) size='lg';
                 growl.info('Activating Vessel Traffic Control');
                 $uibModal.open({
@@ -118,6 +130,22 @@ angular.module('maritimeweb.app')
                     size: size
                 })
             };
+            $scope.activateVTSFormTopMenu = function(){
+                VtsHelperService.showVtsCenterSelect = true; //display the select when using top-menu only
+                $scope.activateVTSForm();
+            };
+
+            $scope.mapSetInView = function(id){
+                $window.localStorage.setItem('vts_zoomto_area_id', id);
+            };
+
+            $scope.setActiveVtsIdAndOpenForm = function(id){
+                console.log("opening VTS with ID:",id);
+                localStorage.setItem('vts_current_id', id);
+                VtsHelperService.showVtsCenterSelect = false; //display the select when using top-menu only
+                $scope.activateVTSForm();
+            };
+
 
             function checkToActivateVTSForm() { //if refresh without proper close, open form again in same area.
                 var vts_current_id = $window.localStorage['vts_current_id'];
@@ -141,37 +169,103 @@ angular.module('maritimeweb.app')
             $scope.vts_onroute_only = $window.localStorage['vts_onroute_only'];
             ($scope.vts_onroute_only == true || $scope.vts_onroute_only == "true") ? $scope.vts_onroute_only = true : $scope.vts_onroute_only = false; //is string, need bool
             $scope.vtsShowIntersecting = $scope.vts_onroute_only; //inits listener in vts-layer.js
-
-            $scope.vts_route_enabled = mapVtsAreaService.testForRoute(); //also used in sidebar.html
             $scope.vtsRouteWKT = ($scope.vts_route_enabled == true)? mapVtsAreaService.returnRouteAsWKT : ""; //watched by directive to populate map on change
             $scope.vtsAreasArr = []; //is watched by directive mapVtsAreaLayer to populate map on change
             $scope.vtsLayerEnabled = $scope.vts_map_show; //is listened to
-            $scope.vtsAreasArrSorted = [];
+            $scope.vtsSidemenuListArr = [];
 
             //Skips null items when populating dropdowns
             $scope.isItemNull = function(item) {
                 if (item === null) return false;
                 return true;
             };
+
             /** populate the sidebar with VTS areas on map as selectable list **/
+            $scope.testforEnableFilterCheckbox = function(){ //just test if there is a route in localstorage - enables/disables the filter checkbox
+                var tmpStr = $window.localStorage['route_oLpoints'];
+                (tmpStr && tmpStr.length>9) ? $scope.vts_route_enabled = true : $scope.vts_route_enabled = false;
+            };
+            $scope.testforEnableFilterCheckbox();
 
             /** Toggle the enabled status of the layer **/
             $scope.vtsMapToggle = function () {
                 $scope.vts_map_show = mapVtsAreaService.toggleVtsAreasLayerEnabled(); //also saves to localstorage
                 $scope.vtsLayerEnabled = $scope.vts_map_show; //triggers layer visibility
-                if ($scope.vts_map_show == true) $scope.reloadVtsAreas(); //http service call, triggers update of map
+                if ($scope.vts_map_show == true) {
+                    $scope.reloadVtsAreas(); //http service call, triggers update of map
+                }else{
+                    $scope.vtsSidemenuListArr = []; //clear the list
+                }
             };
 
-            $scope.vtsRouteIntersectToggle = function () {
+            $scope.vtsRouteIntersectToggle = function () { //checkbox
                 $scope.vts_onroute_only = mapVtsAreaService.toggleVtsAreasOnlyIntersectingRouteEnabled(); //also saves to localstorage
                 $scope.vtsShowIntersecting = $scope.vts_onroute_only;
+                $scope.populateVtsSidemenuList();
             };
 
 
-            /**
-             * TODO:
-             * make areas clickable for more info and option to send vts report
-             */
+            //Skips null items when populating lists
+            $scope.isListItemNull = function(item) {
+                if (item === null) return false;
+                return true;
+            };
+
+            $scope.populateVtsSidemenuList = function(selectedId){ //called on load and when route changes
+                $scope.vtsSidemenuListArr = []; //reset
+                var count = $scope.vtsAreasArr.length;
+                var ins = window.localStorage['vts_intersectingareas'];
+
+                //get intersecting IDs into an array
+                var intersectingAreasArr = null;
+                if(ins && ins.length>2) intersectingAreasArr = JSON.parse(ins);
+
+                //filter to display intersecting IDs only
+                var filter=false, f = window.localStorage['vts_onroute_only'];
+                if(f && f=="true") filter = true;
+
+                if($scope.vtsAreasArr.length>0){
+                    for(var i=0;i!=$scope.vtsAreasArr.length;i++){
+                        var tmpObj = {};
+                        if((filter==true && intersectingAreasArr && intersectingAreasArr.length>0)){
+                            for(var y=0;y!=intersectingAreasArr.length;y++) { //only adds intersecting areas to arr
+                                if (parseInt($scope.vtsAreasArr[i].id) == parseInt(intersectingAreasArr[y])) {
+                                    tmpObj = {
+                                        id: $scope.vtsAreasArr[i].id,
+                                        shortname: $scope.vtsAreasArr[i].shortname,
+                                        showButton: true
+                                    };
+                                }
+                            }
+                        }else{
+                            var selected = false;
+                            if(selectedId && parseInt(selectedId)!=0 && parseInt(selectedId) == parseInt($scope.vtsAreasArr[i].id)) selected = true;
+                            tmpObj = { //add all areas to arr
+                                id: $scope.vtsAreasArr[i].id,
+                                shortname: $scope.vtsAreasArr[i].shortname,
+                                showButton: selected
+                            };
+                        }
+                        if(tmpObj && tmpObj.id) $scope.vtsSidemenuListArr.push(tmpObj);
+                    }
+                }
+            };
+
+            //need to know which areas are intersecting the route, if changes, this updates the sidemenu list.
+            $scope.$watch(function () { return window.localStorage['vts_intersectingareas']; },function(newVal,oldVal){
+                if(oldVal !== newVal && newVal === undefined){
+                }else{
+                    $scope.testforEnableFilterCheckbox();
+                    $scope.populateVtsSidemenuList();
+                }
+            });
+
+            //when user clicks right menu, change button to allow opening reporting dialog
+            $scope.$watch(function () { return window.localStorage['vts_zoomto_area_id']; },function(newVal,oldVal){
+                if(newVal && (newVal+"")!="" && (newVal+"") != (oldVal+"")){
+                    $scope.populateVtsSidemenuList(newVal);
+                }
+            });
 
             $scope.reloadVtsAreas = function () {
                 mapVtsAreaService.getVtsAreas()
@@ -186,7 +280,7 @@ angular.module('maritimeweb.app')
                                 var textB = b.shortname.toUpperCase();
                                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                             });
-                            // console.log($scope.vtsAreasArr);
+                            $scope.populateVtsSidemenuList();
                         }
                         $scope.vtsRouteWKT = mapVtsAreaService.returnRouteAsWKT();
                     })
@@ -198,6 +292,7 @@ angular.module('maritimeweb.app')
             if ($scope.vts_map_show) {
                 $scope.reloadVtsAreas();
             }
+
 
             /**************************************/
             /** NOGO Service                     **/
@@ -465,6 +560,14 @@ angular.module('maritimeweb.app')
                 growl.info("Vessel details retrieved");
 
             };
+
+            //disable AIS layer at refresh
+            if(($window.localStorage.getItem('Vessels - AIS') + "") == "true"){
+                $window.localStorage.setItem('Vessels - AIS',"false");
+            }
+
+
+
 
             /**
              * store all features in local storage, on a server or right now. Throw them on the root scope.

@@ -49,11 +49,6 @@ angular.module('maritimeweb.vts-map')
                 return state;
             };
 
-            this.testForRoute = function(){ //just test if there is a route in localstorage
-                var tmpStr = $window.localStorage['route_oLpoints'];
-                return (tmpStr && tmpStr.length>9);
-            };
-
             this.returnRouteAsWKT = function(){
                 var tmpStr = $window.localStorage['route_oLpoints'];
                 try {
@@ -80,8 +75,8 @@ angular.module('maritimeweb.vts-map')
             };
         }])
 
-    .directive('mapVtsAreaLayer', ['MapService', '$window','growl', '$uibModal',
-        function (MapService, $window, growl, $uibModal) {
+    .directive('mapVtsAreaLayer', ['MapService', '$window','growl', '$uibModal', 'VtsHelperService',
+        function (MapService, $window, growl, $uibModal, VtsHelperService) {
             return {
                 restrict: 'E',
                 require: '^olMap',
@@ -107,9 +102,6 @@ angular.module('maritimeweb.vts-map')
                 link: function (scope, element, attrs, ctrl) {
 
 
-
-
-
                     /* popup information vars*/
                     scope.clearVtsPopup = function(){
                         scope.vtsPopupVtsShortname = "";
@@ -124,6 +116,7 @@ angular.module('maritimeweb.vts-map')
                         scope.vtsPopupVtsVhfReserve = "";
                     };
                     scope.clearVtsPopup(); //init
+                    scope.currentlySelectedVtsArea = 0;
 
                     /***************************/
                     /** VTS Layer             **/
@@ -265,12 +258,15 @@ angular.module('maritimeweb.vts-map')
                                 if(vts_areas.length > 0){
                                     vtsareaLayer.getSource().clear(); //cleanup first
                                     /** iterate through the object to draw all areas on map **/
+                                    var intersectingAreasArr = [];
+                                    var centerAreasArr = [];
                                     for(var i=0;i!=vts_areas.length;i++){
                                         var areaWKT = vts_areas[i].areaWKT; //console this for easy debugging
                                         if (!areaWKT || areaWKT == "" || areaWKT.length < 9) {
                                             growl.error(vts_areas[i].shortname + " does not have an area assigned");
                                         }else{
 
+                                            if(scope.isAreaOnRoute(areaWKT)) intersectingAreasArr.push(vts_areas[i].id);
                                             var drawArea = false;
                                             if(onrouteonly && scope.isAreaOnRoute(areaWKT)){
                                                 drawArea = true;
@@ -283,20 +279,24 @@ angular.module('maritimeweb.vts-map')
                                                     dataProjection: 'EPSG:4326',
                                                     featureProjection: 'EPSG:3857'
                                                 });
-                                                // //place something at center of mass of polygon - if needed (possibly a menu)
-                                                // var polygon = turf.polygon(format.readFeature(areaWKT).getGeometry().getCoordinates());
-                                                // var center = turf.centerOfMass(polygon);
+                                                //saves center of area in localstorage
+                                                var polygon = turf.polygon(format.readFeature(areaWKT).getGeometry().getCoordinates());
+                                                var center = turf.center(polygon);
+                                                centerAreasArr.push({areaId:vts_areas[i].id,areaCenter:center.geometry.coordinates})
+
+                                                //generate the areas for map layer
                                                 areafeature.set("vtsAreaID",vts_areas[i].id);
                                                 areafeature.set("name",vts_areas[i].shortname);
                                                 //styling
                                                 areafeature.setStyle(styleFunctionNormal(vts_areas[i].shortname, vts_areas[i].id));
-                                                console.log("Gotta put a button in somehow");
-                                                // vtsAreasSidePanelListItem
                                                 //add to layer
                                                 vtsareaLayer.getSource().addFeature(areafeature);
                                             }
                                         }
                                     }
+                                    //app-ctrl watches changes to this storage itam, populates sidemenu list accordingly
+                                    $window.localStorage.setItem('vts_intersectingareas', JSON.stringify(intersectingAreasArr));
+                                    $window.localStorage.setItem('vts_center_of_areas', JSON.stringify(centerAreasArr));
                                 }
                             }
                         };
@@ -406,6 +406,8 @@ angular.module('maritimeweb.vts-map')
                         map.addOverlay(overlay);
 
                         scope.activateVTSForm = function (size) {
+                            localStorage.setItem('vts_current_id', scope.currentlySelectedVtsArea);
+
                             if(!size) size='lg';
                             growl.info('Activating Vessel Traffic Control');
                             $uibModal.open({
@@ -418,6 +420,11 @@ angular.module('maritimeweb.vts-map')
                             overlay.setPosition(undefined);
                         };
 
+                        scope.destroyVtsPopup = function(){
+                            scope.clearVtsPopup();
+                            overlay.setPosition(undefined);
+                            localStorage.setItem('vts_current_id', "");
+                        };
                         /***************************/
                         /**        Listeners      **/
                         /***************************/
@@ -434,53 +441,69 @@ angular.module('maritimeweb.vts-map')
 
                         //mouse click or ontap
                         map.on('click', function(evt) { //display VTS area sidebar tab and VTS area information when click
-                            if(map.getView().getZoom() < 14) {
-                                scope.clearVtsPopup();
-                                var ret = scope.getIdForPixel(map.getEventPixel(evt.originalEvent));
-                                if (ret.id != null) {
-                                    var vts_areas_str = localStorage.getItem('vts_areas');
-                                    var vts_areas;
-                                    if (vts_areas_str && vts_areas_str.length > 0) {
-                                        vts_areas = JSON.parse(vts_areas_str);
-                                        if (vts_areas.length > 0) {
-                                            var vtsNum = 0;
-                                            for (var i = 0; i != vts_areas.length; i++) { //find in array which areas ID has ret.id
-                                                if (parseInt(vts_areas[i].id) == parseInt(ret.id)) {
-                                                    vtsNum = i;
-                                                    break;
-                                                }
-                                            }
-                                            localStorage.setItem('vts_current_id', vts_areas[i].id);
-
-                                            //Fill in the VTS info into vars needed by popup
-                                            scope.vtsPopupVtsShortname = vts_areas[vtsNum].shortname;
-                                            scope.vtsPopupVtsCountry = vts_areas[vtsNum].country;
-                                            scope.vtsPopupVtsCallsign = vts_areas[vtsNum].callsign;
-                                            scope.vtsPopupVtsVhf1 = vts_areas[vtsNum].vhfchannel1;
-                                            scope.vtsPopupVtsVhf2 = vts_areas[vtsNum].vhfchannel2;
-                                            scope.vtsPopupVtsVhfReserve = vts_areas[vtsNum].vhfreservechannel1;
-                                            scope.vtsPopupVtsTel1 = vts_areas[vtsNum].telephone;
-                                            scope.vtsPopupVtsTel2 = vts_areas[vtsNum].telephone2;
-                                            scope.vtsPopupVtsEmail = vts_areas[vtsNum].email;
-                                            scope.vtsPopupVtsIconImage = vts_areas[vtsNum].iconImage;
-                                            scope.$apply();
-
-                                            function updateTimeout() { //update bug workaround
-                                                var coordinate = evt.coordinate;
-                                                overlay.setPosition(coordinate);
-                                            }
-
-                                            setTimeout(function () {
-                                                updateTimeout();
-                                            }, 10);
-                                        }
-                                    }
-                                } else {
-                                    scope.clearVtsPopup();
-                                    overlay.setPosition(undefined);
-                                    localStorage.setItem('vts_current_id', "");
+                            //ignore click if a vessel is selected
+                            var allowVtsClick = false;
+                            var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+                                if(feature.get('mmsi')){
+                                    return feature;
                                 }
-                            }//respect zoomlevel
+                                return false;
+                            },{hitTolerance: 4});
+                            if (feature && feature.get('mmsi')) {}else{allowVtsClick=true;}
+                                if(allowVtsClick) {
+
+                                //perform the click action
+                                if (map.getView().getZoom() < 14) {
+                                    scope.clearVtsPopup();
+                                    var ret = scope.getIdForPixel(map.getEventPixel(evt.originalEvent));
+                                    if (ret.id != null) {
+                                        var vts_areas_str = localStorage.getItem('vts_areas');
+                                        var vts_areas;
+                                        if (vts_areas_str && vts_areas_str.length > 0) {
+                                            vts_areas = JSON.parse(vts_areas_str);
+                                            if (vts_areas.length > 0) {
+                                                var vtsNum = 0;
+                                                for (var i = 0; i != vts_areas.length; i++) { //find in array which areas ID has ret.id
+                                                    if (parseInt(vts_areas[i].id) == parseInt(ret.id)) {
+                                                        vtsNum = i;
+                                                        break;
+                                                    }
+                                                }
+                                                scope.currentlySelectedVtsArea = vts_areas[vtsNum].id;
+                                                VtsHelperService.showVtsCenterSelect = false;
+
+                                                //Fill in the VTS info into vars needed by popup
+                                                scope.vtsPopupVtsShortname = vts_areas[vtsNum].shortname;
+                                                scope.vtsPopupVtsCountry = vts_areas[vtsNum].country;
+                                                scope.vtsPopupVtsCallsign = vts_areas[vtsNum].callsign;
+                                                scope.vtsPopupVtsVhf1 = vts_areas[vtsNum].vhfchannel1;
+                                                scope.vtsPopupVtsVhf2 = vts_areas[vtsNum].vhfchannel2;
+                                                scope.vtsPopupVtsVhfReserve = vts_areas[vtsNum].vhfreservechannel1;
+                                                scope.vtsPopupVtsTel1 = vts_areas[vtsNum].telephone;
+                                                scope.vtsPopupVtsTel2 = vts_areas[vtsNum].telephone2;
+                                                scope.vtsPopupVtsEmail = vts_areas[vtsNum].email;
+                                                scope.vtsPopupVtsIconImage = vts_areas[vtsNum].iconImage;
+                                                scope.$apply();
+
+                                                function updateTimeout() { //update bug workaround
+                                                    var coordinate = evt.coordinate;
+                                                    overlay.setPosition(coordinate);
+                                                }
+
+                                                setTimeout(function () {
+                                                    updateTimeout();
+                                                }, 10);
+                                            }
+                                        }
+                                    } else {
+                                        scope.destroyVtsPopup();
+                                    }
+                                } else {//respect zoomlevel
+                                    scope.destroyVtsPopup();
+                                }
+                            } else {//ignore if vessel is selected in VTS area
+                                scope.destroyVtsPopup();
+                            }
                         });
 
                         //mouse over
@@ -540,6 +563,63 @@ angular.module('maritimeweb.vts-map')
                                 }
                             }
                         }, true);
+
+
+                        //user clicks on any of the VTS buttons on the list - run fitextent on it
+                        scope.skipAtLoadCounter = 0; //skips this at load
+                        scope.$watch(function () { return window.localStorage['vts_zoomto_area_id']; },function(newVal,oldVal){
+                            if(newVal && newVal != "" && scope.skipAtLoadCounter > 0){
+                                var vts_center_of_areas;
+                                var tmp_vts_center_of_areas = localStorage.getItem('vts_center_of_areas');
+                                if(tmp_vts_center_of_areas && tmp_vts_center_of_areas != ""){
+                                    vts_center_of_areas = JSON.parse(tmp_vts_center_of_areas);
+                                }
+                                for(var p=0;p!=vts_center_of_areas.length;p++){ //finds the correct point on map and animates to it
+                                    if(parseInt(vts_center_of_areas[p].areaId) == parseInt(newVal)){
+                                        var setZoomLvl = 7;
+                                        if(map.getView().getZoom()<7)setZoomLvl = 7; //zoom out a bit if too close
+                                        if(map.getView().getZoom()>13)setZoomLvl = 7; //zoom out a bit if too far
+
+                                        //move the view with zoom change
+                                        map.getView().animate({
+                                            center: ol.proj.transform(vts_center_of_areas[p].areaCenter, 'EPSG:4326', 'EPSG:3857'),//vts_center_of_areas[p].areaCenter,
+                                            zoom: setZoomLvl,
+                                            duration: 1000
+                                        });
+
+                                        //cleanup
+                                        localStorage.setItem('vts_zoomto_area_id', ""); //clear this so user can re-click on the button
+                                        scope.clearVtsPopup(); //remove popup if user had clicked it
+                                        overlay.setPosition(undefined);
+                                        localStorage.setItem('vts_current_id', "");
+                                        break;
+                                    }
+                                }
+                            }
+                            scope.skipAtLoadCounter++;
+                        });
+
+
+                        // scope.$watch('vts', function (data) {
+                        //     if(data===true){
+                        //         growl.info("Displaying only VTS areas on route");
+                        //     }else{
+                        //         growl.info("Displaying all VTS areas available");
+                        //     }
+                        //     scope.onrouteOnly = data; //so zooming can figure out what to display
+                        //     scope.updateVtsAreas(data); //  data:true/false
+                        //     if(data) { //only center on areas when specifying
+                        //         try { //displays nicely on map
+                        //             var extent = vtsareaLayer.getSource().getExtent();
+                        //             map.getView().fit(extent, map.getSize());
+                        //             map.getView().setZoom(zoomLevel);
+                        //         } catch (cantExtent) {
+                        //         }
+                        //     }
+                        // }, true);
+
+
+
 
                     });
                 }

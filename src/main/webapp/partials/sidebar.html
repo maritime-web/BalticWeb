@@ -1,5 +1,5 @@
 
-<div id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar" ng-class="{false:'sidebar-normal', true:'sidebar-minimized'}[sidebarCollapsed]" class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
+<div ng-mouseover="sidebarUncollapse()" id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar" ng-class="{false:'sidebar-normal', true:'sidebar-minimized'}[sidebarCollapsed]" class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
     <uib-tabset type="pills" justified="true" active="activeTabIndex" index="$index">
 
 
@@ -246,7 +246,7 @@
 
 
         <!-- VTS report tab tab -->
-        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
+        <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()" >
             <uib-tab-heading>
                 <span class="glyphicon glyphicon-globe"></span>
                 &nbsp;VTS
@@ -261,16 +261,27 @@
                     <br>
                     <br>
                     <input type="checkbox" ng-disabled="!vts_map_show  || !vts_route_enabled" ng-model="vts_onroute_only" ng-change="vtsRouteIntersectToggle()" />
-                    Show only areas intersecting route
+                    <span ng-class="{false:'vts-grey-text', true:''}[vts_route_enabled]">Show only areas intersecting route</span>
 
                     <br>
                     <!--<input type="checkbox" ng-change="">-->
                     <!--Display only VTS centres on route-->
                 </div>
             </div>
-            <div class="panel vts-padding-4-20" ng-class="(1==1) ? 'panel-primary' : 'panel-default'" ng-click="sidebarUncollapse()">
-                <p class="" ng-repeat="p in vtsAreasArr" id="vtsAreasSidePanelListItem{{p.id}}">{{p.shortname}} </p>
+            <div class="panel vts-padding-list"  ng-class="(1==1) ? 'panel-primary' : 'panel-default'">
+                <div ng-repeat="item in vtsSidemenuListArr" class="vts-pad-top" style="margin-right:6px;">
+                    <div class="vts-sidemenu-listitem cursor-default">
+                        <div ng-show="item.showButton" style="overflow:hidden;float:left;padding-top:2px;max-width:69%;">{{item.shortname}}</div>
+                        <button ng-show="item.showButton" class='btn btn-primary vts-button-modifier-superslim vts-button-modifier-displayinline vts-button-modifier-floatright' type='button' ng-click="setActiveVtsIdAndOpenForm(item.id)">
+                            Open Report
+                        </button>
+                        <button ng-show="!item.showButton" class='btn btn-info vts-button-modifier-superslim' style="min-width:100%;text-align: left;" type='button' ng-click="mapSetInView(item.id)">
+                            {{item.shortname}}
+                        </button>
+                    </div>
+                </div>
             </div>
+
         </uib-tab>
 
 

@@ -353,6 +353,14 @@ angular.module('maritimeweb.vessel')
 
 
                         // listens when visibility on map has been toggled.
+                        scope.$watch(function () { return window.localStorage['Vessels - AIS']; },function(newVal,oldVal){
+                            if(newVal && (newVal+"")!="" && (newVal+"") != (oldVal+"")){
+                                if((newVal+"")=="true"){
+                                    scope.mapChanged();
+                                }
+                            }
+                        });
+
 
 
                         $rootScope.mapTrafficLayers = vesselLayers; // add group-layer to rootscope so it can be enabled/disabled

@@ -1,9 +1,3 @@
-//TODO:makeall demo RTZ with ETA for august 2019"
-//TODO: make an RTZ with times, without times and passing 2 VTS areas. (Tallin/Helsinki)
-//TODO: if no route and no ETA for waypoints, and no AIS ETA, use nothing.
-//TODO: if no route and no ETA for waypoints, use AIS ETA at whatever port.
-
-
 /** Helper service for VTS
  *
  * Debug tool. <- set debugMode true/false.
@@ -17,6 +11,12 @@
 
 angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
     function ($window) {
+
+
+        this.showVtsCenterSelect = false; //app.ctrl needs to force the select hidden/shown
+        this.returnShowVtsCenterSelect = function() {
+            return this.showVtsCenterSelect;
+        };
 
         this.detectedRouteETA = null;
         this.returnDetectedRouteETA = function() {
@@ -60,9 +60,10 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
 
             inputString = inputString.toString();
             if (decimals > 0) {
-                inputString = inputString.replace(/[^0-9.]/g, '');
+                inputString = inputString.replace(/[^0-9.,]/g, '');
+                inputString = inputString.replace(/[,]/g, '.');
             } else {
-                inputString = inputString.replace(/[^0-9]/g, ''); //no decimals
+                inputString = inputString.replace(/[^0-9]/g, ''); //no decimals allowed
             }
             hasPeriod = inputString.indexOf(".") > -1;
             if (!decimals || decimals == "") decimals = 0;
@@ -97,7 +98,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
         };
 
 
-        //only number between and including 0.0 to 359.9, 1 decimal place with cleanup (int or float)
+        //only number between and including 0.0 to 359.9, 2 decimal places with cleanup (int or float)
         this.VTSValidation360 = function (str) {
             str = str.toString();
             var isValid = false;
@@ -108,7 +109,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                 if (inputFloat.isNaN) inputFloat = 0.0;
                 if (inputFloat > 0.0 && (inputFloat < 360.0)) isValid = true;
                 str = inputFloat + "";
-                str = str.substring(0, str.indexOf(".") + 2); //only one decimal returned
+                str = str.substring(0, str.indexOf(".") + 3); //only one decimal returned
             } else if (str.indexOf(".") < 0 && str.length > 0) { //No period, treat as int
                 if (str.length > 3) str = str.substring(0, 3);
                 var inputInt = parseInt(str);
@@ -121,7 +122,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             return [isValid, str];
         };
 
-
+/* May be required again - TBR March 2018
         //validates 0-90 or 0-180 degrees, 0.0001-60.0000 minutes
         this.positionDegMinValidation = function (input, testfor) {
             var output = {valid: false, value: "", decimals: 0};
@@ -150,7 +151,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                 return output;
             }
         };
-
+*/
 
         this.setSelectionRange = function (input, selectionStart, selectionEnd) {
             input = input.toString();
@@ -209,7 +210,6 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             })
         });
 
-
         window.addEventListener('resize', function () { //centers vessel and area
             try {
                 var extent = vectorSource.getExtent();
@@ -246,6 +246,8 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                 try{
                     intersection = turf.intersect(vtsarea, routeline);
                     stopcoord = intersection.geometry.coordinates[0];
+                    $window.localStorage.setItem('vts_ETA_intersectionpoint',stopcoord);
+                    if(debugMode) console.log(stopcoord);
                     this.detectedRouteIntersect = true;
                 }catch(NothingToIntersect){
                     skipIcon = true; //cannot draw intersection point if there is none
@@ -258,13 +260,23 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                     if (turf.inside(routeArr[i], vtsarea) === true) {
                         etaPoint1 = i;
                         etaPoint0 = i-1;
-                        if(debugMode) console.log(route_ETAs[etaPoint0], "Should be inside area.");
+                        if(debugMode) console.log(route_ETAs[etaPoint0], "Should be inside VTS area.");
+                        if(debugMode) console.log(route_ETAs[etaPoint1], "Should be last before VTS area.");
                         var time1 = route_ETAs[etaPoint0];
                         if(time1 && time1.length>20){
                             var routeETA = moment(time1).utc().format("DD MMM YYYY - hh:mm");
                             if(debugMode) console.log("Routepoint"+etaPoint1+":",routeETA);
                             this.detectedRouteETA = routeETA; //set the variable so the CTRL can retrieve it
                         }
+                        // Get the Rhumb line heading at entry of VTS area, then put into localstorage
+                        var pointArrAsWKT = convertPosToLonLat();
+                        var point1 = turf.point(pointArrAsWKT[1][etaPoint0]);
+                        var point2 = turf.point(pointArrAsWKT[1][etaPoint1]);
+                        var bearing = turf.bearing(point1, point2);
+                        if(bearing<0) bearing = 360 + bearing; //bearing should always be 0-360.
+                        $window.localStorage.setItem('vts_ETA_bearing',bearing);
+                        if(debugMode) console.log("bearing:",bearing);
+
                         break;
                     }
                 }
@@ -331,7 +343,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             if(routeRet) {
                 var routeWKT = routeRet[0];
                 var routeArr = routeRet[1];
-                this.findETAatIntersect(routeArr, areaWKT, false); //Finds the ETA at intersect of VTS area. Value is requested by CTRL. Also sets intersect icon.
+                this.findETAatIntersect(routeArr, areaWKT, false); //Finds the ETA at intersect of VTS area and draws on minimap.
                 routefeature = format.readFeature(routeWKT, {
                     dataProjection: 'EPSG:4326',
                     featureProjection: 'EPSG:3857'

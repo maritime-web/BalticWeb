@@ -134,7 +134,7 @@ angular.module('maritimeweb.map')
                 var controls = scope.readonly ? [] : ol.control.defaults({rotate: false}).extend([new ol.control.Rotate()]);
                 var interactions = scope.readonly ? [] : ol.interaction.defaults({
                         altShiftDragRotate: true,
-                        pinchRotate: true
+                        pinchRotate: false
                     });
                 //   console.log("extent" +[scope.swlon, scope.swlat, scope.nelon, scope.nelat]);
 
