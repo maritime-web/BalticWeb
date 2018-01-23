@@ -69,6 +69,7 @@ angular.module('maritimeweb.app')
                 var useremail = $scope.userMrn().email;
                 var userEmailMd5 = CryptoJS.MD5(useremail).toString();
                 var forceZoomToVessel = false;
+                var zoomToVesselMMSI = 0;
                 var curPos = {
                     lon:0,
                     lat:0,
@@ -76,15 +77,26 @@ angular.module('maritimeweb.app')
                 }
                 if(userEmailMd5 == "826af07e5d45f86e84bd586468dde926"){
                     console.log("Hello Rob, welcome back ^_^");
-                    $window.localStorage.setItem('mmsi', 219945000);
+                    zoomToVesselMMSI = 219018314;
+                    $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
+
                     forceZoomToVessel = true;
-                }else if(userEmailMd5 == "050b254e99e21787a1c9817acdb38797"){
+                }else if(userEmailMd5 == "050b254e99e21787a1c9817acdb38797" || userEmailMd5 == "da13656b963149a13fcbc4168796b29b" || userEmailMd5 == "0aa5b26719b2542dd72d10c7b43e1e12" || userEmailMd5 == "e59453b89ad5cd99712d91e93923fb84"){
                     forceZoomToVessel = true;
+                    zoomToVesselMMSI = 219945000;
+                    $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
                 }
+
 
                 function locateVesselPos(){
                     if(forceZoomToVessel) {
-                        VesselService.detailsMMSI("219945000").then(function (vesselDetails) {
+                        // console.log("Geoffrey:", $scope.mapTrafficLayers.getLayers("Vessels - AIS").getVisible());
+                        // try {
+                        //     // $scope.toggleLayer($scope.mapTrafficLayers.getLayers().getArray());
+                        //     // "Vessels - AIS""
+                        // }catch(noLayerYetError){}
+                        //
+                        VesselService.detailsMMSI(zoomToVesselMMSI).then(function (vesselDetails) {
                             curPos.lon = vesselDetails.data.aisVessel.lon;
                             curPos.lat = vesselDetails.data.aisVessel.lat;
                             curPos.cog = vesselDetails.data.aisVessel.cog;
@@ -97,6 +109,7 @@ angular.module('maritimeweb.app')
 
                 //the other guy: "050b254e99e21787a1c9817acdb38797"
                 //my email: "826af07e5d45f86e84bd586468dde926"
+                //additional: "da13656b963149a13fcbc4168796b29b"
                 }catch(notLoggedInErr){}
             };
             $scope.enav_underway_detect_user_by_email();

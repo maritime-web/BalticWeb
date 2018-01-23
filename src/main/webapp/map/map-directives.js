@@ -184,18 +184,12 @@ angular.module('maritimeweb.map')
 
                 scope.$watch(function () { return window.localStorage['vts_zoomto_uservessel']; },function(newVal,oldVal){
                     if(newVal && newVal.toString() != ""){
-                        console.log("vts_zoomto_uservessel:",newVal);
                         localStorage.setItem('vts_zoomto_uservessel', "");
                         map.getView().animate({
                             center: ol.proj.transform(JSON.parse(newVal), 'EPSG:4326', 'EPSG:3857'),
-                            zoom: 10,
+                            zoom: 16,
                             duration: 3000
                         });
-
-
-                        // view.setCenter(MapService.fromLonLat(JSON.parse(newVal)));
-                        // view.setZoom(8);
-
                     }
                 });
 
