@@ -58,12 +58,51 @@ angular.module('maritimeweb.app')
             /** Returns the mrn **/
             $scope.userMrn = function () {
                 if (Auth.authz.tokenParsed) {
-                    return Auth.authz.tokenParsed.preferred_username;
+                    return Auth.authz.tokenParsed;
                 }
                 return undefined;
             };
-            var lolcat = $scope.userMrn();
-            console.log("Pearl Seaways here:",lolcat)
+
+            //Just for e-navigation Underway conference 2018 - useremail is hardcoded as MD5 hashes.
+            $scope.enav_underway_detect_user_by_email = function(){
+                try{
+                var useremail = $scope.userMrn().email;
+                var userEmailMd5 = CryptoJS.MD5(useremail).toString();
+                var forceZoomToVessel = false;
+                var curPos = {
+                    lon:0,
+                    lat:0,
+                    cog:0
+                }
+                if(userEmailMd5 == "826af07e5d45f86e84bd586468dde926"){
+                    console.log("Hello Rob, welcome back ^_^");
+                    $window.localStorage.setItem('mmsi', 219945000);
+                    forceZoomToVessel = true;
+                }else if(userEmailMd5 == "050b254e99e21787a1c9817acdb38797"){
+                    forceZoomToVessel = true;
+                }
+
+                function locateVesselPos(){
+                    if(forceZoomToVessel) {
+                        VesselService.detailsMMSI("219945000").then(function (vesselDetails) {
+                            curPos.lon = vesselDetails.data.aisVessel.lon;
+                            curPos.lat = vesselDetails.data.aisVessel.lat;
+                            curPos.cog = vesselDetails.data.aisVessel.cog;
+                            localStorage.setItem('vts_zoomto_uservessel', "["+curPos.lon+","+curPos.lat+"]");
+                            forceZoomToVessel=false;
+                        });
+                    }
+                }
+                if(forceZoomToVessel) setTimeout(function(){ locateVesselPos(); }, 2000); //keeps trying to locate vessel
+
+                //the other guy: "050b254e99e21787a1c9817acdb38797"
+                //my email: "826af07e5d45f86e84bd586468dde926"
+                }catch(notLoggedInErr){}
+            };
+            $scope.enav_underway_detect_user_by_email();
+
+
+
 
 
             /** Enters the Keycloak account management **/
