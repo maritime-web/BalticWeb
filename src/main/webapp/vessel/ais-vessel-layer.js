@@ -173,12 +173,15 @@ angular.module('maritimeweb.vessel')
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
                                     anchor: [0.5, 0.5],
-                                    opacity: 0.85,
+                                    scale:0.9,
+                                    opacity: 1,
+                                    // opacity: 0.85, //org
                                     id: vessel.id + '_marker',
-                                    offset: [3, -3],
+                                    offset: [0, 0],
+                                    // offset: [3, -3], //org
                                     //rotation: vessel.radian,
                                     rotateWithView: true,
-                                    src: 'img/selection.png'
+                                    src: 'img/ring.png'
                                 }))
                             });
 

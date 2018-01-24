@@ -1153,11 +1153,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.vtsDisplayNonIntersectWarning = false;
             $scope.vtsDisplayNonIntersectWarningText = false;
             var tmpStr = $window.localStorage['vts_intersectingareas'];
+            if(!tmpStr) tmpStr = "";
             var tmpRouteIntersectState = true;
             try {
                 var vts_intersectingareasArr = JSON.parse(tmpStr);
                 if (vts_intersectingareasArr.length > 0) {
-                    tmpStr = $window.localStorage['vts_current_id']
+                    tmpStr = $window.localStorage['vts_current_id'];
                     if(tmpStr.length > 0){
                         for(var f=0; f!=vts_intersectingareasArr.length; f++){
                             if(parseInt(tmpStr) == parseInt(vts_intersectingareasArr[f])){
@@ -1165,11 +1166,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                             }
                         }
                     }
+                }else{
+                    tmpRouteIntersectState = false;
                 }
                 $scope.vtsDisplayNonIntersectWarning = tmpRouteIntersectState;
             }catch(NothingInLocalstorageErr){}
-
-        };
+          };
 
         $scope.toggleDisplayNonIntersectWarningText = function(){
             ($scope.vtsDisplayNonIntersectWarningText==true) ? $scope.vtsDisplayNonIntersectWarningText = false : $scope.vtsDisplayNonIntersectWarningText = true;
