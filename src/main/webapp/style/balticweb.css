@@ -11,7 +11,7 @@ body {
 }
 
 .modal-content{
-    min-width: 380px !important;
+    min-width: 366px !important;
 }
 
 
@@ -154,6 +154,40 @@ abbr::after {
 }
 .vts-warning-abbr::after {
     background: #9c1a03;
+}
+
+.vts-fuel-icon-container {
+    width:64px;
+    height:86px;
+    max-width:64px;
+    margin-right:10px;
+    display: inline-block;
+    border:solid 1px #eeeeee;
+/*hover    border:solid 1px #666666;*/
+/*highlight    background:#cccccc;*/
+}
+.vts-fuel-icon-container:hover {
+    border:solid 1px #666666;
+}
+.vts-fuel-icon-label {
+    width:64px;
+    height:22px;
+    max-width:64px;
+    max-height:22px;
+    text-align: center;
+}
+.vts-fuel-icon {
+    width:64px;
+    height:64px;
+    max-width:64px;
+    background-size: 64px;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+.vts-fuel-description-box{
+    overflow:hidden;
+    min-height:29px;
+    padding-top:3px;
 }
 
 
@@ -359,6 +393,11 @@ abbr::after {
     max-width:200px;
     display: inline-block;
 }
+.vts-force-spacing-222{ /* specifically for fuel*/
+    min-width:222px;
+    max-width:222px;
+    display: inline-block;
+}
 .vts-force-spacing-250{
     min-width:250px;
     max-width:250px;
@@ -466,7 +505,7 @@ abbr::after {
 .vts-cargotype-hover-highlight:hover {
     border:solid 1px #666666;
 }
-.vts-cargotype-selected-highlight {
+.vts-box-selected-highlight {
     background:#cccccc;
 }
 .vts-cargolist-border{

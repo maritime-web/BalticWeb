@@ -1,5 +1,5 @@
 {
-  "realm": "BalticWeb-Local",
+  "realm": "XxxWeb-Local",
   "bearer-only": true,
   "auth-server-url": "https://maritimeid.maritimecloud.net/auth",
   "ssl-required": "none",

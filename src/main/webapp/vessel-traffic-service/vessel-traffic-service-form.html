@@ -271,136 +271,178 @@
         </div>
 
         <!-- FUEL INFORMATION ------------------------------------------------------------------- -->
-
         <div class="vts-pad-top" ng-show="showFuelDetails">
             <hr class="vts-hr" >
-            <div><span class="bold" >Fuel information </span><span class="vts-grey-text"> - current fuel quantity on board, in metric tonnes: {{vtsTotalFuel}}</span></div>
+            <span class="vts-force-spacing-200 bold">Fuel information:</span>
+            <div class="vts-pad-top">Reporting all the fuel carried on board is mandatory, please select a fuel type from the list, or "other" if you are in doubt:</div>
+            <!--ng-repeat=”(key, value) in statuses”-->
 
-            <span class="vts-force-spacing-350" style="position:relative;top:5px;">
-                <span class="bold">{{fuelTypes[0].name}}</span><span> - {{fuelTypes[0].description}}:</span>
-            </span>
-            <div class="">
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype00_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype00_0input" ng-change="VTSFuelTypeValidation('00_0')">
-                    <span class="vts-force-spacing-100">
-                        Regular
-                    </span>
-                </span>
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype00_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype00_1input" ng-change="VTSFuelTypeValidation('00_1')">
-                    <span class="vts-force-spacing-100">
-                        Low Sulpur
-                    </span>
-                </span>
-                <span class="vts-force-spacing-300 vts-pad-top">
-                    <input id="fueltype00_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype00_2input" ng-change="VTSFuelTypeValidation('00_2')">
-                    <span class="vts-force-spacing-150">
-                        Ultra Low Sulpur
-                    </span>
-                </span>
+            <div>
+                <div class="vts-force-spacing-222 vts-pad-top" >
+                    <div class="vts-fuel-icon-container" ng-repeat="p in fuelTypes.slice(0,3)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                        <div class="vts-fuel-icon-label">{{p.shortname}}</div>
+                        <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
+                    </div>
+                </div>
+                <div class="vts-force-spacing-222 vts-pad-top">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(3,6)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                        <div class="vts-fuel-icon-label">{{p.shortname}}</div>
+                        <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
+                    </div>
+                </div>
+                <div class="vts-force-spacing-222 vts-pad-top">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(6,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                        <div class="vts-fuel-icon-label">{{p.shortname}}</div>
+                        <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
+                    </div>
+                </div>
+                <!--<div class="vts-force-spacing-222 vts-pad-top">-->
+                    <!--<div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(7,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.description)">-->
+                        <!--<div class="vts-fuel-icon-label">{{p.shortname}}</div>-->
+                        <!--<div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
+            <!--<div ng-show="showFuelDetails" class="" name="vts-fueltype-image-select" ng-options="q.Shortname as q.Shortname for q in (FuelTypes | filter:isListItemNull)" ng-model="FuelTypes.Shortname" ng-change="">-->
+                <!--{{q.Shortname}}-->
+            <!--</div>-->
 
-            <hr class="vts-hr-seperator" >
 
-            <span class="vts-force-spacing-350" style="position:relative;top:5px;">
-                <span class="bold">{{fuelTypes[1].name}}</span><span> - {{fuelTypes[1].description}}:</span>
-            </span>
-            <div class="">
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype01_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype01_0input" ng-change="VTSFuelTypeValidation('01_0')">
-                    <span class="vts-force-spacing-100">
-                        Regular
-                    </span>
-                </span>
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype01_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype01_1input" ng-change="VTSFuelTypeValidation('01_1')">
-                    <span class="vts-force-spacing-100">
-                        Low Sulpur
-                    </span>
-                </span>
-                <span class="vts-force-spacing-300 vts-pad-top">
-                    <input id="fueltype01_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype01_2input" ng-change="VTSFuelTypeValidation('01_2')">
-                    <span class="vts-force-spacing-150">
-                        Ultra Low Sulpur
-                    </span>
-                </span>
+            <div class="vts-fuel-description-box vts-grey-text">
+                {{vtsFuelSelectedTypeDescriptionText}}
             </div>
-
-            <hr class="vts-hr-seperator" >
-
-            <span class="vts-force-spacing-350" style="position:relative;top:5px;">
-                <span class="bold">{{fuelTypes[2].name}}</span><span> - {{fuelTypes[2].description}}:</span>
-            </span>
-            <div class="">
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype02_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype02_0input" ng-change="VTSFuelTypeValidation('02_0')">
-                    <span class="vts-force-spacing-100">
-                        Regular
-                    </span>
-                </span>
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype02_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype02_1input" ng-change="VTSFuelTypeValidation('02_1')">
-                    <span class="vts-force-spacing-100">
-                        Low Sulpur
-                    </span>
-                </span>
-                <span class="vts-force-spacing-300 vts-pad-top">
-                    <input id="fueltype02_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype02_2input" ng-change="VTSFuelTypeValidation('02_2')">
-                    <span class="vts-force-spacing-150">
-                        Ultra Low Sulpur
-                    </span>
-                </span>
-            </div>
-
-            <hr class="vts-hr-seperator" >
-
-            <span class="vts-force-spacing-350" style="position:relative;top:5px;">
-                <span class="bold">{{fuelTypes[3].name}}</span><span> - {{fuelTypes[3].description}}:</span>
-            </span>
-            <div class="">
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype03_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype03_0input" ng-change="VTSFuelTypeValidation('03_0')">
-                    <span class="vts-force-spacing-100">
-                        Regular
-                    </span>
-                </span>
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype03_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype03_1input" ng-change="VTSFuelTypeValidation('03_1')">
-                    <span class="vts-force-spacing-100">
-                        Low Sulpur
-                    </span>
-                </span>
-                <span class="vts-force-spacing-300 vts-pad-top">
-                    <input id="fueltype03_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype03_2input" ng-change="VTSFuelTypeValidation('03_2')">
-                    <span class="vts-force-spacing-150">
-                        Ultra Low Sulpur
-                    </span>
-                </span>
-            </div>
-
-            <hr class="vts-hr-seperator" >
-
-            <span class="vts-force-spacing-200" style="position:relative;top:5px;">
-                <span class="bold">{{fuelTypes[4].name}}</span><span> - {{fuelTypes[4].description}}:</span>
-            </span>
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype04_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype04_0input" ng-change="VTSFuelTypeValidation('04_0')">
-                </span>
-
-            <hr class="vts-hr-seperator" >
-
-            <span class="vts-force-spacing-200" style="position:relative;top:5px;">
-                <span class="bold">{{fuelTypes[5].name}}</span><span> - {{fuelTypes[5].description}}:</span>
-            </span>
-                <span class="vts-force-spacing-200 vts-pad-top">
-                    <input id="fueltype05_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype05_0input" ng-change="VTSFuelTypeValidation('05_0')">
-                </span>
-
-            <hr class="vts-hr-seperator" >
-
-
-
+            <hr class="vts-hr" >
         </div>
+
+        <!--<div class="vts-pad-top" ng-show="showFuelDetails">-->
+            <!--<hr class="vts-hr" >-->
+            <!--<div><span class="bold" >Fuel information </span><span class="vts-grey-text"> - current fuel quantity on board, in metric tonnes: {{vtsTotalFuel}}</span></div>-->
+
+            <!--<span class="vts-force-spacing-350" style="position:relative;top:5px;">-->
+                <!--<span class="bold">{{fuelTypes[0].name}}</span><span> - {{fuelTypes[0].description}}:</span>-->
+            <!--</span>-->
+            <!--<div class="">-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype00_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype00_0input" ng-change="VTSFuelTypeValidation('00_0')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Regular-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype00_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype00_1input" ng-change="VTSFuelTypeValidation('00_1')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-300 vts-pad-top">-->
+                    <!--<input id="fueltype00_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype00_2input" ng-change="VTSFuelTypeValidation('00_2')">-->
+                    <!--<span class="vts-force-spacing-150">-->
+                        <!--Ultra Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+
+            <!--<hr class="vts-hr-seperator" >-->
+
+            <!--<span class="vts-force-spacing-350" style="position:relative;top:5px;">-->
+                <!--<span class="bold">{{fuelTypes[1].name}}</span><span> - {{fuelTypes[1].description}}:</span>-->
+            <!--</span>-->
+            <!--<div class="">-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype01_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype01_0input" ng-change="VTSFuelTypeValidation('01_0')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Regular-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype01_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype01_1input" ng-change="VTSFuelTypeValidation('01_1')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-300 vts-pad-top">-->
+                    <!--<input id="fueltype01_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype01_2input" ng-change="VTSFuelTypeValidation('01_2')">-->
+                    <!--<span class="vts-force-spacing-150">-->
+                        <!--Ultra Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+
+            <!--<hr class="vts-hr-seperator" >-->
+
+            <!--<span class="vts-force-spacing-350" style="position:relative;top:5px;">-->
+                <!--<span class="bold">{{fuelTypes[2].name}}</span><span> - {{fuelTypes[2].description}}:</span>-->
+            <!--</span>-->
+            <!--<div class="">-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype02_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype02_0input" ng-change="VTSFuelTypeValidation('02_0')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Regular-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype02_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype02_1input" ng-change="VTSFuelTypeValidation('02_1')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-300 vts-pad-top">-->
+                    <!--<input id="fueltype02_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype02_2input" ng-change="VTSFuelTypeValidation('02_2')">-->
+                    <!--<span class="vts-force-spacing-150">-->
+                        <!--Ultra Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+
+            <!--<hr class="vts-hr-seperator" >-->
+
+            <!--<span class="vts-force-spacing-350" style="position:relative;top:5px;">-->
+                <!--<span class="bold">{{fuelTypes[3].name}}</span><span> - {{fuelTypes[3].description}}:</span>-->
+            <!--</span>-->
+            <!--<div class="">-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype03_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype03_0input" ng-change="VTSFuelTypeValidation('03_0')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Regular-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype03_1" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype03_1input" ng-change="VTSFuelTypeValidation('03_1')">-->
+                    <!--<span class="vts-force-spacing-100">-->
+                        <!--Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<span class="vts-force-spacing-300 vts-pad-top">-->
+                    <!--<input id="fueltype03_2" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype03_2input" ng-change="VTSFuelTypeValidation('03_2')">-->
+                    <!--<span class="vts-force-spacing-150">-->
+                        <!--Ultra Low Sulpur-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+
+            <!--<hr class="vts-hr-seperator" >-->
+
+            <!--<span class="vts-force-spacing-200" style="position:relative;top:5px;">-->
+                <!--<span class="bold">{{fuelTypes[4].name}}</span><span> - {{fuelTypes[4].description}}:</span>-->
+            <!--</span>-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype04_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype04_0input" ng-change="VTSFuelTypeValidation('04_0')">-->
+                <!--</span>-->
+
+            <!--<hr class="vts-hr-seperator" >-->
+
+            <!--<span class="vts-force-spacing-200" style="position:relative;top:5px;">-->
+                <!--<span class="bold">{{fuelTypes[5].name}}</span><span> - {{fuelTypes[5].description}}:</span>-->
+            <!--</span>-->
+                <!--<span class="vts-force-spacing-200 vts-pad-top">-->
+                    <!--<input id="fueltype05_0" class="vts-input-medium vts-text-center" ng-model="vtsvesselfueltype05_0input" ng-change="VTSFuelTypeValidation('05_0')">-->
+                <!--</span>-->
+
+            <!--<hr class="vts-hr-seperator" >-->
+
+
+
+        <!--</div>-->
 
 
         <div class="vts-pad-top" >
@@ -426,25 +468,25 @@
                         <div class="vts-pad-top">Please select an IMO dangerous goods classification:</div>
                         <div>
                             <div class="vts-force-spacing-350 vts-pad-top">
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType1]" ng-click="VTSDangerousCargoTypeSelection('1')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType1]" ng-click="VTSDangerousCargoTypeSelection('1')">
                                     <div class="vts-center bold">Class 1</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.1.animated.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType21]" ng-click="VTSDangerousCargoTypeSelection('2.1')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType21]" ng-click="VTSDangerousCargoTypeSelection('2.1')">
                                     <div class="vts-text-center bold">Class 2.1</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.2.1.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType22]" ng-click="VTSDangerousCargoTypeSelection('2.2')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType22]" ng-click="VTSDangerousCargoTypeSelection('2.2')">
                                     <div class="vts-text-center bold">Class 2.2</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.2.2.animated.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType23]" ng-click="VTSDangerousCargoTypeSelection('2.3')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType23]" ng-click="VTSDangerousCargoTypeSelection('2.3')">
                                     <div class="vts-text-center bold">Class 2.3</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.2.3.gif">
@@ -452,25 +494,25 @@
                                 </div>
                             </div>
                             <div class="vts-force-spacing-350 vts-pad-top">
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType3]" ng-click="VTSDangerousCargoTypeSelection('3')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType3]" ng-click="VTSDangerousCargoTypeSelection('3')">
                                     <div class="vts-text-center bold">Class 3</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.3.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType41]" ng-click="VTSDangerousCargoTypeSelection('4.1')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType41]" ng-click="VTSDangerousCargoTypeSelection('4.1')">
                                     <div class="vts-text-center bold">Class 4.1</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.4.1.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType42]" ng-click="VTSDangerousCargoTypeSelection('4.2')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType42]" ng-click="VTSDangerousCargoTypeSelection('4.2')">
                                     <div class="vts-text-center bold">Class 4.2</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.4.2.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType43]" ng-click="VTSDangerousCargoTypeSelection('4.3')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType43]" ng-click="VTSDangerousCargoTypeSelection('4.3')">
                                     <div class="vts-text-center bold">Class 4.3</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.4.3.gif">
@@ -480,25 +522,25 @@
                         </div>
                         <div>
                             <div class="vts-force-spacing-350 vts-pad-top">
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType51]" ng-click="VTSDangerousCargoTypeSelection('5.1')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType51]" ng-click="VTSDangerousCargoTypeSelection('5.1')">
                                     <div class="vts-text-center bold">Class 5.1</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.5.1.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType52]" ng-click="VTSDangerousCargoTypeSelection('5.2')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType52]" ng-click="VTSDangerousCargoTypeSelection('5.2')">
                                     <div class="vts-text-center bold">Class 5.2</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.5.2.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType61]" ng-click="VTSDangerousCargoTypeSelection('6.1')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType61]" ng-click="VTSDangerousCargoTypeSelection('6.1')">
                                     <div class="vts-text-center bold">Class 6.1</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.6.1.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType62]" ng-click="VTSDangerousCargoTypeSelection('6.2')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType62]" ng-click="VTSDangerousCargoTypeSelection('6.2')">
                                     <div class="vts-text-center bold">Class 6.2</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.6.2.gif">
@@ -506,19 +548,19 @@
                                 </div>
                             </div>
                             <div class="vts-force-spacing-350 vts-pad-top">
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType7]" ng-click="VTSDangerousCargoTypeSelection('7')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType7]" ng-click="VTSDangerousCargoTypeSelection('7')">
                                     <div class="vts-text-center bold">Class 7</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.7.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType8]" ng-click="VTSDangerousCargoTypeSelection('8')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType8]" ng-click="VTSDangerousCargoTypeSelection('8')">
                                     <div class="vts-text-center bold">Class 8</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.8.gif">
                                     </div>
                                 </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-cargotype-selected-highlight'}[dgSelectedType9]" ng-click="VTSDangerousCargoTypeSelection('9')">
+                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType9]" ng-click="VTSDangerousCargoTypeSelection('9')">
                                     <div class="vts-text-center bold">Class 9</div>
                                     <div>
                                         <img style="width:100%" src="img/cargo_labels/dg.9.animated.gif">
@@ -610,10 +652,6 @@
         <span class="bold">Voyage information</span><span class="vts-grey-text"> - data extracted from AIS or route (RTZ)</span>
 
             <div class="vts-pad-top" ng-show="showPortOfDestination || showPortOfDestinationEta">
-                <div class="vts-force-spacing-200" ng-show="showPortOfDestination">
-                    <span class="vts-force-spacing-200">Port of destination:</span>
-                    <input class="vts-input vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselPortOfDestinationValid]" type="text" ng-model="vtsvesselportofdestinationinput" ng-change="VTSVesselPortOfDestinationValidation(true)" onfocus="this.placeholder = ''" onblur="this.placeholder = ''" placeholder="{{placeholderAisVesselDestination}}">
-                </div>
                 <div ng-show="showPortOfDestinationEta">
                     <span> ETA at destination port according to AIS:</span><span style="font-style: italic;"> {{vtsvesselportofdestinationetalabel}}</span>
                     <div >
