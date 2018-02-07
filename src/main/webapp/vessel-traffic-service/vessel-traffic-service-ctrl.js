@@ -65,6 +65,113 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         VTSData = $scope.VTSCenterData; //local var so interface doesnt update all the time
         $scope.VTSID = -1; //for reference when validating - -1 is pristine
 
+
+
+
+        //FUEL TYPES model - until the new SMA model is integrated
+        $scope.fuelTypes = [
+            {
+                description: "Heavy Fuel Oil, residual fuel oil (No. 6, Bunker C)", //Black
+                name: "Heavy Fuel Oil",
+                shortname: "HFO",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 5,
+                sulphurPercentageMin: 3.5,
+                iconImageUrl: "img/vts_fuelicons/icon_HFO.png"
+            },
+            {
+                description: "Fuel Oil, low Sulphur", //Black
+                name: "Low Sulphur Fuel Oil",
+                shortname: "LSFO",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 5,
+                sulphurPercentageMin: 3.5,
+                iconImageUrl: "img/vts_fuelicons/icon_HFO.png"
+            },
+            {
+                description: "Fuel Oil, ultra low Sulphur", //Black
+                name: "Ultra Low Sulphur Fuel Oil",
+                shortname: "ULSFO",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 0.1,
+                sulphurPercentageMin: 0.001,
+                iconImageUrl: "img/vts_fuelicons/icon_HFO.png"
+            },
+            {
+                description: "Marine Gas Oil, distillate fuel oil (No. 2, Bunker A).", //Yellow and Orange/yellowish and lightbrown
+                name: "Marine Gas Oil",
+                shortname: "MGO",
+                sulphurContentDenomination: "light",
+                sulphurPercentageMax: 3.5,
+                sulphurPercentageMin: 1,
+                iconImageUrl: "img/vts_fuelicons/icon_MGO.png",
+            },
+            {
+                description: "Medium Fuel Oil, a blend of MGO and HFO, with less gasoil than IFO.", //deep grey
+                name: "Medium Fuel Oil",
+                shortname: "MFO",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 0.01,
+                sulphurPercentageMin: 0.01,
+                iconImageUrl: "img/vts_fuelicons/icon_MFO.png",
+            },
+            {
+                description: "",
+                name: "Marine Diesel Oil", //Reddish/deep orange and light brown
+                shortname: "MDO",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 0.01,
+                sulphurPercentageMin: 0.01,
+                iconImageUrl: "img/vts_fuelicons/icon_MDO.png",
+            },
+            {
+                description: "Liquid fuel grade petroleum.", //light blue gas
+                name: "Liquid Petroleum Gas",
+                shortname: "LPG",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 0,
+                sulphurPercentageMin: 0,
+                iconImageUrl: "img/vts_fuelicons/icon_LPG.png",
+            },
+            {
+                description: "Methane gas in liquid form under high pressure.", //light brown gas
+                name: "Liquified Natural Gas",
+                shortname: "LNG",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 0,
+                sulphurPercentageMin: 0,
+                iconImageUrl: "img/vts_fuelicons/icon_LNG.png",
+            },
+            {
+                description: "Another fuel type which is not described.",
+                name: "Manually described fuel type",
+                shortname: "Other",
+                sulphurContentDenomination: "",
+                sulphurPercentageMax: 0,
+                sulphurPercentageMin: 0,
+                iconImageUrl: "img/vts_fuelicons/icon_all_questionmark.png",
+            }
+        ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //DWT multiplier may be needed to force display of fuel types, according to National Single Window project. Not implemented in BalticWeb yet.
         $scope.vesselTypes = [
             {type: "General Cargo", DWTmultiplier: 0.5285},
@@ -103,15 +210,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
          */
 
 
-        $scope.fuelTypes = [
-            {name: "HFO", description: "Heavy Fuel Oil"},
-            {name: "IFO", description: "Intermediate Fuel Oil"},
-            {name: "MDO", description: "Marine Diesel Oil"},
-            {name: "MGO", description: "Marine Gas Oil"},
-            {name: "LPG", description: "Liquid Petroleum Gas"},
-            {name: "LNG", description: "Liquid Natural Gas"},
-            {name: "Other", description: ""}
-        ];
+        // $scope.fuelTypes = [
+        //     {name: "HFO", description: "Heavy Fuel Oil"},
+        //     {name: "IFO", description: "Intermediate Fuel Oil"},
+        //     {name: "MDO", description: "Marine Diesel Oil"},
+        //     {name: "MGO", description: "Marine Gas Oil"},
+        //     {name: "LPG", description: "Liquid Petroleum Gas"},
+        //     {name: "LNG", description: "Liquid Natural Gas"},
+        //     {name: "Other", description: ""}
+        // ];
 
         //displays as vessel type input but is really a cargo definition
         $scope.cargoTypes = ["None", "Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"];
@@ -153,27 +260,27 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.vtsvesselemailreportcopy = ""; //sends copy of vts report to this email
 
         //fuel information
-        $scope.vtsvesselfueltype00_0input = "";
-        $scope.vtsvesselfueltype00_1input = "";
-        $scope.vtsvesselfueltype00_2input = "";
-        $scope.vtsvesselfueltype01_0input = "";
-        $scope.vtsvesselfueltype01_1input = "";
-        $scope.vtsvesselfueltype01_2input = "";
-        $scope.vtsvesselfueltype02_0input = "";
-        $scope.vtsvesselfueltype02_1input = "";
-        $scope.vtsvesselfueltype02_2input = "";
-        $scope.vtsvesselfueltype03_0input = "";
-        $scope.vtsvesselfueltype03_1input = "";
-        $scope.vtsvesselfueltype03_2input = "";
-        $scope.vtsvesselfueltype04_0input = "";
-        $scope.vtsvesselfueltype04_1input = "";
-        $scope.vtsvesselfueltype04_2input = "";
-        $scope.vtsvesselfueltype05_0input = "";
-        $scope.vtsvesselfueltype05_1input = "";
-        $scope.vtsvesselfueltype05_2input = "";
-        $scope.vtsvesselfueltype06_0input = "";
-        $scope.vtsvesselfueltype06_1input = "";
-        $scope.vtsvesselfueltype06_2input = "";
+        // $scope.vtsvesselfueltype00_0input = "";
+        // $scope.vtsvesselfueltype00_1input = "";
+        // $scope.vtsvesselfueltype00_2input = "";
+        // $scope.vtsvesselfueltype01_0input = "";
+        // $scope.vtsvesselfueltype01_1input = "";
+        // $scope.vtsvesselfueltype01_2input = "";
+        // $scope.vtsvesselfueltype02_0input = "";
+        // $scope.vtsvesselfueltype02_1input = "";
+        // $scope.vtsvesselfueltype02_2input = "";
+        // $scope.vtsvesselfueltype03_0input = "";
+        // $scope.vtsvesselfueltype03_1input = "";
+        // $scope.vtsvesselfueltype03_2input = "";
+        // $scope.vtsvesselfueltype04_0input = "";
+        // $scope.vtsvesselfueltype04_1input = "";
+        // $scope.vtsvesselfueltype04_2input = "";
+        // $scope.vtsvesselfueltype05_0input = "";
+        // $scope.vtsvesselfueltype05_1input = "";
+        // $scope.vtsvesselfueltype05_2input = "";
+        // $scope.vtsvesselfueltype06_0input = "";
+        // $scope.vtsvesselfueltype06_1input = "";
+        // $scope.vtsvesselfueltype06_2input = "";
 
         //Cargo information
         $scope.selectedCargoType = "";
@@ -253,20 +360,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             //Fuel and fuel types - always in Tonnes (metric)
             fuelTotalFuel: 0, //Tonnes - all fuel added up
-            fuelTypeHFORegular: 0, //Tonnes - regular means it is not low sulphur. (Heavy Fuel Oil)
-            fuelTypeHFOLowSulphur: 0,
-            fuelTypeHFOUltraLowSulphur: 0,
-            fuelTypeIFORegular: 0, //(Intermediate Fuel Oil)
-            fuelTypeIFOLowSulphur: 0,
-            fuelTypeIFOUltraLowSulphur: 0,
-            fuelTypeMDORegular: 0, //(Marine Diesel Oil)
-            fuelTypeMDOLowSulphur: 0,
-            fuelTypeMDOUltraLowSulphur: 0,
-            fuelTypeMGORegular: 0, //(Marine Gas Oil)
-            fuelTypeMGOLowSulphur: 0,
-            fuelTypeMGOUltraLowSulphur: 0,
-            fuelTypeLPG: 0, //(Liquid Petroleum Gas)
-            fuelTypeLNG: 0, //(Liquid Natural Gas)
+            // fuelTypeHFORegular: 0, //Tonnes - regular means it is not low sulphur. (Heavy Fuel Oil)
+            // fuelTypeHFOLowSulphur: 0,
+            // fuelTypeHFOUltraLowSulphur: 0,
+            // fuelTypeIFORegular: 0, //(Intermediate Fuel Oil)
+            // fuelTypeIFOLowSulphur: 0,
+            // fuelTypeIFOUltraLowSulphur: 0,
+            // fuelTypeMDORegular: 0, //(Marine Diesel Oil)
+            // fuelTypeMDOLowSulphur: 0,
+            // fuelTypeMDOUltraLowSulphur: 0,
+            // fuelTypeMGORegular: 0, //(Marine Gas Oil)
+            // fuelTypeMGOLowSulphur: 0,
+            // fuelTypeMGOUltraLowSulphur: 0,
+            // fuelTypeLPG: 0, //(Liquid Petroleum Gas)
+            // fuelTypeLNG: 0, //(Liquid Natural Gas)
 
             //Cargo Information in Tonnes, 3 decimals
             cargoEntries: [
@@ -597,6 +704,34 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             return decMin
         };
 
+
+
+
+        $scope.setfuelTypesSelection = function(shortname){
+            for(var i=0;i!=$scope.fuelTypes.length;i++){
+                if(!shortname || shortname==""){
+                    $scope.fuelTypes[i].selected = false;
+                }else if($scope.fuelTypes[i].shortname && $scope.fuelTypes[i].shortname == shortname){
+                    $scope.fuelTypes[i].selected = true;
+                }else{
+                    $scope.fuelTypes[i].selected = false;
+                }
+            }
+        };
+        $scope.setfuelTypesSelection(false); //init all false
+
+
+        $scope.fuelTypeMouseOverDisabled = false;
+        $scope.fuelTypeMouseOver = function(description){
+            if($scope.fuelTypeMouseOverDisabled == false) $scope.vtsFuelSelectedTypeDescriptionText = description;
+        };
+
+        $scope.fuelTypeMouseClick = function(shortname,description){
+            $scope.setfuelTypesSelection(shortname); //set highlighted
+            console.log($scope.fuelTypes);
+            $scope.fuelTypeMouseOverDisabled = true;
+            $scope.vtsFuelSelectedTypeDescriptionText = description;
+        };
 
         //fuel types - number 999999999, no decimal. One filled makes all other neutral because only one field is mandatory
         $scope.VTSFuelTypeValidation = function (field) {
@@ -1221,20 +1356,20 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             //fuel
             $scope.reportSummary.fuelTotalFuel = "" + (parseFloat($scope.vtsTotalFuel)); //all fuel added up
-            $scope.reportSummary.fuelTypeHFORegular = "" + $scope.vtsvesselfueltype00_0input;
-            $scope.reportSummary.fuelTypeHFOLowSulphur = "" + $scope.vtsvesselfueltype00_1input;
-            $scope.reportSummary.fuelTypeHFOUltraLowSulphur = "" + $scope.vtsvesselfueltype00_2input;
-            $scope.reportSummary.fuelTypeIFORegular = "" + $scope.vtsvesselfueltype01_0input;
-            $scope.reportSummary.fuelTypeIFOLowSulphur = "" + $scope.vtsvesselfueltype01_1input;
-            $scope.reportSummary.fuelTypeIFOUltraLowSulphur = "" + $scope.vtsvesselfueltype01_2input;
-            $scope.reportSummary.fuelTypeMDORegular = "" + $scope.vtsvesselfueltype02_0input;
-            $scope.reportSummary.fuelTypeMDOLowSulphur = "" + $scope.vtsvesselfueltype02_1input;
-            $scope.reportSummary.fuelTypeMDOUltraLowSulphur = "" + $scope.vtsvesselfueltype02_2input;
-            $scope.reportSummary.fuelTypeMGORegular = "" + $scope.vtsvesselfueltype03_0input;
-            $scope.reportSummary.fuelTypeMGOLowSulphur = "" + $scope.vtsvesselfueltype03_1input;
-            $scope.reportSummary.fuelTypeMGOUltraLowSulphur = "" + $scope.vtsvesselfueltype03_2input;
-            $scope.reportSummary.fuelTypeLPG = "" + $scope.vtsvesselfueltype04_0input;
-            $scope.reportSummary.fuelTypeLNG = "" + $scope.vtsvesselfueltype05_0input;
+            // $scope.reportSummary.fuelTypeHFORegular = "" + $scope.vtsvesselfueltype00_0input;
+            // $scope.reportSummary.fuelTypeHFOLowSulphur = "" + $scope.vtsvesselfueltype00_1input;
+            // $scope.reportSummary.fuelTypeHFOUltraLowSulphur = "" + $scope.vtsvesselfueltype00_2input;
+            // $scope.reportSummary.fuelTypeIFORegular = "" + $scope.vtsvesselfueltype01_0input;
+            // $scope.reportSummary.fuelTypeIFOLowSulphur = "" + $scope.vtsvesselfueltype01_1input;
+            // $scope.reportSummary.fuelTypeIFOUltraLowSulphur = "" + $scope.vtsvesselfueltype01_2input;
+            // $scope.reportSummary.fuelTypeMDORegular = "" + $scope.vtsvesselfueltype02_0input;
+            // $scope.reportSummary.fuelTypeMDOLowSulphur = "" + $scope.vtsvesselfueltype02_1input;
+            // $scope.reportSummary.fuelTypeMDOUltraLowSulphur = "" + $scope.vtsvesselfueltype02_2input;
+            // $scope.reportSummary.fuelTypeMGORegular = "" + $scope.vtsvesselfueltype03_0input;
+            // $scope.reportSummary.fuelTypeMGOLowSulphur = "" + $scope.vtsvesselfueltype03_1input;
+            // $scope.reportSummary.fuelTypeMGOUltraLowSulphur = "" + $scope.vtsvesselfueltype03_2input;
+            // $scope.reportSummary.fuelTypeLPG = "" + $scope.vtsvesselfueltype04_0input;
+            // $scope.reportSummary.fuelTypeLNG = "" + $scope.vtsvesselfueltype05_0input;
 
             //cargo
             $scope.reportSummary.cargoType = $scope.vtsvesselcargotypeholder;
