@@ -6,7 +6,7 @@
         <!-- NW-NM tab -->
         <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading>
-                <img src="/img/nwnm/nw.png" height="16"/>
+                <img src="/img/nwnm/nw16x16.png" />
                 NW-NM
                 <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
             </uib-tab-heading>
@@ -37,8 +37,8 @@
                         </tr>
                         <tr ng-repeat-end>
                             <td width="20" align="left" class="message-item">
-                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm.png" height="20"/>
-                                <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw.png" height="20"/>
+                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm20x20.png" />
+                                <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw20x20.png" />
                             </td>
                             <td width="*" class="message-item">
                                 <span ng-if="msg.shortId" class="badge label-message-id">{{msg.shortId}}</span>
@@ -359,3 +359,4 @@
         </uib-tab>
 
     </uib-tabset>
+</div>
