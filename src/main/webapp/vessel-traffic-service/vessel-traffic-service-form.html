@@ -28,7 +28,7 @@
 
     <!-- VTS CENTRE INFORMATION -->
     <div id="vtsparentdiv" class="vts-pad-top" ng-show="VTSSelected && showReportInterface">
-        <div class="vts-pad-top vts-pad-bottom " style="position: relative;min-height:40px; padding-bottom:8px;">
+        <div class="vts-pad-top vts-pad-bottom " style="position: relative;min-height:40px; padding-bottom:8px;min-width:336px;">
                     <button id="contactDetailsButton" class='btn  vts-button-modifier-slim' style="float:left"
                         ng-class="{false:'btn-primary', true:'btn-info'}[displayVtsCenterData]"
                         ng-click="toggleDisplayVtsCenterData()" type='button'>
@@ -274,34 +274,64 @@
         <div class="vts-pad-top" ng-show="showFuelDetails">
             <hr class="vts-hr" >
             <span class="vts-force-spacing-200 bold">Fuel information:</span>
-            <div class="vts-pad-top">Reporting all the fuel carried on board is mandatory, please select a fuel type from the list, or "other" if you are in doubt:</div>
+            <div class="vts-pad-top">Reporting all fuel carried on board is mandatory, please select a fuel type from the list, or "other" if you are in doubt:</div>
             <!--ng-repeat=”(key, value) in statuses”-->
 
-            <div>
+            <div style="position: relative;min-height: 120px;">
                 <div class="vts-force-spacing-222 vts-pad-top" >
-                    <div class="vts-fuel-icon-container" ng-repeat="p in fuelTypes.slice(0,3)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container" ng-repeat="p in fuelTypes.slice(0,3)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
                         <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
                     </div>
                 </div>
                 <div class="vts-force-spacing-222 vts-pad-top">
-                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(3,6)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(3,6)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
                         <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
                     </div>
                 </div>
                 <div class="vts-force-spacing-222 vts-pad-top">
-                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(6,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(6,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
                         <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
                     </div>
                 </div>
-                <!--<div class="vts-force-spacing-222 vts-pad-top">-->
-                    <!--<div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(7,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.description)">-->
-                        <!--<div class="vts-fuel-icon-label">{{p.shortname}}</div>-->
-                        <!--<div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>-->
-                    <!--</div>-->
-                <!--</div>-->
+
+                <div class="vts-fuel-specification-container" ng-show="showFuelSpecification">
+                    <div class="vts-fuel-specification-control" style="">
+                        <div style="position:relative;width:100%;height:40px;">
+                            <button class="btn btn-danger vts-less-padding" style="position:relative;top:0%;float:right;margin:5px;"  type="button" ng-click="fuelCancelFunction()">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </button>
+                        </div>
+                        <div style="position:absolute;bottom:0;height:35px;width:100%">
+                            <button class="btn btn-success vts-less-padding" style="position:relative;float:right;margin:5px;" type="button" ng-click="fuelAddToManifestFunction()">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="vts-fuel-specification">
+                        <div style="max-width:330px;">
+                            Please enter fuel quantity in
+                            <button class="btn btn-secondary vts-less-padding vts-fuel-unitchange-button" type="button" ng-click="VTSFuelUnitInputChange()">
+                                <i class="glyphicon glyphicon-chevron-left"></i>
+                                {{fuelQuantitySelectedUnitText}}.
+                                <i class="glyphicon glyphicon-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="">
+                            <img src="{{vtsFuelSelectedTypeImageUrl}}" style="width:20px;height:20px;"> {{fuelTypeSelectedText}}
+                            &nbsp;&nbsp;
+                            <input class="vts-input-small vts-text-center"  ng-change="fuelTypeAdditionValidate()" ng-model="fuelQuantityInput"> {{fuelQuantitySelectedUnit}}.
+                        </div>
+                        <div class="vts-pad-top">
+                            <input class="vts-input-large"  ng-model="fuelNoteInput" placeholder="Space reserved for notes">
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <!--<div ng-show="showFuelDetails" class="" name="vts-fueltype-image-select" ng-options="q.Shortname as q.Shortname for q in (FuelTypes | filter:isListItemNull)" ng-model="FuelTypes.Shortname" ng-change="">-->
                 <!--{{q.Shortname}}-->

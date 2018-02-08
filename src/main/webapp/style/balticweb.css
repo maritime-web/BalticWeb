@@ -107,11 +107,10 @@ body {
     /* Vessel Traffic Service */
 
 
-abbr {
+abbr { /*overwrite ABBR to show helptext*/
     /*position: relative;*/
     cursor:default !important;
 }
-
 abbr:hover::after {
     opacity:1;
     /*width: auto;*/
@@ -120,7 +119,6 @@ abbr:hover::after {
     top:-100%;
     z-index:100000;
 }
-
 abbr::after {
     opacity:0;
     z-index:-100000;
@@ -169,6 +167,54 @@ abbr::after {
 .vts-fuel-icon-container:hover {
     border:solid 1px #666666;
 }
+.vts-fuel-specification-container {
+    position: absolute;
+    left:-2px;
+    top:0px;
+    margin: 0;
+    padding: 0;
+    width:100%;
+    height:100%;
+    min-height:100%;
+    max-width: 670px;
+    background-color: rgba(255,255,255,1);
+    border: 3px solid rgb(91, 192, 222);
+    border-radius: 8px;
+}
+
+.vts-fuel-unitchange-button {
+    position: relative;
+    padding: 0px 6px;
+    background-color: rgba(250,250,250,1);
+}
+.vts-fuel-unitchange-button:focus{
+    outline: none !important;
+}
+.vts-fuel-specification-control {
+    position:absolute;
+    left:0px;
+    top:0px;
+    height:100%;
+    min-height:86px;
+    width:100%;
+    max-height:400px;
+}
+.vts-fuel-specification{
+    min-width:350px;
+    max-width: 350px;
+    position:relative;
+    margin-left:auto;
+    margin-right:auto;
+    max-height:86px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+@media screen and (max-width: 990px) {
+    .vts-fuel-specification{
+        top:40px;
+    }
+}
+
 .vts-fuel-icon-label {
     width:64px;
     height:22px;

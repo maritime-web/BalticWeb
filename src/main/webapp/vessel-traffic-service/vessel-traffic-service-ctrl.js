@@ -707,92 +707,131 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
 
 
-        $scope.setfuelTypesSelection = function(shortname){
+        $scope.showFuelSpecification = false;
+        $scope.fuelTypeMouseOverDisabled = false;
+        $scope.fuelQuantitySelectedUnitText = "metric tonnes"; //or 'kilograms'
+        $scope.fuelQuantitySelectedUnit = "t"; //or 'kg'
+        $scope.fuelQuantitySelectedUnitModifier = 1000; //defaults as kilo, multiply with this to get tonnes (note inversion)
+        $scope.fuelQuantityInput = "";
+
+        $scope.setFuelTypesSelection = function(shortname){
             for(var i=0;i!=$scope.fuelTypes.length;i++){
-                if(!shortname || shortname==""){
-                    $scope.fuelTypes[i].selected = false;
-                }else if($scope.fuelTypes[i].shortname && $scope.fuelTypes[i].shortname == shortname){
-                    $scope.fuelTypes[i].selected = true;
-                }else{
-                    $scope.fuelTypes[i].selected = false;
+                if(!shortname || shortname!=""){
+                    if($scope.fuelTypes[i].shortname && $scope.fuelTypes[i].shortname == shortname) {
+                        $scope.fuelTypes[i].selected = true;
+                        $scope.fuelTypeSelectedText = $scope.fuelTypes[i].name;
+                        $scope.showFuelSpecification = true; //show the input overlay
+                    }
                 }
             }
         };
-        $scope.setfuelTypesSelection(false); //init all false
+        $scope.clearFuelTypesSelection = function(){
+            for(var i=0;i!=$scope.fuelTypes.length;i++) {
+                $scope.fuelTypes[i].selected = false;
+            }
+            $scope.fuelTypeSelectedText = "";
+            $scope.showFuelSpecification = false; //hide the input overlay
+        };
+        $scope.clearFuelTypesSelection(); //init
 
 
-        $scope.fuelTypeMouseOverDisabled = false;
+        $scope.fuelCancelFunction = function(){
+            $scope.fuelTypeMouseOverDisabled = false;
+            $scope.vtsFuelSelectedTypeDescriptionText = "";
+            $scope.clearFuelTypesSelection(false); // hides overlay
+        };
+        $scope.fuelTypeMouseClick = function(shortname,description,iconImageUrl){
+            $scope.fuelTypeMouseOverDisabled = true;
+            $scope.vtsFuelSelectedTypeDescriptionText = description;
+            $scope.setFuelTypesSelection(shortname); //set highlighted - also displays overlay
+            $scope.vtsFuelSelectedTypeImageUrl = iconImageUrl;
+        };
+
+        $scope.fuelTypeAdditionValidate = function(el){
+
+        };
+
         $scope.fuelTypeMouseOver = function(description){
             if($scope.fuelTypeMouseOverDisabled == false) $scope.vtsFuelSelectedTypeDescriptionText = description;
         };
 
-        $scope.fuelTypeMouseClick = function(shortname,description){
-            $scope.setfuelTypesSelection(shortname); //set highlighted
-            console.log($scope.fuelTypes);
-            $scope.fuelTypeMouseOverDisabled = true;
-            $scope.vtsFuelSelectedTypeDescriptionText = description;
+        $scope.VTSFuelUnitInputChange = function(){
+            if($scope.fuelQuantitySelectedUnitText == "metric tonnes"){
+                $scope.fuelQuantitySelectedUnitText = "kilograms";
+                $scope.fuelQuantitySelectedUnit = "kg";
+                $scope.fuelQuantitySelectedUnitModifier = 1;
+            }else{
+                $scope.fuelQuantitySelectedUnitText = "metric tonnes";
+                $scope.fuelQuantitySelectedUnit = "t";
+                $scope.fuelQuantitySelectedUnitModifier = 1000
+            }
         };
 
-        //fuel types - number 999999999, no decimal. One filled makes all other neutral because only one field is mandatory
-        $scope.VTSFuelTypeValidation = function (field) {
-            var strValue = "";
-            var totFuel = 0;
-            var FTC = $scope.fuelTypes.length + 1; //Fuel Type Count
-
-            if (field) {
-                strValue = document.querySelector('#vtsparentdiv #fueltype' + field).value.toString().replace(/\D/g, '');
-                if (strValue != "") {
-                    if (parseInt(strValue).isNaN) {
-                        strValue = "";
-                    } //validate to NaN
-                }
-                angular.element(document.querySelector('#vtsparentdiv  #fueltype' + field)).val(strValue).$apply;
-            }
-
-            //get totFuel - cycle through all boxes and add the fuel.
-            for (var i = 0; i != FTC; i++) {
-                for (var j = 0; j != 3; j++) {
-                    try {
-                        var val = document.querySelector('#vtsparentdiv #fueltype0' + i + "_" + j).value.toString().replace(/\D/g, '');
-                        if (val.isNaN || val === "") {
-                        } else {
-                            totFuel += parseInt(val);
-                        }
-                        (totFuel > 0) ? $scope.fuelDetailsValid = true : $scope.fuelDetailsValid = false
-
-                    } catch (exceptionNoElements) {
-                    }
-                }
-            }
-
-            //set/reset valid colours - must be more than 1 ton of fuel on board at any time.
-            if (totFuel > 0) {
-                for (var i = 0; i != FTC; i++) {
-                    for (var j = 0; j != 3; j++) {
-                        try {
-                            angular.element(document.querySelector('#fueltype0' + i + "_" + j)).removeClass("vtsinvalid");
-                            angular.element(document.querySelector('#fueltype0' + i + "_" + j)).addClass('vtsvalid');
-                        } catch (exceptionNoElements) {
-                        }
-                    }
-                }
-            } else {
-                for (var i = 0; i != FTC; i++) {
-                    for (var j = 0; j != 3; j++) {
-                        try {
-                            angular.element(document.querySelector('#fueltype0' + i + "_" + j)).removeClass("vtsvalid");
-                            angular.element(document.querySelector('#fueltype0' + i + "_" + j)).addClass('vtsinvalid');
-                        } catch (exceptionNoElements) {
-                        }
-                    }
-                }
-            }
-
-            //display total tonnage of fuel
-            $scope.vtsTotalFuel = parseInt(totFuel).toLocaleString().replace(/,/g, '.'); // totfuel kilo/mega/giga seperator to period from comma: 9.999.999,999
-            $scope.VTSValidationAllDone();
-
+console.log("Bob says:",$scope.showFuelSpecification);
+        $scope.VTSFuelTypeValidation = function(){
+          console.log("validate fuel volume input");
         };
+
+        // //fuel types - number 999999999, no decimal. One filled makes all other neutral because only one field is mandatory
+        // $scope.VTSFuelTypeValidation = function (field) {
+        //     var strValue = "";
+        //     var totFuel = 0;
+        //     var FTC = $scope.fuelTypes.length + 1; //Fuel Type Count
+        //
+        //     if (field) {
+        //         strValue = document.querySelector('#vtsparentdiv #fueltype' + field).value.toString().replace(/\D/g, '');
+        //         if (strValue != "") {
+        //             if (parseInt(strValue).isNaN) {
+        //                 strValue = "";
+        //             } //validate to NaN
+        //         }
+        //         angular.element(document.querySelector('#vtsparentdiv  #fueltype' + field)).val(strValue).$apply;
+        //     }
+        //
+        //     //get totFuel - cycle through all boxes and add the fuel.
+        //     for (var i = 0; i != FTC; i++) {
+        //         for (var j = 0; j != 3; j++) {
+        //             try {
+        //                 var val = document.querySelector('#vtsparentdiv #fueltype0' + i + "_" + j).value.toString().replace(/\D/g, '');
+        //                 if (val.isNaN || val === "") {
+        //                 } else {
+        //                     totFuel += parseInt(val);
+        //                 }
+        //                 (totFuel > 0) ? $scope.fuelDetailsValid = true : $scope.fuelDetailsValid = false
+        //
+        //             } catch (exceptionNoElements) {
+        //             }
+        //         }
+        //     }
+        //
+        //     //set/reset valid colours - must be more than 1 ton of fuel on board at any time.
+        //     if (totFuel > 0) {
+        //         for (var i = 0; i != FTC; i++) {
+        //             for (var j = 0; j != 3; j++) {
+        //                 try {
+        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).removeClass("vtsinvalid");
+        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).addClass('vtsvalid');
+        //                 } catch (exceptionNoElements) {
+        //                 }
+        //             }
+        //         }
+        //     } else {
+        //         for (var i = 0; i != FTC; i++) {
+        //             for (var j = 0; j != 3; j++) {
+        //                 try {
+        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).removeClass("vtsvalid");
+        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).addClass('vtsinvalid');
+        //                 } catch (exceptionNoElements) {
+        //                 }
+        //             }
+        //         }
+        //     }
+        //
+        //     //display total tonnage of fuel
+        //     $scope.vtsTotalFuel = parseInt(totFuel).toLocaleString().replace(/,/g, '.'); // totfuel kilo/mega/giga seperator to period from comma: 9.999.999,999
+        //     $scope.VTSValidationAllDone();
+        //
+        // };
 
         $scope.selectVesselCargoChange = function (selectedItem) {
             if (selectedItem != "None" && selectedItem != "Bulk - grain" && selectedItem != "Ballast" && selectedItem != "Passenger" && selectedItem != "Bulk - other than grain"
