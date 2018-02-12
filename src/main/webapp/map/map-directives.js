@@ -162,17 +162,17 @@ angular.module('maritimeweb.map')
                     var zoom = MapService.defaultZoomLevel();
 
                     // Check if the center is defined in the directive attributes or in the mapState
-                    if (initial && isDefined(attrs.lat) && isDefined(attrs.lon)) {
-                        center = [parseFloat(attrs.lon), parseFloat(attrs.lat)];
-                    } else if (isDefined(scope.mapState) && isDefined(scope.mapState.center)) {
+                    if (isDefined(scope.mapState) && isDefined(scope.mapState.center)) {
                         center = scope.mapState.center;
+                    } else if (initial && isDefined(attrs.lat) && isDefined(attrs.lon)) {
+                        center = [parseFloat(attrs.lon), parseFloat(attrs.lat)];
                     }
 
                     // Check if the zoom is defined in the directive attributes or in the mapState
-                    if (initial && isDefined(attrs.zoom)) {
-                        zoom = parseFloat(attrs.zoom);
-                    } else if (isDefined(scope.mapState) && isDefined(scope.mapState.zoom)) {
+                    if (isDefined(scope.mapState) && isDefined(scope.mapState.zoom)) {
                         zoom = scope.mapState.zoom;
+                    } else if (initial && isDefined(attrs.zoom)) {
+                        zoom = parseFloat(attrs.zoom);
                     }
 
                     // Update the map
