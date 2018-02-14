@@ -318,15 +318,15 @@ angular.module('maritimeweb.vessel')
 
                         // Create vessel layer
                         var vessselLayerAttributions = [
-                            new ol.Attribution({
-                                html: '<div class="panel panel-info">' +
+
+                                '<div class="panel panel-info">' +
                                 '<div class="panel-heading">Traffic information</div>' +
                                 '<div class="panel-body">' +
                                 '<span>' +
                                 'Vessel AIS Traffic information <a href="http://www.helcom.fi/">Helcom</a> AIS Data' +
                                 '</span>' +
                                 '</div>'
-                            }),
+                            ,
                             ol.source.OSM.ATTRIBUTION
                         ];
 

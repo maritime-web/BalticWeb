@@ -278,68 +278,6 @@ module.exports = function (grunt) {
                 ]
             }
         },
-        appcache: {
-            options: {
-                basePath: 'src/main/webapp'
-            },
-            map: {
-                dest: 'target/build/map.appcache',
-                cache: {
-                    literals: [//as is in the "CACHE:" section
-                        'map.html',
-                        'css/arcticweb-map.css',
-                        'css/arcticweb-map-ext-lib.css',
-                        'js/arcticweb-map.js',
-                        'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
-                        'rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2'
-                    ],
-                    patterns: [
-                        'src/main/webapp/css/cached/**',
-                        'src/main/webapp/js/cached/common/**',
-                        'src/main/webapp/js/cached/map/**',
-                        'src/main/webapp/partials/common/*.html',
-                        'src/main/webapp/partials/*.html',
-                        'src/main/webapp/img/**/*.png',
-                        'src/main/webapp/img/**/*.jpg',
-                        'src/main/webapp/img/**/*.gif',
-                        '!src/main/webapp/img/front/**/*', // except the 'img/front/' subtree
-                        '!src/main/webapp/img/ext/**/*', // except the 'img/front/' subtree
-                        '!src/main/webapp/img/unused/**/*', // except the 'img/front/' subtree
-                        '!**/README.MD'
-                    ]
-                },
-                network: "*"
-            },
-            front: {
-                dest: 'target/build/front.appcache',
-                cache: {
-                    literals: [//as is in the "CACHE:" section
-                        'index.html',
-                        'content.html',
-                        'css/arcticweb-front.css',
-                        'css/arcticweb-content.css',
-                        'js/arcticweb-front.js',
-                        'js/arcticweb-content.js',
-                        'css/cached/cdn.netdna/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0',
-                        'rest/shapefile/static/multiple/static.world_merc?delta=true&exponent=2'
-
-                    ],
-                    patterns: [
-                        'src/main/webapp/css/cached/**',
-                        'src/main/webapp/js/cached/common/**',
-                        'src/main/webapp/js/cached/front/**',
-                        'src/main/webapp/partials/common/*',
-                        'src/main/webapp/partials/front/*',
-                        'src/main/webapp/img/front/*.png',
-                        'src/main/webapp/img/front/*.jpg',
-                        'src/main/webapp/img/front/*.gif',
-                        'src/main/webapp/img/common/*',
-                        '!**/README.MD'
-                    ]
-                },
-                network: "*"
-            }
-        },
         concurrent: {
             server: [ 'concat:dist' ],
             // test : [ 'coffee', 'copy:styles' ],
@@ -378,7 +316,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-cdnify');
     grunt.loadNpmTasks('grunt-text-replace');
-    grunt.loadNpmTasks('grunt-appcache');
 
     grunt.registerTask('server',
         function (target) {
@@ -399,7 +336,7 @@ module.exports = function (grunt) {
     //   'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
 
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
-        'copy:gen2Build', 'appcache:map', 'appcache:front',  'replace:run', 'copy:toTarget']);
+        'copy:gen2Build', 'replace:run', 'copy:toTarget']);
 
     // 'clean:dist',
     // 'useminPrepare',

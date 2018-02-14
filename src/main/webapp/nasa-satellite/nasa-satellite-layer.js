@@ -69,15 +69,15 @@ angular.module('maritimeweb.nasa-satellite')
                 }
 
                 var nasaAttributions = [
-                    new ol.Attribution({
-                        html: '<div class="panel panel-info">' +
+
+                        '<div class="panel panel-info">' +
                         '<div class="panel-heading">Satellite image from NASA</div>' +
                         '<div class="panel-body">' +
                         '<span>We acknowledge the use of data products or imagery from the Land, Atmosphere Near real-time Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ.</span>' +
                         '</div>' +
                         '</div>'
 
-                    }),
+                    ,
                     ol.source.OSM.ATTRIBUTION
                 ];
                 return new ol.layer.Tile({

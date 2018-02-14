@@ -249,9 +249,7 @@ angular.module('maritimeweb.map')
             this.createStdBgLayerGroup = function () {
 
                 var thunderforestAttributions = [
-                    new ol.Attribution({
-                        html: '<span>Tiles &copy; <a href="http://www.thunderforest.com/">Thunderforest</a></span>'
-                    }),
+                    '<span>Tiles &copy; <a href="http://www.thunderforest.com/">Thunderforest</a></span>',
                     ol.source.OSM.ATTRIBUTION
                 ];
 
@@ -335,8 +333,8 @@ angular.module('maritimeweb.map')
             this.createStdWeatherLayerGroup = function () {
 
                 var openPortGuideAttributions = [
-                    new ol.Attribution({
-                        html: '<div class="panel panel-info">' +
+
+                        '<div class="panel panel-info">' +
                         '<div class="panel-heading">Weather forecasts from  <a href="http://www.openportguide.de/">www.openportguide.de</a></div>' +
                         '<div class="panel-body">' +
                         '<span>Weather forecasts are from <a href="http://www.openportguide.de/">www.openportguide.de <img src="/img/OpenPortGuideLogo_32.png"/></a><br />' +
@@ -344,21 +342,20 @@ angular.module('maritimeweb.map')
                         '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a></span>' +
                         '</div>' +
                         '</div>'
-
-                    }),
+                    ,
                     ol.source.OSM.ATTRIBUTION
                 ];
 
                 var nasaAttributions = [
-                    new ol.Attribution({
-                        html: '<div class="panel panel-info">' +
+
+                        '<div class="panel panel-info">' +
                         '<div class="panel-heading">NASA: Satellite image from NASA</div>' +
                         '<div class="panel-body">' +
                         '<span>We acknowledge the use of data products or imagery from the Land, Atmosphere Near real-time Capability for EOS (LANCE) system operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ.</span>' +
                         '</div>' +
                         '</div>'
 
-                    }),
+                    ,
                     ol.source.OSM.ATTRIBUTION
                 ];
 
@@ -460,8 +457,8 @@ angular.module('maritimeweb.map')
             this.createStdMiscLayerGroup = function () {
 
                 var openseaMapAttributions = [
-                    new ol.Attribution({
-                        html: '<div class="panel panel-info">' +
+
+                        '<div class="panel panel-info">' +
                         '<div class="panel-heading">SeaMark the OpenSeaMap.org layer</div>' +
                         '<div class="panel-body">' +
                         '<span>' +
@@ -472,7 +469,6 @@ angular.module('maritimeweb.map')
                         'Creative Commons Attribution-ShareAlike 2.0 Generic License</a>' +
                         '</span>' +
                         '</div>'
-                    })
                 ];
 
                 return new ol.layer.Group({
