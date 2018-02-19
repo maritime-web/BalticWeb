@@ -175,6 +175,9 @@
                 <li><a href ><span class="glyphicon glyphicon-user"></span> {{userName()}}</a></li>
                 <li><a href ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
             </ul>
+            <ul ng-if="loggedIn && hasMMSI" class="nav navbar-nav navbar-right">
+                <li><span class="glyphicon glyphicon-screenshot" ng-click="detectUserMmsiByEmail()"></span></li>
+            </ul>
 
         </div>
     </div>

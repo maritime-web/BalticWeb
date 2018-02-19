@@ -1270,7 +1270,7 @@ angular.module('maritimeweb.route')
                                     }
                                     return false;
 
-                            }, null, function (layer) {
+                            }, 0, function (layer) {
                                 return layer === routeFeatureLayer;
                             });
 

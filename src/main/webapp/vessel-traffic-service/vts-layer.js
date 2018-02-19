@@ -580,7 +580,6 @@ angular.module('maritimeweb.vts-map')
                                         if(map.getView().getZoom()<7)setZoomLvl = 7; //zoom out a bit if too close
                                         if(map.getView().getZoom()>13)setZoomLvl = 7; //zoom out a bit if too far
 
-                                        //move the view with zoom change
                                         map.getView().animate({
                                             center: ol.proj.transform(vts_center_of_areas[p].areaCenter, 'EPSG:4326', 'EPSG:3857'),//vts_center_of_areas[p].areaCenter,
                                             zoom: setZoomLvl,

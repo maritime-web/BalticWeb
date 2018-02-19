@@ -178,10 +178,16 @@ abbr::after {
     min-height:100%;
     max-width: 670px;
     background-color: rgba(255,255,255,1);
-    border: 3px solid rgb(91, 192, 222);
+    border: 3px solid rgb(167, 167, 167);
     border-radius: 8px;
 }
-
+.vts-fuel-inputs{
+    min-height:26px;
+    min-width:330px;
+    max-width:330px;
+}
+.vts-input-fuel-large{width:297px;}
+.vts-input-fuel-modheight{height:23px;}
 .vts-fuel-unitchange-button {
     position: relative;
     padding: 0px 6px;
@@ -209,11 +215,23 @@ abbr::after {
     padding-left: 5px;
     padding-right: 5px;
 }
-@media screen and (max-width: 990px) {
+.vts-fuel-manifest-list{
+    overflow: hidden;
+    max-width:670px;
+    max-height:120px;
+
+}
+
+@media screen and (max-width: 755px) {
     .vts-fuel-specification{
         top:40px;
     }
 }
+/*@media screen and (max-width: 750px) {*/
+    /*.vts-fuel-specification{*/
+        /*top:40px;*/
+    /*}*/
+/*}*/
 
 .vts-fuel-icon-label {
     width:64px;

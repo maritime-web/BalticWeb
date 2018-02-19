@@ -168,8 +168,39 @@ angular.module('maritimeweb.vessel')
                         };
 
 
+                    scope.retForcedScale = function (vessel) {
+                        var zoom = map.getView().getZoom();
+                        var scale = 0;
+                        switch (zoom) {
+                            case 15 :
+                                scale = 0.3;
+                                break;
+                            case 16 :
+                                scale = 0.5;
+                                break;
+                            case 17 :
+                                scale = 1.2;
+                                break;
+                            case 18 :
+                                scale = 4;
+                                break;
+                            case 19 :
+                                scale = 8;
+                                break;
+                            case 20 :
+                                scale = 20;
+                                break;
+                        }
+                        if (zoom < 15) scale = 0.2;
+                        if (zoom > 20) scale = 20;
+                        return scale;
+                    };
+
                         /** Mark a vessel feature with a ring. */
                         scope.markVesselFeature = function (vessel) {
+                            var rot = vessel.radian;
+                            if(vessel.moored && vessel.radian==3.141592653589793) rot = 0; //means undefined
+                            var scale = scope.retForcedScale(vessel);
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
                                     anchor: [0.5, 0.5],
@@ -177,11 +208,12 @@ angular.module('maritimeweb.vessel')
                                     opacity: 1,
                                     // opacity: 0.85, //org
                                     id: vessel.id + '_marker',
-                                    offset: [0, 0],
-                                    // offset: [3, -3], //org
-                                    //rotation: vessel.radian,
+                                    // offset: [0, 0],
+                                    offset: [0, 1],
+                                    rotation: rot,
                                     rotateWithView: true,
-                                    src: 'img/ring.png'
+                                    scale: scale,
+                                    src: 'img/shipIconCompass_Red.png'
                                 }))
                             });
 
@@ -195,7 +227,7 @@ angular.module('maritimeweb.vessel')
                                 mmsi: vessel.mmsi,
                                 latitude: vessel.y,
                                 longitude: vessel.x,
-                                geometry: vesselPosition
+                                geometry: vesselPosition,
                             });
                             markVessel.setStyle(markerStyle);
                             return markVessel;
@@ -203,18 +235,32 @@ angular.module('maritimeweb.vessel')
 
                         /** Create a vessel feature for any openlayers 3 map. */
                         scope.createVesselFeature = function (vessel) {
-                            var image = VesselService.imageAndTypeTextForVessel(vessel);
+                            var image = VesselService.imageAndTypeTextForVessel(vessel); //can have custom image - look into vesselService
+                            var anchor = [0.5, 1.0];
+                            var scale = 1;
+
+                            //for demonstration purposes - custom image for vessel
+                            if($window.localStorage.getItem('mmsi') && parseInt(vessel.mmsi) == parseInt($window.localStorage.getItem('mmsi'))){
+                                anchor = [0.5,0.57];
+                                scale = scope.retForcedScale(vessel);
+                            }
 
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                    anchor: [0.5, 1.0],
+                                    anchor: anchor,
                                     opacity: 0.85,
+                                    scale: scale,
                                     id: vessel.id,
                                     rotation: vessel.radian,
                                     rotateWithView: true,
-                                    src: 'img/' + image.name
+                                    src: 'img/' + image.name //can have custom image - look into vesselService
                                 }))
                             });
+                            if($window.localStorage.getItem('mmsi') && parseInt(vessel.mmsi) == parseInt($window.localStorage.getItem('mmsi'))) {
+                                markerStyle.setZIndex(95005); //always on top
+                            }
+
+
 
                             var vesselPosition = new ol.geom.Point(ol.proj.transform([vessel.x, vessel.y], 'EPSG:4326', 'EPSG:900913'));
                             var markerVessel = new ol.Feature({
@@ -311,7 +357,6 @@ angular.module('maritimeweb.vessel')
                                 }
                                 loadTimer = $timeout(scope.refreshVessels, 500);
                             }else{
-
                                 scope.vessels.length = 0;
                             }
                         };
@@ -367,7 +412,7 @@ angular.module('maritimeweb.vessel')
 
 
                         $rootScope.mapTrafficLayers = vesselLayers; // add group-layer to rootscope so it can be enabled/disabled
-                        $rootScope.mapTrafficLayers.on('change:visible', console.log("AIS on/off"));
+                        // $rootScope.mapTrafficLayers.on('change:visible', console.log("AIS on/off"));
                         /***************************/
                         /** Vessel Details        **/
                         /***************************/

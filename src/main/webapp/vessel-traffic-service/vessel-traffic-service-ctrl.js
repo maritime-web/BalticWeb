@@ -147,12 +147,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 name: "Manually described fuel type",
                 shortname: "Other",
                 sulphurContentDenomination: "",
-                sulphurPercentageMax: 0,
+                sulphurPercentageMax: 3.5,
                 sulphurPercentageMin: 0,
                 iconImageUrl: "img/vts_fuelicons/icon_all_questionmark.png",
             }
         ];
-
 
 
 
@@ -360,6 +359,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             //Fuel and fuel types - always in Tonnes (metric)
             fuelTotalFuel: 0, //Tonnes - all fuel added up
+            fuelManifest : [], //is populated
             // fuelTypeHFORegular: 0, //Tonnes - regular means it is not low sulphur. (Heavy Fuel Oil)
             // fuelTypeHFOLowSulphur: 0,
             // fuelTypeHFOUltraLowSulphur: 0,
@@ -425,6 +425,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         //test if all items check out, then display "SEND" button
         $scope.VTSValidationAllDone = function () {
+
+            console.log("Make check if fuel types is required, $scope.reportSummary.fuelManifest must have at least 1 entry ");
 
             //Validation exceptions for not required fields
             if (!VTSData[$scope.VTSID].showMaxDraught) $scope.setvtsvesselDraughtValid = true;
@@ -711,8 +713,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.fuelTypeMouseOverDisabled = false;
         $scope.fuelQuantitySelectedUnitText = "metric tonnes"; //or 'kilograms'
         $scope.fuelQuantitySelectedUnit = "t"; //or 'kg'
-        $scope.fuelQuantitySelectedUnitModifier = 1000; //defaults as kilo, multiply with this to get tonnes (note inversion)
-        $scope.fuelQuantityInput = "";
+        $scope.fuelQuantitySelectedUnitModifier = 1; //defaults as kilo, multiply with this to get tonnes (note inversion)
+        $scope.fuelTypeQuantityInput = "";
+        $scope.displayFuelSulphurPercentageInput = false;
+        $scope.setvtsFuelQuantityInputValid = false;
+        $scope.fuelNoteInput = "";
 
         $scope.setFuelTypesSelection = function(shortname){
             for(var i=0;i!=$scope.fuelTypes.length;i++){
@@ -739,15 +744,48 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.fuelTypeMouseOverDisabled = false;
             $scope.vtsFuelSelectedTypeDescriptionText = "";
             $scope.clearFuelTypesSelection(false); // hides overlay
+            $scope.fuelNoteInput = "";
         };
-        $scope.fuelTypeMouseClick = function(shortname,description,iconImageUrl){
+        $scope.fuelTypeMouseClick = function(shortname,description,iconImageUrl,sulphurPercentageMax){
             $scope.fuelTypeMouseOverDisabled = true;
-            $scope.vtsFuelSelectedTypeDescriptionText = description;
+            $scope.vtsFuelSelectedTypeDescriptionText = description + " ("+shortname+")";
             $scope.setFuelTypesSelection(shortname); //set highlighted - also displays overlay
             $scope.vtsFuelSelectedTypeImageUrl = iconImageUrl;
+
+            if(sulphurPercentageMax && sulphurPercentageMax!="0" && parseFloat(sulphurPercentageMax) > 0 ){
+                $scope.displayFuelSulphurPercentageInput = false;
+            } else{
+                $scope.displayFuelSulphurPercentageInput = true;
+            }
+            $scope.fuelSulphurPercentageInput = sulphurPercentageMax;
         };
 
-        $scope.fuelTypeAdditionValidate = function(el){
+        $scope.fuelAddToManifestFunction = function(){
+            // $scope.reportSummary.fuelManifest
+            var insertedFuelTonnage = parseFloat($scope.fuelTypeQuantityInput)/$scope.fuelQuantitySelectedUnitModifier;
+            var tmpSelectedFuel = {}; //tmp obj for punching into manifest
+            for(var i=0;i!=$scope.fuelTypes.length;i++){
+                if($scope.fuelTypes[i].selected == true){
+                    tmpSelectedFuel.shortname = $scope.fuelTypes[i].shortname;
+                    tmpSelectedFuel.name = $scope.fuelTypes[i].name;
+                    tmpSelectedFuel.quantity = insertedFuelTonnage;
+                    tmpSelectedFuel.note = $scope.fuelNoteInput;
+                    tmpSelectedFuel.description = $scope.fuelTypes[i].description;
+                    tmpSelectedFuel.sulphurPercentageMax = $scope.fuelSulphurPercentageInput;
+                }
+            }
+            $scope.reportSummary.fuelManifest.push(tmpSelectedFuel);
+            console.log($scope.reportSummary.fuelManifest);
+            $scope.fuelCancelFunction();
+
+        };
+
+        $scope.fuelTypeQuantityInputValidate = function(){
+            console.log("Validate fuel input:",$scope.fuelTypeQuantityInput);
+            var test = VtsHelperService.validateNumber($scope.fuelTypeQuantityInput, 0, 999999999, 3);
+            (test.valid == true) ? $scope.setvtsFuelQuantityInputValid = true : $scope.setvtsFuelQuantityInputValid = false;
+
+            $scope.fuelTypeQuantityInput = test.val;
 
         };
 
@@ -759,11 +797,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             if($scope.fuelQuantitySelectedUnitText == "metric tonnes"){
                 $scope.fuelQuantitySelectedUnitText = "kilograms";
                 $scope.fuelQuantitySelectedUnit = "kg";
-                $scope.fuelQuantitySelectedUnitModifier = 1;
+                $scope.fuelQuantitySelectedUnitModifier = 1000;
             }else{
                 $scope.fuelQuantitySelectedUnitText = "metric tonnes";
                 $scope.fuelQuantitySelectedUnit = "t";
-                $scope.fuelQuantitySelectedUnitModifier = 1000
+                $scope.fuelQuantitySelectedUnitModifier = 1
             }
         };
 
@@ -1497,22 +1535,6 @@ console.log("Bob says:",$scope.showFuelSpecification);
                 $scope.setvtsVesselTypeValid = true;
                 $scope.vtsvesseltypeholder = $scope.aisData.vesselType;
             }
-
-            // if ($scope.aisData.lon != "" && $scope.aisData.lon != null) {
-            //     $scope.vtsvesselposlondegreesinput = $scope.placeholderAisVesselLonDegrees;
-            //     $scope.vtsvesselposlonminutesinput = $scope.placeholderAisVesselLonDecimalMinutes;
-            //     ($scope.aisData.lon > 0) ? $scope.vtsCurrentPosCompassAppendEW = "E" : $scope.vtsCurrentPosCompassAppendEW = "W";
-            //     $scope.VTSVesselCurrentPositionLonDegValidation(false);
-            //     $scope.VTSVesselCurrentPositionLonMinValidation(false);
-            // }
-            // if ($scope.aisData.lat != "" && $scope.aisData.lat != null) {
-            //     $scope.vtsvesselposlatdegreesinput = $scope.placeholderAisVesselLatDegrees;
-            //     $scope.vtsvesselposlatminutesinput = $scope.placeholderAisVesselLatDecimalMinutes;
-            //     ($scope.aisData.lat > 0) ? $scope.vtsCurrentPosCompassAppendNS = "N" : $scope.vtsCurrentPosCompassAppendNS = "S";
-            //     $scope.VTSVesselCurrentPositionLatDegValidation(false);
-            //     $scope.VTSVesselCurrentPositionLatMinValidation(false);
-            // }
-            //
 
             $scope.VTSValidationAllDone(); //finally validate all values for ready to send
         };

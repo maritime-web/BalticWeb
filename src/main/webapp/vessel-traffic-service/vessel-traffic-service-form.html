@@ -42,7 +42,7 @@
                         View Masters guide online <span class="glyphicon glyphicon-new-window"></span>
                     </button>
         </div>
-        <div ng-hide="!displayVtsCenterData" style="position: relative;min-height:100px;margin-bottom:5px;border: 3px solid #5bc0de;border-radius:8px;padding-left: 3px;padding-right: 13px;" >
+        <div ng-hide="!displayVtsCenterData" style="position: relative;min-height:78px;margin-bottom:5px;border: 3px solid #5bc0de;border-radius:8px;padding-left: 3px;padding-right: 13px;" >
             <span style='min-width:220px;max-width:220px;display: inline-block; text-align: left;'><span class="bold">Call sign:</span> &#34;{{VtsDataCallsign}}&#34;</span>
             <br>
             <div ng-show="VtsDataVhf1!=''" class="vts-force-spacing-300">
@@ -279,19 +279,19 @@
 
             <div style="position: relative;min-height: 120px;">
                 <div class="vts-force-spacing-222 vts-pad-top" >
-                    <div class="vts-fuel-icon-container" ng-repeat="p in fuelTypes.slice(0,3)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container" ng-repeat="p in fuelTypes.slice(0,3)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl,p.sulphurPercentageMax)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
                         <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
                     </div>
                 </div>
                 <div class="vts-force-spacing-222 vts-pad-top">
-                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(3,6)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(3,6)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl,p.sulphurPercentageMax)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
                         <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
                     </div>
                 </div>
                 <div class="vts-force-spacing-222 vts-pad-top">
-                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(6,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(6,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.shortname, p.description, p.iconImageUrl,p.sulphurPercentageMax)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
                         <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
                     </div>
@@ -321,13 +321,26 @@
                             </button>
                         </div>
 
-                        <div class="">
-                            <img src="{{vtsFuelSelectedTypeImageUrl}}" style="width:20px;height:20px;"> {{fuelTypeSelectedText}}
-                            &nbsp;&nbsp;
-                            <input class="vts-input-small vts-text-center"  ng-change="fuelTypeAdditionValidate()" ng-model="fuelQuantityInput"> {{fuelQuantitySelectedUnit}}.
+                        <hr class="vts-hr-seperator" style="margin-left:0px;top:0px;padding:0px;color:#c2c2c2;">
+
+                        <div class="vts-pad-top vts-fuel-inputs">
+                            <div class="" style="position:relative;width:75%;height:100%;float:left;">
+                                <img src="{{vtsFuelSelectedTypeImageUrl}}" style="width:24px;height:24px;"> {{fuelTypeSelectedText}}
+                            </div>
+                            <div class="" style="position: relative;width:25%;height:100%;float:right;">
+                                <input class="vts-input-small vts-text-center vts-input-fuel-modheight"  ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsFuelQuantityInputValid]"  ng-change="fuelTypeQuantityInputValidate()" ng-model="fuelTypeQuantityInput"> {{fuelQuantitySelectedUnit}}.&nbsp;
+                            </div>
                         </div>
-                        <div class="vts-pad-top">
-                            <input class="vts-input-large"  ng-model="fuelNoteInput" placeholder="Space reserved for notes">
+                        <div class="vts-pad-top vts-fuel-inputs" ng-hide="displayFuelSulphurPercentageInput">
+                            <div class="" style="position:relative;width:75%;height:100%;float:left;">
+                                Percentage of Sulphur in fuel:
+                            </div>
+                            <div class="" style="position: relative;width:25%;height:100%;float:right;">
+                                <input class="vts-input-small vts-text-center vts-input-fuel-modheight"  ng-model="fuelSulphurPercentageInput"> &percnt;
+                            </div>
+                        </div>
+                        <div class=" vts-fuel-inputs" style="padding-top:4px;min-height:24px;">
+                            <input class="vts-input-fuel-large vts-input-fuel-modheight"  ng-model="fuelNoteInput" placeholder=" Notes and other specifications">
                         </div>
                     </div>
 
@@ -339,6 +352,9 @@
 
 
             <div class="vts-fuel-description-box vts-grey-text">
+                {{vtsFuelSelectedTypeDescriptionText}}
+            </div>
+            <div class="vts-fuel-manifest-list">
                 {{vtsFuelSelectedTypeDescriptionText}}
             </div>
             <hr class="vts-hr" >

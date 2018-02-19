@@ -63,9 +63,10 @@ angular.module('maritimeweb.app')
                 return undefined;
             };
 
-            //Just for e-navigation Underway conference 2018 - useremail is hardcoded as MD5 hashes.
-            $scope.enav_underway_detect_user_by_email = function(){
-                try{
+            $scope.hasMMSI = false; //checked in menu to place zoom to vessel icon
+            //Just for demonstration purposes - useremail is hardcoded as MD5 hashes - sees if specific user, then attaches MMSI to it and sets flag (hasMMSI)
+            $scope.detectUserMmsiByEmail = function(){
+                if($scope.loggedIn){
                 var useremail = $scope.userMrn().email;
                 var userEmailMd5 = CryptoJS.MD5(useremail).toString();
                 var forceZoomToVessel = false;
@@ -74,28 +75,29 @@ angular.module('maritimeweb.app')
                     lon:0,
                     lat:0,
                     cog:0
-                }
+                };
                 if(userEmailMd5 == "826af07e5d45f86e84bd586468dde926"){
-                    console.log("Hello Rob, welcome back ^_^");
-                    zoomToVesselMMSI = 219018314;
-                    $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
+                    // zoomToVesselMMSI = 219018314; //default
+                    // zoomToVesselMMSI = 219592000; //Crown Seaways
+                    // zoomToVesselMMSI = 219945000; //Pearl Seaways
+                    // zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
+                    zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
+                    $window.localStorage.setItem('vessel_image','DFDSSeawaysVesselSatelliteImage_small.png'); //hardcoded vessel image
 
-                    forceZoomToVessel = true;
-                }else if(userEmailMd5 == "050b254e99e21787a1c9817acdb38797" || userEmailMd5 == "da13656b963149a13fcbc4168796b29b" || userEmailMd5 == "0aa5b26719b2542dd72d10c7b43e1e12" || userEmailMd5 == "e59453b89ad5cd99712d91e93923fb84"){
-                    forceZoomToVessel = true;
-                    zoomToVesselMMSI = 219945000;
+                    $scope.hasMMSI = true; //so menu displays zoomtovessel icon
                     $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
+                    forceZoomToVessel = true;
+                // }else if(userEmailMd5 == "" || userEmailMd5 == "" || userEmailMd5 == "" || userEmailMd5 == ""){
+                //     forceZoomToVessel = true;
+                //     zoomToVesselMMSI = 219945000;
+                //     $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
                 }
-
-
                 function locateVesselPos(){
                     if(forceZoomToVessel) {
-                        // console.log("Geoffrey:", $scope.mapTrafficLayers.getLayers("Vessels - AIS").getVisible());
-                        // try {
-                        //     // $scope.toggleLayer($scope.mapTrafficLayers.getLayers().getArray());
-                        //     // "Vessels - AIS""
-                        // }catch(noLayerYetError){}
-                        //
+                        try {
+                            $scope.mapTrafficLayers.getLayers().getArray()[0].setVisible(true);
+                        }catch(noLayerYetError){}
+
                         VesselService.detailsMMSI(zoomToVesselMMSI).then(function (vesselDetails) {
                             curPos.lon = vesselDetails.data.aisVessel.lon;
                             curPos.lat = vesselDetails.data.aisVessel.lat;
@@ -106,13 +108,12 @@ angular.module('maritimeweb.app')
                     }
                 }
                 if(forceZoomToVessel) setTimeout(function(){ locateVesselPos(); }, 2000); //keeps trying to locate vessel
-
-                //the other guy: "050b254e99e21787a1c9817acdb38797"
-                //my email: "826af07e5d45f86e84bd586468dde926"
-                //additional: "da13656b963149a13fcbc4168796b29b"
-                }catch(notLoggedInErr){}
+                }else{
+                    //notlogged in
+                    $window.localStorage.setItem('vessel_image',''); //no hardcoded vessel image
+                }
             };
-            $scope.enav_underway_detect_user_by_email();
+            $scope.detectUserMmsiByEmail();
 
 
 
@@ -143,7 +144,9 @@ angular.module('maritimeweb.app')
             if (accepted_terms == null || (new Date(accepted_terms).getTime() < now )) {
                 $scope.welcomeToBalticWebModal('lg');
             } else {
-                growl.info("Welcome back");
+                var username = $scope.userName();
+                if(!username || username == "") username = "";
+                growl.info("Welcome back " + username);
             }
 
 
@@ -192,7 +195,6 @@ angular.module('maritimeweb.app')
             };
 
             $scope.setActiveVtsIdAndOpenForm = function(id){
-                console.log("opening VTS with ID:",id);
                 localStorage.setItem('vts_current_id', id);
                 VtsHelperService.showVtsCenterSelect = false; //display the select when using top-menu only
                 $scope.activateVTSForm();
@@ -556,7 +558,6 @@ angular.module('maritimeweb.app')
             /** Toggle the selected status of the service **/
             $scope.switchBaseMap = function (basemap) {
                 angular.forEach($scope.mapBackgroundLayers.getLayers().getArray(), function (value) { // disable every basemaps
-                    // console.log("disabling " + value.get('title'));
                     value.setVisible(false)
                 });
                 basemap.setVisible(true);// activate selected basemap
@@ -605,10 +606,7 @@ angular.module('maritimeweb.app')
 
             $scope.showVesselDetails = function (vessel) {
                 $log.info("mmsi" + vessel);
-                //var vesselDetails = VesselService.details(vessel.mmsi);
                 VesselService.showVesselInfoFromMMsi(vessel);
-                //console.log("App Ctr received = vesselDetails" +JSON.stringify(vesselDetails));
-                //growl.info("got vesseldetails " + JSON.stringify(vesselDetails));
                 growl.info("Vessel details retrieved");
 
             };

@@ -1,8 +1,8 @@
 angular.module('maritimeweb.vessel')
 
 /** Service for accessing AIS vessel data **/
-    .service('VesselService', ['$http', 'growl', '$uibModal',
-        function ($http, growl, $uibModal) {
+    .service('VesselService', ['$http', 'growl', '$uibModal', '$window',
+        function ($http, growl, $uibModal, $window) {
 
             /** Returns the AIS vessels within the bbox */
             this.getVesselsInArea = function (zoomLvl, bbox) {
@@ -98,6 +98,17 @@ angular.module('maritimeweb.vessel')
                     default :
                         colorName = "gray";
                         vesselType = "Undefined / unknown";
+                }
+
+                //Special case for demonstration purposes
+                this.tmpVesImg = $window.localStorage.getItem('vessel_image'); //whatever image is in localstorage - must be in img/ dir
+                if($window.localStorage.getItem('mmsi')){
+                    if ((this.tmpVesImg && this.tmpVesImg != "") && (parseInt(vo.mmsi) == parseInt($window.localStorage.getItem('mmsi')))) {
+                        return {
+                            name: this.tmpVesImg,
+                            type: vesselType
+                        };
+                    }
                 }
 
                 if (vo.moored) {
