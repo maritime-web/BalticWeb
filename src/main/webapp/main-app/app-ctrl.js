@@ -80,17 +80,13 @@ angular.module('maritimeweb.app')
                     // zoomToVesselMMSI = 219018314; //default
                     // zoomToVesselMMSI = 219592000; //Crown Seaways
                     // zoomToVesselMMSI = 219945000; //Pearl Seaways
-                    // zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
-                    zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
+                    zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
+                    // zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
                     $window.localStorage.setItem('vessel_image','DFDSSeawaysVesselSatelliteImage_small.png'); //hardcoded vessel image
 
                     $scope.hasMMSI = true; //so menu displays zoomtovessel icon
                     $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
                     forceZoomToVessel = true;
-                // }else if(userEmailMd5 == "" || userEmailMd5 == "" || userEmailMd5 == "" || userEmailMd5 == ""){
-                //     forceZoomToVessel = true;
-                //     zoomToVesselMMSI = 219945000;
-                //     $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
                 }
                 function locateVesselPos(){
                     if(forceZoomToVessel) {
@@ -102,7 +98,13 @@ angular.module('maritimeweb.app')
                             curPos.lon = vesselDetails.data.aisVessel.lon;
                             curPos.lat = vesselDetails.data.aisVessel.lat;
                             curPos.cog = vesselDetails.data.aisVessel.cog;
+                            curPos.id = vesselDetails.data.aisVessel.name;
+                            curPos.callsign = vesselDetails.data.aisVessel.callsign;
+                            curPos.mmsi = vesselDetails.data.aisVessel.mmsi;
+                            curPos.angle = vesselDetails.data.aisVessel.rot;
+                            curPos.radian = (vesselDetails.data.aisVessel.rot * (Math.PI / 180));
                             localStorage.setItem('vts_zoomto_uservessel', "["+curPos.lon+","+curPos.lat+"]");
+                            $window.localStorage.setItem('Vessel_AIS_data',JSON.stringify(curPos));
                             forceZoomToVessel=false;
                         });
                     }

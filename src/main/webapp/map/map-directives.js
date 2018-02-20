@@ -184,11 +184,12 @@ angular.module('maritimeweb.map')
 
                 scope.$watch(function () { return window.localStorage['vts_zoomto_uservessel']; },function(newVal,oldVal){
                     if(newVal && newVal.toString() != ""){
+                        console.log("Zooming triggered:",newVal)
                         localStorage.setItem('vts_zoomto_uservessel', "");
                         map.getView().animate({
                             center: ol.proj.transform(JSON.parse(newVal), 'EPSG:4326', 'EPSG:3857'),
-                            zoom: 16,
-                            duration: 3000
+                            zoom: 14,
+                            duration: 2000
                         });
                     }
                 });
@@ -406,13 +407,13 @@ angular.module('maritimeweb.map')
     /**
      * The map-current-pos-btn directive will add a current-position button to the map. The button centers on current position and places a image marker.
      */
-    .directive('mapCurrentPosBtn', ['$window', 'MapService', 'growl', function ($window, MapService, growl) {
+    .directive('mapCurrentPosBtn', ['$window', 'MapService', 'growl', 'Auth', 'VesselService', function ($window, MapService, growl, Auth, VesselService) {
         return {
             restrict: 'E',
             replace: false,
             require: '^olMap',
             template: "<span class='map-current-pos-btn'  tooltip='Go to current position' data-toggle='tooltip' data-placement='right' title='Go to current position' >" +
-            "<span><i class='fa fa-location-arrow' ng-click='currentPos()'aria-hidden='true'></i></span>" +
+            "<span><i class='fa fa-location-arrow location-arrow' ng-click='currentPos()'aria-hidden='true'></i></span>" +
             //"  <span class='glyphicon glyphicon-map-marker' ng-click='currentPos()' tooltip='Current Position'></span>" +
             "</span>",
             scope: {},
@@ -420,43 +421,56 @@ angular.module('maritimeweb.map')
                 var olScope = ctrl.getOpenlayersScope();
                 olScope.getMap().then(function (map) {
                     scope.currentPos = function () {
-                        scope.loadingData = true; // start spinner
-                        $window.navigator.geolocation.getCurrentPosition(function (pos) {
-                            console.log('Got current position', pos.coords);
+                        if (Auth.loggedIn) {
+                            var tmpmmsi = $window.localStorage.getItem('mmsi');
+                            if (tmpmmsi && tmpmmsi.length == 9) {
+                                var curPos = {};
+                                VesselService.detailsMMSI(tmpmmsi).then(function (vesselDetails) {
+                                    curPos.lon = vesselDetails.data.aisVessel.lon;
+                                    curPos.lat = vesselDetails.data.aisVessel.lat;
+                                    localStorage.setItem('vts_zoomto_uservessel', "[" + curPos.lon + "," + curPos.lat + "]");
+                                });
+                            }
+                        } else {
+                            //Not logged in - use geolocation
+                            scope.loadingData = true; // start spinner
+                            $window.navigator.geolocation.getCurrentPosition(function (pos) {
+                                console.log('Got current position', pos.coords);
 
-                            var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
-                            map.getView().setCenter(center);
-                            map.getView().setZoom(15);
+                                var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+                                map.getView().setCenter(center);
+                                map.getView().setZoom(15);
 
-                            var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
-                            var markerStyle = new ol.style.Style({
-                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                    anchor: [0.5, 0.5],
-                                    src: 'img/geolocation_marker.png'
-                                }))
+                                var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
+                                var markerStyle = new ol.style.Style({
+                                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                        anchor: [0.5, 0.5],
+                                        src: 'img/geolocation_marker.png'
+                                    }))
+                                });
+
+                                var markerFeature = new ol.Feature({
+                                    geometry: markerPosition
+                                });
+                                markerFeature.setStyle(markerStyle);
+
+                                var vectorSource = new ol.source.Vector({
+                                    features: [markerFeature]
+                                });
+
+                                var vectorLayer = new ol.layer.Vector({
+                                    source: vectorSource
+                                });
+                                map.addLayer(vectorLayer);
+
+                                scope.loadingData = false; // stop spinner
+
+                            }, function () {
+                                scope.loadingData = false; // stop spinner
+                                console.error('Unable to get current position');
+                                growl.error('Unable to retrieve current position');
                             });
-
-                            var markerFeature = new ol.Feature({
-                                geometry: markerPosition
-                            });
-                            markerFeature.setStyle(markerStyle);
-
-                            var vectorSource = new ol.source.Vector({
-                                features: [markerFeature]
-                            });
-
-                            var vectorLayer = new ol.layer.Vector({
-                                source: vectorSource
-                            });
-                            map.addLayer(vectorLayer);
-
-                            scope.loadingData = false; // stop spinner
-
-                        }, function () {
-                            scope.loadingData = false; // stop spinner
-                            console.error('Unable to get current position');
-                            growl.error('Unable to retrieve current position');
-                        });
+                        }
                     }
 
                 });
@@ -468,7 +482,7 @@ angular.module('maritimeweb.map')
     /**
      * The map-current-pos-btn directive will add a current-position button to the map.
      */
-    .directive('mapCurrentPosOrientationBtn', ['$window', 'MapService', function ($window, MapService) {
+    .directive('mapCurrentPosOrientationBtn', ['$window', 'MapService', 'Auth', 'VesselService', function ($window, MapService, Auth, VesselService) {
         return {
             restrict: 'E',
             replace: false,
@@ -481,59 +495,72 @@ angular.module('maritimeweb.map')
                 var olScope = ctrl.getOpenlayersScope();
                 olScope.getMap().then(function (map) {
                     scope.currentPosOrientation = function () {
-                        scope.loadingData = true; // start spinner
-                        $window.navigator.geolocation.getCurrentPosition(function (pos) {
+                        if(Auth.loggedIn){
+                            var tmpmmsi = $window.localStorage.getItem('mmsi');
+                            if(tmpmmsi && tmpmmsi.length==9){
+                                var curPos = {};
+                                VesselService.detailsMMSI(tmpmmsi).then(function (vesselDetails) {
+                                    curPos.lon = vesselDetails.data.aisVessel.lon;
+                                    curPos.lat = vesselDetails.data.aisVessel.lat;
+                                    localStorage.setItem('vts_zoomto_uservessel', "["+curPos.lon+","+curPos.lat+"]");
+                                });
+                            }
+                        }else{
+                            //Not logged in - use geolocation
+                            scope.loadingData = true; // start spinner
+                            $window.navigator.geolocation.getCurrentPosition(function (pos) {
 
-                            var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
-                            map.getView().setCenter(center);
-                            map.getView().setZoom(15);
+                                var center = MapService.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+                                map.getView().setCenter(center);
+                                map.getView().setZoom(15);
 
-                            var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
-                            var markerStyle = new ol.style.Style({
-                                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                                    anchor: [0.5, 0.5],
-                                    src: 'img/geolocation_marker.png'
-                                }))
+                                var markerPosition = new ol.geom.Point(ol.proj.transform([pos.coords.longitude, pos.coords.latitude], 'EPSG:4326', 'EPSG:900913'));
+                                var markerStyle = new ol.style.Style({
+                                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                        anchor: [0.5, 0.5],
+                                        src: 'img/geolocation_marker.png'
+                                    }))
+                                });
+
+                                var markerFeature = new ol.Feature({
+                                    geometry: markerPosition
+                                });
+                                markerFeature.setStyle(markerStyle);
+
+                                var vectorSource = new ol.source.Vector({
+                                    features: [markerFeature]
+                                });
+
+                                var vectorLayer = new ol.layer.Vector({
+                                    source: vectorSource
+                                });
+                                map.addLayer(vectorLayer);
+
+                                var deviceOrientation = new ol.DeviceOrientation();
+                                deviceOrientation.setTracking(true);
+
+                                // tilt the map
+                                deviceOrientation.on(['change:beta', 'change:gamma'], function (event) {
+                                    var center = map.getView().getCenter();
+                                    var resolution = view.getResolution();
+                                    var beta = event.target.getBeta() || 0;
+                                    var gamma = event.target.getGamma() || 0;
+
+                                    center[0] -= resolution * gamma * 25;
+                                    center[1] += resolution * beta * 25;
+                                    console.log("devices orientation is changing. Beta=" + beta + " gamma=" + gamma);
+
+                                    map.getView().setCenter(map.getView().constrainCenter(center));
+                                });
+
+                                scope.loadingData = false; // stop spinner
+
+                            }, function () {
+                                scope.loadingData = false; // stop spinner
+                                console.error('Unable to get current position');
+                                growl.error('Unable to retrieve current position');
                             });
-
-                            var markerFeature = new ol.Feature({
-                                geometry: markerPosition
-                            });
-                            markerFeature.setStyle(markerStyle);
-
-                            var vectorSource = new ol.source.Vector({
-                                features: [markerFeature]
-                            });
-
-                            var vectorLayer = new ol.layer.Vector({
-                                source: vectorSource
-                            });
-                            map.addLayer(vectorLayer);
-
-                            var deviceOrientation = new ol.DeviceOrientation();
-                            deviceOrientation.setTracking(true);
-
-                            // tilt the map
-                            deviceOrientation.on(['change:beta', 'change:gamma'], function (event) {
-                                var center = map.getView().getCenter();
-                                var resolution = view.getResolution();
-                                var beta = event.target.getBeta() || 0;
-                                var gamma = event.target.getGamma() || 0;
-
-                                center[0] -= resolution * gamma * 25;
-                                center[1] += resolution * beta * 25;
-                                console.log("devices orientation is changing. Beta=" + beta + " gamma=" + gamma);
-
-                                map.getView().setCenter(map.getView().constrainCenter(center));
-                            });
-
-                            scope.loadingData = false; // stop spinner
-
-                        }, function () {
-                            scope.loadingData = false; // stop spinner
-                            console.error('Unable to get current position');
-                            growl.error('Unable to retrieve current position');
-                        });
+                        }
                     }
 
                 });

@@ -168,31 +168,31 @@ angular.module('maritimeweb.vessel')
                         };
 
 
-                    scope.retForcedScale = function (vessel) {
+                    scope.retForcedScale = function (scaleset) {
                         var zoom = map.getView().getZoom();
                         var scale = 0;
                         switch (zoom) {
                             case 15 :
-                                scale = 0.3;
+                                scale = scaleset[2]; //starts at third pos (2)
                                 break;
                             case 16 :
-                                scale = 0.5;
+                                scale = scaleset[3];
                                 break;
                             case 17 :
-                                scale = 1.2;
+                                scale = scaleset[4];
                                 break;
                             case 18 :
-                                scale = 4;
+                                scale = scaleset[5];
                                 break;
                             case 19 :
-                                scale = 8;
+                                scale = scaleset[6];
                                 break;
                             case 20 :
-                                scale = 20;
+                                scale = scaleset[7];
                                 break;
                         }
-                        if (zoom < 15) scale = 0.2;
-                        if (zoom > 20) scale = 20;
+                        if (zoom < 15) scale = scaleset[0]; //first
+                        if (zoom > 20) scale = scaleset[1]; //second
                         return scale;
                     };
 
@@ -200,7 +200,7 @@ angular.module('maritimeweb.vessel')
                         scope.markVesselFeature = function (vessel) {
                             var rot = vessel.radian;
                             if(vessel.moored && vessel.radian==3.141592653589793) rot = 0; //means undefined
-                            var scale = scope.retForcedScale(vessel);
+                            var scale = scope.retForcedScale([0.4,1.2,0.5,0.7,1.2,1.2,1.2,1.2]);
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
                                     anchor: [0.5, 0.5],
@@ -213,7 +213,7 @@ angular.module('maritimeweb.vessel')
                                     rotation: rot,
                                     rotateWithView: true,
                                     scale: scale,
-                                    src: 'img/shipIconCompass_Red.png'
+                                    src: 'img/shipIconCompassLarge_Red.png'
                                 }))
                             });
 
@@ -242,7 +242,7 @@ angular.module('maritimeweb.vessel')
                             //for demonstration purposes - custom image for vessel
                             if($window.localStorage.getItem('mmsi') && parseInt(vessel.mmsi) == parseInt($window.localStorage.getItem('mmsi'))){
                                 anchor = [0.5,0.57];
-                                scale = scope.retForcedScale(vessel);
+                                scale = scope.retForcedScale([0.2,20,0.3,0.5,1.2,4,8,20]);
                             }
 
                             var markerStyle = new ol.style.Style({
@@ -319,15 +319,15 @@ angular.module('maritimeweb.vessel')
                                         var vesselFeature;
                                         if (zoomLvl > 8) {
                                             vesselFeature = scope.createVesselFeature(vesselData);
-                                            if($window.localStorage.getItem('mmsi')!= null && $window.localStorage.getItem('mmsi')==vessel.mmsi){
-                                                var markVessel = scope.markVesselFeature(vesselData);
-                                                features.push(markVessel);
-                                            }
-
                                         } else {
                                             vesselFeature = scope.createMinimalVesselFeature(vesselData);
                                         }
                                         features.push(vesselFeature);
+
+                                        //always display users vessel if one is specified
+                                        if($window.localStorage.getItem('mmsi')!= null && $window.localStorage.getItem('mmsi')==vessel.mmsi){
+                                            features.push(scope.markVesselFeature(vesselData));
+                                        }
                                     }
 
                                     vesselLayer.getSource().clear();

@@ -56,7 +56,15 @@ body {
     }
 }
 
+.zoom-to-vessel-crosshair-icon{
+    color: #9d9d9d;
+    font-size: 27px;
+    top: 12px;
+}
 
+.location-arrow{
+    font-size: 36px !important;
+}
 
 .push {
     position: absolute;
@@ -1059,10 +1067,10 @@ abbr::after {
 .map-current-pos-btn {
     left: 12px;
     top: 80px;
-    font-size: 1.5em;
+    font-size: 36px;
     position: absolute;
     z-index: 100;
-    margin: 0;
+    margin: -5px;
     padding: 3px;
     border-radius: 4px;
     background-color: rgba(255, 255, 255, 0.4);
