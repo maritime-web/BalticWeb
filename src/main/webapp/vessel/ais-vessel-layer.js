@@ -200,7 +200,7 @@ angular.module('maritimeweb.vessel')
                         scope.markVesselFeature = function (vessel) {
                             var rot = vessel.radian;
                             if(vessel.moored && vessel.radian==3.141592653589793) rot = 0; //means undefined
-                            var scale = scope.retForcedScale([0.4,1.2,0.5,0.7,1.2,1.2,1.2,1.2]);
+                            var scale = scope.retForcedScale([0.4,1.2,0.5,0.7,1.2,1.2,1.2,1.2]); //by look and feel
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
                                     anchor: [0.5, 0.5],
@@ -242,7 +242,7 @@ angular.module('maritimeweb.vessel')
                             //for demonstration purposes - custom image for vessel
                             if($window.localStorage.getItem('mmsi') && parseInt(vessel.mmsi) == parseInt($window.localStorage.getItem('mmsi'))){
                                 anchor = [0.5,0.57];
-                                scale = scope.retForcedScale([0.2,20,0.3,0.5,1.2,4,8,20]);
+                                scale = scope.retForcedScale([0.2,20,0.3,0.5,1.2,4,8,20]); //by look and feel
                             }
 
                             var markerStyle = new ol.style.Style({
@@ -487,6 +487,7 @@ angular.module('maritimeweb.vessel')
                                     scope.vessel.callsign = feature.get('callSign');
                                     scope.vessel.position = ol.coordinate.toStringHDMS([feature.get('longitude'), feature.get('latitude')], 3);
                                     overlay.setPosition(coordinate);
+                                    scope.$apply();
                                 } else {
                                     // $(elm).popover('destroy');
                                      $log.debug("destroy");

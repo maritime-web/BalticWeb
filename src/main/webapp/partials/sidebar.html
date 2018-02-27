@@ -12,7 +12,7 @@
             </uib-tab-heading>
 
             <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
-                <div class="panel-heading cursor-default" ng-click="sidebarUncollapse()">Navigationel Warnings and Notices to Mariners
+                <div class="panel-heading cursor-default" ng-click="sidebarUncollapse()">Navigational Warnings and Notices to Mariners
                     <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
                            ng-click="refreshNwNmServices()"></small>
 
@@ -232,7 +232,7 @@
 
                 <table ng-if="mapTrafficLayers.getLayers().getArray()[0].getVisible()" class="table table-striped">
                     <tr ng-repeat="vessel in vessels | orderBy: 'mmsi' | limitTo: 100">
-                        <td width="24" class="vessel-item">
+                        <td class="vessel-item">
                             <img ng-src="{{iconForVessel(vessel)}}">
                         </td>
                         <td class="vessel-item"><span ng-if="vessel.mmsi">{{vessel.mmsi}}</span></td>
@@ -254,7 +254,6 @@
             </uib-tab-heading>
             <div class="panel" ng-class="(1==1) ? 'panel-primary' : 'panel-default'" ng-click="sidebarUncollapse()">
                 <div class="panel-heading cursor-default">Vessel Traffic Service Reporting areas</div>
-
                 <div class="panel-body">
                     <input type="checkbox" ng-model="vts_map_show" ng-change="vtsMapToggle()" />
                     Display VTS areas
@@ -262,10 +261,7 @@
                     <br>
                     <input type="checkbox" ng-disabled="!vts_map_show  || !vts_route_enabled" ng-model="vts_onroute_only" ng-change="vtsRouteIntersectToggle()" />
                     <span ng-class="{false:'vts-grey-text', true:''}[vts_route_enabled]">Show only areas intersecting route</span>
-
                     <br>
-                    <!--<input type="checkbox" ng-change="">-->
-                    <!--Display only VTS centres on route-->
                 </div>
             </div>
             <div class="panel vts-padding-list"  ng-class="(1==1) ? 'panel-primary' : 'panel-default'">

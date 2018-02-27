@@ -629,7 +629,21 @@ angular.module('maritimeweb.map')
                         scope.$$phase || scope.$apply();
                     });
 
+                    scope.tmpRtzPoints = "";
+                    scope.tmpRtzPointsCount = 0;
+
                     map.on('click', function (evt) { //minimize the right side menu (sidebar) on click - not on drag.
+
+                        /* EASY WAY TO MAKE AN RTZ */
+                        //Enable code, click around on map, see in console. - note: clicking on anything that is not map, such as existing route, vessel, vts area etc, will mess up your rtz.
+                        //You have to copy/paste into an RTZ to make it work.
+                        // scope.tmpRtzPointsCount++;
+                        // scope.tmpRtzPoints += '<waypoint id=\"'+scope.tmpRtzPointsCount+'\" name=\"\">\n"' +
+                        //     '<position lat=\"'+scope.currentPos.lat+'\" lon=\"'+scope.currentPos.lon+'\"/>\n' +
+                        //     '<leg speedMin=\"12.0\" speedMax=\"12.0\" />\n' +
+                        //     '</waypoint>';
+                        // console.log("RTZ:",scope.tmpRtzPoints);
+
                         MapService.sidebarCollapse();
                         scope.$apply();
                     });

@@ -80,8 +80,8 @@ angular.module('maritimeweb.app')
                     // zoomToVesselMMSI = 219018314; //default
                     // zoomToVesselMMSI = 219592000; //Crown Seaways
                     // zoomToVesselMMSI = 219945000; //Pearl Seaways
-                    zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
-                    // zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
+                    // zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
+                    zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
                     $window.localStorage.setItem('vessel_image','DFDSSeawaysVesselSatelliteImage_small.png'); //hardcoded vessel image
 
                     $scope.hasMMSI = true; //so menu displays zoomtovessel icon
@@ -635,6 +635,23 @@ angular.module('maritimeweb.app')
                 };
                 $timeout(redirect, 100);
             };
+
+
+            $scope.refreshTokenManually = $interval(function () {
+                $http({
+                    url: '/rest/vtsinterface',
+                    method: "GET",
+                    data: "",
+                    headers: {'Content-Type': 'application/text'}
+                })
+                    .then(function (data) {
+                            console.log("Refreshed token with http call");
+                        },
+                        function (data) { // error
+                        });
+            }, 300000); //every 5 minutes
+
+
 
         }]);
 

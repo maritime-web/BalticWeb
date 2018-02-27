@@ -246,7 +246,7 @@
         <div class="vts-pad-top">
             <div class="vts-force-spacing-200 " ng-show="showVesselType">
                 <span class="vts-force-spacing-200">Vessel Type:</span>
-                <select class="form-control vts-force-spacing-150 vts-select-less-padding" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsVesselTypeValid]"   name="vts-center-select" ng-options="items as items.type for items in vesselTypes" ng-model="selectedVesselType" ng-change="selectVesselTypeChange(selectedVesselType)" >
+                <select class="form-control vts-force-spacing-150 vts-select" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsVesselTypeValid]"   name="vts-center-select" ng-options="items as items.type for items in vesselTypes" ng-model="selectedVesselType" ng-change="selectVesselTypeChange(selectedVesselType)" >
                     <option value="" selected disabled class="ng-binding ng-scope">Select a type:</option>
                 </select>
             </div>
@@ -498,7 +498,7 @@
 
             <div class=" vts-pad-top" >
                 <span class="vts-force-spacing-300">
-                    <select class="form-control    vts-force-spacing-200 vts-select-less-padding" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]"   name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
+                    <select class="form-control vts-force-spacing-200 vts-select" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]"   name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
                         <option value="" selected disabled class="ng-binding ng-scope ">Select a cargo type:</option>
                     </select>
                 </span>

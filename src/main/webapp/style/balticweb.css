@@ -161,7 +161,10 @@ abbr::after {
 .vts-warning-abbr::after {
     background: #9c1a03;
 }
-
+.vts-select{
+    padding:0 !important;
+    height:27px !important;
+}
 .vts-fuel-icon-container {
     width:64px;
     height:86px;
@@ -1186,6 +1189,9 @@ abbr::after {
     padding: 5px;
     border-bottom: 1px solid #eee;
 }
+.vessel-item > img{
+    max-width:60px;
+}
 
 /** NW-NM list **/
 
@@ -1445,7 +1451,7 @@ body:after {
     min-width: 280px;
 }
 .ol-popup:after, .ol-popup:before {
-    top: 100%;
+    top: 300%;
     border: solid transparent;
     content: " ";
     height: 0;

@@ -64,6 +64,7 @@ angular.module('maritimeweb.route')
                 {id: '', name: 'pick a sample route'},
             /*    {id: 'E2_GOT-GDYNIA_TEST_DROGDEN_2.rtz', name: 'E2 GOT GDYNIA TEST DROGDEN 2'},
                 {id: 'E2_GOT_GDYNIA_TEST.rtz', name: 'E2 GOT GDYNIA TEST'},*/
+                {id: 'Travemunde_to_Helsinki.rtz', name: 'Final Conference - Travemünde to Helsinki'},
                 {id: 'E2_GOT-GDYNIA_Fuel_optimized_Original.rtz', name: 'E2 GOT GDYNIA - Optimized for fuel efficiency'},
                 {id: 'ExamplefileworkswithENSI.rtz', name: 'Talin - Helsinki'},
                 {id: 'Helsinki_to_Rotterdam_via_Aarhus-Bremerhaven.rtz', name: 'BIMCO - Helsinki to Rotterdam'},

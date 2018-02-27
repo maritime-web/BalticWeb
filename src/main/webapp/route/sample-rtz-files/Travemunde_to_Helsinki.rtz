@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route version="1.1" xmlns="http://www.cirm.org/RTZ/1/1">
+    <routeInfo routeName="Travemünde - Helsinki" />
+    <waypoints>
+        <defaultWaypoint>
+            <leg speedMin="12.0" speedMax="12.0" />
+        </defaultWaypoint>
+
+        <waypoint id="1" name="">
+            <position lat="53.942248509986314" lon="10.860854387283325"/>
+            <leg speedMin="12.0" speedMax="12.0" />
+        </waypoint><waypoint id="2" name="">
+        <position lat="53.94333467537308" lon="10.86148738861084"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="3" name="">
+        <position lat="53.945248025837344" lon="10.861809253692627"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="4" name="">
+        <position lat="53.9476601115843" lon="10.86120843887329"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="5" name="">
+        <position lat="53.95016676492685" lon="10.861583948135372"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="6" name="">
+        <position lat="53.952812162601646" lon="10.8640193939209"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="7" name="">
+        <position lat="53.95796988977668" lon="10.874544382095337"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="8" name="">
+        <position lat="53.960305492682835" lon="10.887773036956787"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="9" name="">
+        <position lat="53.961713103671514" lon="10.890240669250488"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="10" name="">
+        <position lat="53.9663458911603" lon="10.895229578018188"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="11" name="">
+        <position lat="53.979171733706295" lon="10.912342071533203"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="12" name="">
+        <position lat="53.997736179103754" lon="10.945343971252441"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="13" name="">
+        <position lat="54.06082363514611" lon="11.063833236694338"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="14" name="">
+        <position lat="54.165072163932166" lon="11.270856857299806"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="15" name="">
+        <position lat="54.33204066198124" lon="11.748161315917969"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="16" name="">
+        <position lat="54.425671443145774" lon="11.999816894531248"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="17" name="">
+        <position lat="54.427768564617764" lon="12.114830017089842"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="18" name="">
+        <position lat="54.46584759009005" lon="12.193450927734373"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="19" name="">
+        <position lat="54.60682501412856" lon="12.264690399169922"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="20" name="">
+        <position lat="54.85823245119829" lon="13.066177368164062"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="21" name="">
+        <position lat="54.854279915587284" lon="13.08746337890625"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="22" name="">
+        <position lat="55.056447354026375" lon="14.09065246582031"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="23" name="">
+        <position lat="55.395199352682226" lon="14.639968872070312"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="24" name="">
+        <position lat="55.39948862180293" lon="14.65301513671875"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="25" name="">
+        <position lat="55.94324005089274" lon="16.314697265625"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="26" name="">
+        <position lat="56.763262155313924" lon="18.325195312499996"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="27" name="">
+        <position lat="56.97941473133858" lon="18.709716796875"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="28" name="">
+        <position lat="58.093847987723024" lon="20.083007812499996"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="29" name="">
+        <position lat="58.76107889272825" lon="21.115722656249996"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="30" name="">
+        <position lat="59.112538421825406" lon="21.654052734375004"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="31" name="">
+        <position lat="59.40176322088823" lon="22.65380859375"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="32" name="">
+        <position lat="59.67398177715327" lon="24.13421630859375"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="33" name="">
+        <position lat="59.80823197130681" lon="24.78515625"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="34" name="">
+        <position lat="60.105761683171494" lon="24.979476928710938"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="35" name="">
+        <position lat="60.11987541932612" lon="24.980506896972656"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="36" name="">
+        <position lat="60.14020139409928" lon="24.992780685424805"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="37" name="">
+        <position lat="60.14353442483494" lon="24.996385574340817"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="38" name="">
+        <position lat="60.14960138291352" lon="24.998960494995117"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="39" name="">
+        <position lat="60.15472751716857" lon="24.997587203979492"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="40" name="">
+        <position lat="60.15848617433949" lon="24.98188018798828"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="41" name="">
+        <position lat="60.16274617799567" lon="24.965829849243164"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint><waypoint id="42" name="">
+        <position lat="60.165820724743725" lon="24.9603796005249"/>
+        <leg speedMin="12.0" speedMax="12.0" />
+    </waypoint>
+
+
+    </waypoints>
+    <schedules>
+        <schedule id="1">
+            <calculated>
+                <scheduleElement eta="2018-04-24T00:00:01.000Z" speed="8.0"  waypointId="1"/>
+                <scheduleElement eta="2018-04-24T00:00:30.000Z" speed="13.67" waypointId="2"/>
+                <scheduleElement eta="2018-04-24T01:01:01.000Z" speed="13.67" waypointId="3"/>
+                <scheduleElement eta="2018-04-24T01:01:31.000Z" speed="13.67" waypointId="4"/>
+                <scheduleElement eta="2018-04-24T02:02:01.000Z" speed="13.67" waypointId="5"/>
+                <scheduleElement eta="2018-04-24T02:02:31.000Z" speed="13.67" waypointId="6"/>
+                <scheduleElement eta="2018-04-24T03:03:01.000Z" speed="13.67" waypointId="7"/>
+                <scheduleElement eta="2018-04-24T03:03:31.000Z" speed="13.67" waypointId="8"/>
+                <scheduleElement eta="2018-04-24T04:04:01.000Z" speed="13.67" waypointId="9"/>
+                <scheduleElement eta="2018-04-24T04:04:31.000Z" speed="13.67" waypointId="10"/>
+                <scheduleElement eta="2018-04-24T05:05:01.000Z" speed="8.0"  waypointId="11"/>
+                <scheduleElement eta="2018-04-24T05:05:31.000Z" speed="13.67" waypointId="12"/>
+                <scheduleElement eta="2018-04-24T06:06:01.000Z" speed="13.67" waypointId="13"/>
+                <scheduleElement eta="2018-04-24T06:06:31.000Z" speed="13.67" waypointId="14"/>
+                <scheduleElement eta="2018-04-24T07:07:01.000Z" speed="13.67" waypointId="15"/>
+                <scheduleElement eta="2018-04-24T07:07:31.000Z" speed="13.67" waypointId="16"/>
+                <scheduleElement eta="2018-04-24T08:08:01.000Z" speed="13.67" waypointId="17"/>
+                <scheduleElement eta="2018-04-24T08:08:31.000Z" speed="13.67" waypointId="18"/>
+                <scheduleElement eta="2018-04-24T09:09:01.000Z" speed="13.67" waypointId="19"/>
+                <scheduleElement eta="2018-04-24T09:09:31.000Z" speed="13.67" waypointId="20"/>
+                <scheduleElement eta="2018-04-24T10:10:01.000Z" speed="8.0"  waypointId="21"/>
+                <scheduleElement eta="2018-04-24T10:10:31.000Z" speed="13.67" waypointId="22"/>
+                <scheduleElement eta="2018-04-24T11:11:01.000Z" speed="13.67" waypointId="23"/>
+                <scheduleElement eta="2018-04-24T11:11:31.000Z" speed="13.67" waypointId="24"/>
+                <scheduleElement eta="2018-04-24T12:12:01.000Z" speed="13.67" waypointId="25"/>
+                <scheduleElement eta="2018-04-24T12:12:31.000Z" speed="13.67" waypointId="26"/>
+                <scheduleElement eta="2018-04-24T13:13:01.000Z" speed="13.67" waypointId="27"/>
+                <scheduleElement eta="2018-04-24T13:13:31.000Z" speed="13.67" waypointId="28"/>
+                <scheduleElement eta="2018-04-24T14:14:01.000Z" speed="13.67" waypointId="29"/>
+                <scheduleElement eta="2018-04-24T14:14:31.000Z" speed="13.67" waypointId="30"/>
+                <scheduleElement eta="2018-04-24T15:15:01.000Z" speed="8.0"  waypointId="31"/>
+                <scheduleElement eta="2018-04-24T15:15:31.000Z" speed="13.67" waypointId="32"/>
+                <scheduleElement eta="2018-04-24T16:16:01.000Z" speed="13.67" waypointId="33"/>
+                <scheduleElement eta="2018-04-24T16:16:31.000Z" speed="13.67" waypointId="34"/>
+                <scheduleElement eta="2018-04-24T17:17:01.000Z" speed="13.67" waypointId="35"/>
+                <scheduleElement eta="2018-04-24T17:17:31.000Z" speed="13.67" waypointId="36"/>
+                <scheduleElement eta="2018-04-24T18:18:01.000Z" speed="13.67" waypointId="37"/>
+                <scheduleElement eta="2018-04-24T18:18:31.000Z" speed="13.67" waypointId="38"/>
+                <scheduleElement eta="2018-04-24T19:19:01.000Z" speed="13.67" waypointId="39"/>
+                <scheduleElement eta="2018-04-24T19:19:31.000Z" speed="13.67" waypointId="40"/>
+                <scheduleElement eta="2018-04-24T20:20:01.000Z" speed="13.67" waypointId="41"/>
+                <scheduleElement eta="2018-04-24T21:21:01.000Z" speed="13.67" waypointId="42"/>
+            </calculated>
+        </schedule>
+    </schedules>
+</route>
+
