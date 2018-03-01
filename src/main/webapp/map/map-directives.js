@@ -184,18 +184,17 @@ angular.module('maritimeweb.map')
 
                 scope.$watch(function () { return window.localStorage['vts_zoomto_uservessel']; },function(newVal,oldVal){
                     if(newVal && newVal.toString() != ""){
-                        console.log("Zooming triggered:",newVal)
                         localStorage.setItem('vts_zoomto_uservessel', "");
                         map.getView().animate({
                             center: ol.proj.transform(JSON.parse(newVal), 'EPSG:4326', 'EPSG:3857'),
-                            zoom: 14,
+                            zoom: 10,
                             duration: 2000
                         });
                     }
                 });
 
 
-                    // Check for the map reload flag
+                // Check for the map reload flag
                 if (isDefined(scope.mapState) && isDefined(scope.mapState.reloadMap)) {
                     scope.$watch("mapState.reloadMap", function (reload) {
                         if (reload) {
@@ -638,7 +637,7 @@ angular.module('maritimeweb.map')
                         //Enable code, click around on map, see in console. - note: clicking on anything that is not map, such as existing route, vessel, vts area etc, will mess up your rtz.
                         //You have to copy/paste into an RTZ to make it work.
                         // scope.tmpRtzPointsCount++;
-                        // scope.tmpRtzPoints += '<waypoint id=\"'+scope.tmpRtzPointsCount+'\" name=\"\">\n"' +
+                        // scope.tmpRtzPoints += '<waypoint id=\"'+scope.tmpRtzPointsCount+'\" name=\"\">\n' +
                         //     '<position lat=\"'+scope.currentPos.lat+'\" lon=\"'+scope.currentPos.lon+'\"/>\n' +
                         //     '<leg speedMin=\"12.0\" speedMax=\"12.0\" />\n' +
                         //     '</waypoint>';

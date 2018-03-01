@@ -196,7 +196,7 @@ angular.module('maritimeweb.vessel')
                         return scale;
                     };
 
-                        /** Mark a vessel feature with a ring. */
+                        /** Mark a vessel feature with a ring or whatever. */
                         scope.markVesselFeature = function (vessel) {
                             var rot = vessel.radian;
                             if(vessel.moored && vessel.radian==3.141592653589793) rot = 0; //means undefined
@@ -325,17 +325,37 @@ angular.module('maritimeweb.vessel')
                                         features.push(vesselFeature);
 
                                         //always display users vessel if one is specified
-                                        if($window.localStorage.getItem('mmsi')!= null && $window.localStorage.getItem('mmsi')==vessel.mmsi){
+                                        if ($window.localStorage.getItem('mmsi') != null && $window.localStorage.getItem('mmsi') == vessel.mmsi) {
                                             features.push(scope.markVesselFeature(vesselData));
                                         }
                                     }
+
 
                                     vesselLayer.getSource().clear();
                                     vesselLayer.getSource().addFeatures(features);
                                     vesselLayer.setZIndex(10);
                                     $rootScope.loadingData = false; // stop spinner
-                                    //growl.success('<b>' + scope.vessels.length + '</b> vessels loaded', {ttl: 3000});
 
+
+                                    if($window.localStorage.getItem('mmsi')!= null && zoomLvl<9){
+                                        var uservessel = {};
+                                        VesselService.detailsMMSI($window.localStorage.getItem('mmsi')).then(function (vesselDetails) {
+                                            uservessel.name = vesselDetails.data.aisVessel.name;
+                                            uservessel.lon = vesselDetails.data.aisVessel.lon;
+                                            uservessel.lat = vesselDetails.data.aisVessel.lat;
+                                            uservessel.cog = vesselDetails.data.aisVessel.cog;
+                                            uservessel.id = vesselDetails.data.aisVessel.name;
+                                            uservessel.callsign = vesselDetails.data.aisVessel.callsign;
+                                            uservessel.mmsi = vesselDetails.data.aisVessel.mmsi;
+                                            uservessel.moored = vesselDetails.data.aisVessel.moored;
+                                            uservessel.angle = vesselDetails.data.aisVessel.rot;
+                                            uservessel.radian = ((vesselDetails.data.overview.angle - 90) * (Math.PI / 180));
+                                            $window.localStorage.setItem('Vessel_AIS_data', JSON.stringify(uservessel));
+                                            var tmpves = {"name":uservessel.name,"type":"0","x":uservessel.lon,"y":uservessel.lat,"angle":uservessel.angle,"radian":uservessel.radian,"mmsi":uservessel.mmsi,"callSign":uservessel.callsign,"moored":uservessel.moored,"inBW":false};
+                                            vesselLayer.getSource().addFeatures([scope.markVesselFeature(tmpves)]);
+                                        });
+                                    }
+                                    //growl.success('<b>' + scope.vessels.length + '</b> vessels loaded', {ttl: 3000});
                                 })
                                 .error(function (reason) {
                                     $rootScope.loadingData = false; // stop spinner
@@ -349,7 +369,7 @@ angular.module('maritimeweb.vessel')
 
                         };
 
-                        /** When the map extent changes, reload the Vessels's using a timer to batch up changes */
+                        /** When the map extent changes, reload the Vessels's using a timer to batch up changes - also display vesselmarker on zoom out */
                         scope.mapChanged = function () {
                             if (MapService.isLayerVisible('vesselVectorLayer', vesselLayers)) {
                                 if (loadTimer) {
@@ -462,12 +482,6 @@ angular.module('maritimeweb.vessel')
                         map.on('singleclick', function (evt) {
                             var zoomLvl = map.getView().getZoom();
                             if (zoomLvl > 8) {
-                         /*       var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-
-                                    return feature;
-                                }, null, function (layer) {
-                                    return layer === vesselLayer;
-                                });*/
 
                                 var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
                                     if(feature.get('mmsi')){

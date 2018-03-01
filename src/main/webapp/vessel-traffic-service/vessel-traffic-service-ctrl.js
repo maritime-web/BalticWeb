@@ -1357,7 +1357,8 @@ console.log("Bob says:",$scope.showFuelSpecification);
 
             $scope.detectRouteEtaAtVts(); //sets the route ETA into the date/time picker
 
-            $scope.vtsvesselmmsiinput = "265177000"; //TODO: Remove this eventually..
+            $scope.vtsvesselmmsiinput = ""; //if user has mmsi attached
+            if($window.localStorage.getItem('mmsi')!= null) $scope.vtsvesselmmsiinput = $window.localStorage.getItem('mmsi');
             $scope.VTSVesselMMSIValidation();
             $scope.VTSValidationAllDone(); //make sure to see if is ready to send on refreshed browser
 
@@ -1543,8 +1544,6 @@ console.log("Bob says:",$scope.showFuelSpecification);
         $scope.getAisDataByMmsi = function () {
             if ($scope.setvtsvesselMMSIValid && $scope.isLoggedIn) {
                 VesselService.detailsMMSI($scope.vtsvesselmmsiinput).then(function (vesselDetails) {
-                    console.log("Vessel info from AIS:", vesselDetails.data.aisVessel);
-
                     $scope.aisData.vesselName = vesselDetails.data.aisVessel.name;
                     $scope.aisData.vesselCallsign = vesselDetails.data.aisVessel.callsign;
                     $scope.aisData.vesselImo = vesselDetails.data.aisVessel.imoNo;

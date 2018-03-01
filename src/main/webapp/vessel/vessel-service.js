@@ -17,12 +17,12 @@ angular.module('maritimeweb.vessel')
 
             /** Returns the details for the given MMSI **/
             this.details = function (vessel) {
-                console.log("getting details in VesselService");
+                //console.log("getting details in VesselService");
                 return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(vessel.mmsi));
             };
             /** Returns the details for the given MMSI **/
             this.detailsMMSI = function (mmsi) {
-                console.log("getting vessel details in VesselService");
+                //console.log("getting vessel details in VesselService");
                 return $http.get('/rest/vessel/details?mmsi=' + encodeURIComponent(mmsi));
             };
 
