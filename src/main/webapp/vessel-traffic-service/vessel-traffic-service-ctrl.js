@@ -129,8 +129,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 name: "Liquid Petroleum Gas",
                 shortname: "LPG",
                 sulphurContentDenomination: "",
-                sulphurPercentageMax: 0,
-                sulphurPercentageMin: 0,
+                sulphurPercentageMax: "",
+                sulphurPercentageMin: "",
                 iconImageUrl: "img/vts_fuelicons/icon_LPG.png",
             },
             {
@@ -138,8 +138,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 name: "Liquified Natural Gas",
                 shortname: "LNG",
                 sulphurContentDenomination: "",
-                sulphurPercentageMax: 0,
-                sulphurPercentageMin: 0,
+                sulphurPercentageMax: "",
+                sulphurPercentageMin: "",
                 iconImageUrl: "img/vts_fuelicons/icon_LNG.png",
             },
             {
@@ -147,8 +147,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 name: "Manually described fuel type",
                 shortname: "Other",
                 sulphurContentDenomination: "",
-                sulphurPercentageMax: 3.5,
-                sulphurPercentageMin: 0,
+                sulphurPercentageMax: "",
+                sulphurPercentageMin: "",
                 iconImageUrl: "img/vts_fuelicons/icon_all_questionmark.png",
             }
         ];
@@ -710,14 +710,26 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
 
         $scope.showFuelSpecification = false;
+        $scope.currentlySelectedFuel = {
+            name:"",
+            shortname:"",
+            quantity:0,
+            sulphurpercentage:0,
+            note:"",
+            description:"",
+            unit:"t" //defaults tonnes
+        };
         $scope.fuelTypeMouseOverDisabled = false;
         $scope.fuelQuantitySelectedUnitText = "metric tonnes"; //or 'kilograms'
         $scope.fuelQuantitySelectedUnit = "t"; //or 'kg'
-        $scope.fuelQuantitySelectedUnitModifier = 1; //defaults as kilo, multiply with this to get tonnes (note inversion)
+        $scope.fuelQuantitySelectedUnitModifier = 1; //defaults as kilo, multiply with this to get tonnes (plz note inversion)
         $scope.fuelTypeQuantityInput = "";
         $scope.displayFuelSulphurPercentageInput = false;
         $scope.setvtsFuelQuantityInputValid = false;
+        $scope.setvtsFuelSulphurInputValid = false;
+        $scope.setvtsAddButtonEnabled = false;
         $scope.fuelNoteInput = "";
+        $scope.currentlySelectedFuelTypeLabel = "";
 
         $scope.setFuelTypesSelection = function(shortname){
             for(var i=0;i!=$scope.fuelTypes.length;i++){
@@ -736,61 +748,117 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             }
             $scope.fuelTypeSelectedText = "";
             $scope.showFuelSpecification = false; //hide the input overlay
+            $scope.vtsFuelSelectedTypeDescriptionText = "";
         };
         $scope.clearFuelTypesSelection(); //init
 
 
-        $scope.fuelCancelFunction = function(){
+        $scope.fuelCancelFunction = function(){ //clears selction, removes input UI, resets object
             $scope.fuelTypeMouseOverDisabled = false;
-            $scope.vtsFuelSelectedTypeDescriptionText = "";
             $scope.clearFuelTypesSelection(false); // hides overlay
+
+            $scope.currentlySelectedFuel = { //reset the current object
+                name:"",
+                shortname:"",
+                quantity:0,
+                sulphurpercentage:0,
+                note:"",
+                description:"",
+                iconimageurl:"",
+                unit:"t" //defaults tonnes
+            };
+
+            $scope.fuelTypeQuantityInput = "";
+            $scope.fuelSulphurPercentageInput = "";
             $scope.fuelNoteInput = "";
+            $scope.vtsFuelSelectedTypeDescriptionText = "";
+            $scope.fuelTypeQuantityInputValidate();
+            $scope.fuelSulphurInputValidate();
         };
-        $scope.fuelTypeMouseClick = function(shortname,description,iconImageUrl,sulphurPercentageMax){
+        $scope.fuelTypeMouseClick = function(name,shortname,description,iconImageUrl,sulphurPercentageMax,iconimageurl){
+            $scope.currentlySelectedFuel.shortname = shortname;
             $scope.fuelTypeMouseOverDisabled = true;
-            $scope.vtsFuelSelectedTypeDescriptionText = description + " ("+shortname+")";
+            console.log("sulphurPercentageMax:"+sulphurPercentageMax+".");
+            // $scope.vtsFuelSelectedTypeDescriptionText = description + " ("+shortname+")";
             $scope.setFuelTypesSelection(shortname); //set highlighted - also displays overlay
             $scope.vtsFuelSelectedTypeImageUrl = iconImageUrl;
 
-            if(sulphurPercentageMax && sulphurPercentageMax!="0" && parseFloat(sulphurPercentageMax) > 0 ){
-                $scope.displayFuelSulphurPercentageInput = false;
-            } else{
+            if(sulphurPercentageMax!="" ){
+                $scope.fuelSulphurPercentageInput = sulphurPercentageMax;
                 $scope.displayFuelSulphurPercentageInput = true;
+                $scope.fuelSulphurInputValidate(); //run validate
+            } else{
+                $scope.displayFuelSulphurPercentageInput = false;
             }
-            $scope.fuelSulphurPercentageInput = sulphurPercentageMax;
+            $scope.currentlySelectedFuel.sulphurpercentage = sulphurPercentageMax;
+            $scope.currentlySelectedFuel.name = name;
+            $scope.currentlySelectedFuel.shortname = shortname;
+            $scope.currentlySelectedFuel.description = description;
+            $scope.currentlySelectedFuel.iconImageUrl = iconimageurl;
+            $scope.updateSelectedFuelDescriptionText();
+            window.setTimeout(function () { //sets focus on tonnage input
+                var el = document.getElementById('vts-fuel-quantity-input');
+                el.focus(); //set focus
+                el.setSelectionRange(0, el.value.length); //select value
+            }, 0);
+
+        };
+
+        $scope.fuelInputKeypress = function(e){ //user hits Enter key - counts as clicking OK
+            if(e && e.charCode == 13){
+                $scope.fuelAddToManifestFunction();
+            }
+        };
+
+        $scope.updateSelectedFuelDescriptionText = function(){
+            //update UI description
+            $scope.vtsFuelSelectedTypeDescriptionText = $scope.currentlySelectedFuel.name + " - " +
+                " (" + $scope.currentlySelectedFuel.shortname + ") - " +
+                $scope.currentlySelectedFuel.quantity + " " + $scope.currentlySelectedFuel.unit + " - " +
+                (($scope.fuelSulphurPercentageInput != "") ? "(" + $scope.fuelSulphurPercentageInput  + "% S)" : "") + // sulphur, if any.
+                (($scope.fuelNoteInput != "") ? " - " + $scope.fuelNoteInput : ""); //note, if any.
+
+            //check if add button should be enabled or not
+            var q = $scope.setvtsFuelQuantityInputValid;
+            var s = $scope.setvtsFuelSulphurInputValid;
+            if(!$scope.displayFuelSulphurPercentageInput) s = true; //force valid if no sulphur in that fuel
+            (s && q) ? $scope.setvtsAddButtonEnabled = true : $scope.setvtsAddButtonEnabled = false;
         };
 
         $scope.fuelAddToManifestFunction = function(){
-            // $scope.reportSummary.fuelManifest
-            var insertedFuelTonnage = parseFloat($scope.fuelTypeQuantityInput)/$scope.fuelQuantitySelectedUnitModifier;
-            var tmpSelectedFuel = {}; //tmp obj for punching into manifest
-            for(var i=0;i!=$scope.fuelTypes.length;i++){
-                if($scope.fuelTypes[i].selected == true){
-                    tmpSelectedFuel.shortname = $scope.fuelTypes[i].shortname;
-                    tmpSelectedFuel.name = $scope.fuelTypes[i].name;
-                    tmpSelectedFuel.quantity = insertedFuelTonnage;
-                    tmpSelectedFuel.note = $scope.fuelNoteInput;
-                    tmpSelectedFuel.description = $scope.fuelTypes[i].description;
-                    tmpSelectedFuel.sulphurPercentageMax = $scope.fuelSulphurPercentageInput;
-                }
+            if($scope.setvtsAddButtonEnabled){
+                console.log("TODO: add total tonnage field which is automatically populated");
+                $scope.reportSummary.fuelManifest.push($scope.currentlySelectedFuel);
+                $scope.fuelCancelFunction();
+                $scope.vtsFuelSelectedTypeDescriptionText = "";
             }
-            $scope.reportSummary.fuelManifest.push(tmpSelectedFuel);
-            console.log($scope.reportSummary.fuelManifest);
-            $scope.fuelCancelFunction();
+            // var insertedFuelTonnage = parseFloat($scope.fuelTypeQuantityInput)/$scope.fuelQuantitySelectedUnitModifier;
+        };
 
+        $scope.fuelManifestRemoveItem = function(index){
+            $scope.reportSummary.fuelManifest.splice(index,1);
+            console.log("Removed item:",index);
         };
 
         $scope.fuelTypeQuantityInputValidate = function(){
-            console.log("Validate fuel input:",$scope.fuelTypeQuantityInput);
             var test = VtsHelperService.validateNumber($scope.fuelTypeQuantityInput, 0, 999999999, 3);
             (test.valid == true) ? $scope.setvtsFuelQuantityInputValid = true : $scope.setvtsFuelQuantityInputValid = false;
-
             $scope.fuelTypeQuantityInput = test.val;
-
+            $scope.currentlySelectedFuel.quantity = $scope.fuelTypeQuantityInput;
+            $scope.updateSelectedFuelDescriptionText(); //send changes to UI
         };
 
-        $scope.fuelTypeMouseOver = function(description){
-            if($scope.fuelTypeMouseOverDisabled == false) $scope.vtsFuelSelectedTypeDescriptionText = description;
+        $scope.fuelNoteInputValidate = function(){ //not mandatory
+            $scope.currentlySelectedFuel.note = $scope.fuelNoteInput;
+            $scope.updateSelectedFuelDescriptionText(); //send changes to UI
+        };
+
+        $scope.fuelSulphurInputValidate = function(){ //only numbers, 3 decimal places, max 20%
+            var test = VtsHelperService.validateNumber($scope.fuelSulphurPercentageInput, 0, 20, 3);
+            (test.valid == true) ? $scope.setvtsFuelSulphurInputValid = true : $scope.setvtsFuelSulphurInputValid = false;
+            $scope.fuelSulphurPercentageInput = test.val;
+            $scope.currentlySelectedFuel.sulphurpercentage = test.val;
+            $scope.updateSelectedFuelDescriptionText(); //send changes to UI
         };
 
         $scope.VTSFuelUnitInputChange = function(){
@@ -803,73 +871,36 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 $scope.fuelQuantitySelectedUnit = "t";
                 $scope.fuelQuantitySelectedUnitModifier = 1
             }
+            $scope.currentlySelectedFuel.unit = $scope.fuelQuantitySelectedUnit;
+            $scope.updateSelectedFuelDescriptionText(); //send changes to UI
         };
 
-console.log("Bob says:",$scope.showFuelSpecification);
+        $scope.fuelManifestItemMouseOver = function(index){
+            $scope.setvtsFuelIndexSelected = [];
+            var len = $scope.reportSummary.fuelManifest.length;
+            for(var i=0;i!=len;i++){
+                if(index==i){
+                    $scope.setvtsFuelIndexSelected.push(true);
+                }else{
+                    $scope.setvtsFuelIndexSelected.push(false);
+                }
+            }
+            $scope.$apply;
+        };
+
         $scope.VTSFuelTypeValidation = function(){
           console.log("validate fuel volume input");
         };
 
-        // //fuel types - number 999999999, no decimal. One filled makes all other neutral because only one field is mandatory
-        // $scope.VTSFuelTypeValidation = function (field) {
-        //     var strValue = "";
-        //     var totFuel = 0;
-        //     var FTC = $scope.fuelTypes.length + 1; //Fuel Type Count
-        //
-        //     if (field) {
-        //         strValue = document.querySelector('#vtsparentdiv #fueltype' + field).value.toString().replace(/\D/g, '');
-        //         if (strValue != "") {
-        //             if (parseInt(strValue).isNaN) {
-        //                 strValue = "";
-        //             } //validate to NaN
-        //         }
-        //         angular.element(document.querySelector('#vtsparentdiv  #fueltype' + field)).val(strValue).$apply;
-        //     }
-        //
-        //     //get totFuel - cycle through all boxes and add the fuel.
-        //     for (var i = 0; i != FTC; i++) {
-        //         for (var j = 0; j != 3; j++) {
-        //             try {
-        //                 var val = document.querySelector('#vtsparentdiv #fueltype0' + i + "_" + j).value.toString().replace(/\D/g, '');
-        //                 if (val.isNaN || val === "") {
-        //                 } else {
-        //                     totFuel += parseInt(val);
-        //                 }
-        //                 (totFuel > 0) ? $scope.fuelDetailsValid = true : $scope.fuelDetailsValid = false
-        //
-        //             } catch (exceptionNoElements) {
-        //             }
-        //         }
-        //     }
-        //
-        //     //set/reset valid colours - must be more than 1 ton of fuel on board at any time.
-        //     if (totFuel > 0) {
-        //         for (var i = 0; i != FTC; i++) {
-        //             for (var j = 0; j != 3; j++) {
-        //                 try {
-        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).removeClass("vtsinvalid");
-        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).addClass('vtsvalid');
-        //                 } catch (exceptionNoElements) {
-        //                 }
-        //             }
-        //         }
-        //     } else {
-        //         for (var i = 0; i != FTC; i++) {
-        //             for (var j = 0; j != 3; j++) {
-        //                 try {
-        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).removeClass("vtsvalid");
-        //                     angular.element(document.querySelector('#fueltype0' + i + "_" + j)).addClass('vtsinvalid');
-        //                 } catch (exceptionNoElements) {
-        //                 }
-        //             }
-        //         }
-        //     }
-        //
         //     //display total tonnage of fuel
         //     $scope.vtsTotalFuel = parseInt(totFuel).toLocaleString().replace(/,/g, '.'); // totfuel kilo/mega/giga seperator to period from comma: 9.999.999,999
         //     $scope.VTSValidationAllDone();
-        //
-        // };
+
+
+
+        // END FUEL ****************************************************************************************************
+
+
 
         $scope.selectVesselCargoChange = function (selectedItem) {
             if (selectedItem != "None" && selectedItem != "Bulk - grain" && selectedItem != "Ballast" && selectedItem != "Passenger" && selectedItem != "Bulk - other than grain"
@@ -1591,22 +1622,21 @@ console.log("Bob says:",$scope.showFuelSpecification);
                     growl.error('AIS data fetch failed: ' + reason);
                 });
             }
-            $scope.clearAISPlaceholders = function () {
-                $scope.placeholderAisVesselName = "";
-                $scope.placeholderAisVesselCallsign = "";
-                $scope.placeholderAisVesselImo = "";
-                $scope.placeholderAisVesselCog = "";
-                $scope.placeholderAisPortOfDestination = "";
-                // $scope.placeholderAisVesselDestination = "";
-                $scope.placeholderAisVesselDraught = "";
-                $scope.placeholderAisVesselLength = "";
-                $scope.vtsvesselcourseovergroundinput = "";
-                $scope.placeholderAisVesselLonDegrees = "";
-                $scope.placeholderAisVesselLonDecimalMinutes = "";
-                $scope.placeholderAisVesselLatDegrees = "";
-                $scope.placeholderAisVesselLatDecimalMinutes = "";
-            };
-
+        };
+        $scope.clearAISPlaceholders = function () {
+            $scope.placeholderAisVesselName = "";
+            $scope.placeholderAisVesselCallsign = "";
+            $scope.placeholderAisVesselImo = "";
+            $scope.placeholderAisVesselCog = "";
+            $scope.placeholderAisPortOfDestination = "";
+            // $scope.placeholderAisVesselDestination = "";
+            $scope.placeholderAisVesselDraught = "";
+            $scope.placeholderAisVesselLength = "";
+            $scope.vtsvesselcourseovergroundinput = "";
+            $scope.placeholderAisVesselLonDegrees = "";
+            $scope.placeholderAisVesselLonDecimalMinutes = "";
+            $scope.placeholderAisVesselLatDegrees = "";
+            $scope.placeholderAisVesselLatDecimalMinutes = "";
         };
 
 

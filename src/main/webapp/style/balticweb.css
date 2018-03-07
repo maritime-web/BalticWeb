@@ -197,7 +197,13 @@ abbr::after {
     min-width:330px;
     max-width:330px;
 }
-.vts-input-fuel-large{width:297px;}
+.vts-fuel-even-backcolor{
+    background-color: rgba(247,247,247,1);
+}
+.vts-fuel-manifest-item-selected{
+    background-color: rgba(200,0,0,0.45) !important;
+}
+.vts-input-fuel-large{width:301px;}
 .vts-input-fuel-modheight{height:23px;}
 .vts-fuel-unitchange-button {
     position: relative;
@@ -226,12 +232,12 @@ abbr::after {
     padding-left: 5px;
     padding-right: 5px;
 }
-.vts-fuel-manifest-list{
-    overflow: hidden;
-    max-width:670px;
-    max-height:120px;
-
-}
+/*.vts-fuel-manifest-list{*/
+    /*overflow-x: hidden;*/
+    /*overflow-y: scroll;*/
+    /*max-width:670px;*/
+    /*max-height:120px;*/
+/*}*/
 
 @media screen and (max-width: 755px) {
     .vts-fuel-specification{

@@ -58,7 +58,8 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             var errorMsg = "",
                 isValid = false, outputString = "", hasPeriod = false;
 
-            inputString = inputString.toString();
+            inputString = inputString.toString().trim(); // space only trim works because inputs have ng-trim="false" and triggers validate
+
             if (decimals > 0) {
                 inputString = inputString.replace(/[^0-9.,]/g, '');
                 inputString = inputString.replace(/[,]/g, '.');
