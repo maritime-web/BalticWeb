@@ -279,21 +279,21 @@
 
             <div style="position: relative;min-height: 120px;">
                 <div class="vts-force-spacing-222 vts-pad-top" >
-                    <div class="vts-fuel-icon-container" ng-repeat="p in fuelTypes.slice(0,3)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.name, p.shortname, p.description, p.iconImageUrl,p.sulphurPercentageMax,p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container" ng-repeat="p in fuelTypes.slice(0,3)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.name, p.shortname, p.description, p.sulphurPercentageMax,p.iconimageurl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
-                        <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
+                        <div class="vts-fuel-icon" style="background-image: url({{p.iconimageurl}})"></div>
                     </div>
                 </div>
                 <div class="vts-force-spacing-222 vts-pad-top">
-                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(3,6)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.name, p.shortname, p.description, p.iconImageUrl,p.sulphurPercentageMax,p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(3,6)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.name, p.shortname, p.description, p.sulphurPercentageMax,p.iconimageurl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
-                        <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
+                        <div class="vts-fuel-icon" style="background-image: url({{p.iconimageurl}})"></div>
                     </div>
                 </div>
                 <div class="vts-force-spacing-222 vts-pad-top">
-                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(6,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.name, p.shortname, p.description, p.iconImageUrl,p.sulphurPercentageMax,p.iconImageUrl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                    <div class="vts-fuel-icon-container"  ng-repeat="p in fuelTypes.slice(6,9)" ng-mouseover="fuelTypeMouseOver(p.description)" ng-click="fuelTypeMouseClick(p.name, p.shortname, p.description, p.sulphurPercentageMax,p.iconimageurl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
                         <div class="vts-fuel-icon-label">{{p.shortname}}</div>
-                        <div class="vts-fuel-icon" style="background-image: url({{p.iconImageUrl}})"></div>
+                        <div class="vts-fuel-icon" style="background-image: url({{p.iconimageurl}})"></div>
                     </div>
                 </div>
 
@@ -354,20 +354,34 @@
             <div class="vts-fuel-description-box vts-grey-text">
                 {{vtsFuelSelectedTypeDescriptionText}}
             </div>
-            <div class="vts-fuel-manifest-list">
-                <div class=""  ng-repeat="f in reportSummary.fuelManifest">
+            <div class="vts-fuel-manifest-list" style="position: relative;">
+                <div class=""  ng-repeat="f in reportSummary.fuelManifest track by $index" >
                     <div style="display:inline-block;width:36px;">
-                        <button class="btn btn-danger vts-less-padding" style="position:relative;margin:5px;" type="button" ng-mouseover="fuelManifestItemMouseOver($index)" ng-mouseout="fuelManifestItemMouseOver()" ng-click="fuelManifestRemoveItem($index)">
+                        <button class="btn btn-danger vts-less-padding" style="position:relative;margin:5px;top:-8px;" type="button"
+                                ng-mouseover="fuelManifestItemRemoveMouseOver($index)" ng-mouseout="fuelManifestItemRemoveMouseOver()"
+                                ng-click="fuelManifestRemoveItem($index)">
                             <i class="glyphicon glyphicon-remove"></i>
                         </button>
                     </div>
-                    <div style="display:inline-block;width:100%;max-width:670px" ng-class="{true:'vts-fuel-manifest-item-selected', false:''}[setvtsFuelIndexSelected[$index]]"  ng-class-odd="'vts-fuel-even-backcolor'">
-                        <img src="{{f.iconImageUrl}}" style="width:24px;height:24px;">{{f.name}} - ({{f.shortname}}) - {{f.quantity}} {{f.unit}}
+                    <div style="display:inline-block;width:88%;max-width:632px;overflow:hidden;white-space:nowrap;"
+                         ng-class="[{true:'vts-fuel-manifest-item-selected-remove', false:''}[setvtsFuelIndexSelected[$index].remove && !fuelTypeMouseOverDisabled],
+                            {true:'vts-fuel-manifest-item-selected-edit', false:''}[setvtsFuelIndexSelected[$index].edit && !fuelTypeMouseOverDisabled]]"
+                         ng-mouseover="fuelManifestItemEditMouseOver($index)" ng-mouseout="fuelManifestItemEditMouseOver()" ng-click="fuelManifestEditItemClick($index)"
+                         ng-class-odd="'vts-fuel-even-backcolor'">
+
+                        <img src="{{f.iconimageurl}}" style="width:24px;height:24px;">{{f.name}} - ({{f.shortname}}) - {{f.quantity}} {{f.unit}}
                         <span ng-show="f.note.length > 0"> - {{f.note}}</span>
-                    </div>
+                   </div>
+                </div>
+                <div class="vts-element-cover-fuel-manifestlist" ng-class="{true:'block', false:'unblock'}[fuelTypeMouseOverDisabled]">
+                    <!--covers the entire element with a semi transparent background color to disable interaction-->
                 </div>
             </div>
-            <hr class="vts-hr" >
+            <hr class="vts-hr-seperator">
+            <div class="vts-pad-top" ng-show="fuelTotalTonnageText!=''">
+                <span>Total tonnage of fuel:</span>
+                <span class="bold">{{fuelTotalTonnageText}} metric tonnes</span>
+            </div>
         </div>
 
 
@@ -376,7 +390,7 @@
             <hr class="vts-hr" > <!-- CARGO INFORMATION ------------------------------------------------------------------- -->
             <div ><span class="bold" >Cargo information </span><span class="vts-grey-text" > - detailed cargo description</span></div>
 
-            <div class=" vts-pad-top" >
+            <div class="vts-pad-top" >
                 <span class="vts-force-spacing-300">
                     <select class="form-control vts-force-spacing-200 vts-select" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]" name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
                         <option value="" selected disabled class="ng-binding ng-scope ">Select a cargo type:</option>

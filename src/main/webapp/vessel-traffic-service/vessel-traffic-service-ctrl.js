@@ -77,7 +77,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: 5,
                 sulphurPercentageMin: 3.5,
-                iconImageUrl: "img/vts_fuelicons/icon_HFO.png"
+                iconimageurl: "img/vts_fuelicons/icon_HFO.png"
             },
             {
                 description: "Fuel Oil, low Sulphur", //Black
@@ -86,7 +86,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: 5,
                 sulphurPercentageMin: 3.5,
-                iconImageUrl: "img/vts_fuelicons/icon_HFO.png"
+                iconimageurl: "img/vts_fuelicons/icon_HFO.png"
             },
             {
                 description: "Fuel Oil, ultra low Sulphur", //Black
@@ -95,7 +95,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: 0.1,
                 sulphurPercentageMin: 0.001,
-                iconImageUrl: "img/vts_fuelicons/icon_HFO.png"
+                iconimageurl: "img/vts_fuelicons/icon_HFO.png"
             },
             {
                 description: "Marine Gas Oil, distillate fuel oil (No. 2, Bunker A).", //Yellow and Orange/yellowish and lightbrown
@@ -104,7 +104,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "light",
                 sulphurPercentageMax: 3.5,
                 sulphurPercentageMin: 1,
-                iconImageUrl: "img/vts_fuelicons/icon_MGO.png",
+                iconimageurl: "img/vts_fuelicons/icon_MGO.png",
             },
             {
                 description: "Medium Fuel Oil, a blend of MGO and HFO, with less gasoil than IFO.", //deep grey
@@ -113,7 +113,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: 0.01,
                 sulphurPercentageMin: 0.01,
-                iconImageUrl: "img/vts_fuelicons/icon_MFO.png",
+                iconimageurl: "img/vts_fuelicons/icon_MFO.png",
             },
             {
                 description: "",
@@ -122,7 +122,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: 0.01,
                 sulphurPercentageMin: 0.01,
-                iconImageUrl: "img/vts_fuelicons/icon_MDO.png",
+                iconimageurl: "img/vts_fuelicons/icon_MDO.png",
             },
             {
                 description: "Liquid fuel grade petroleum.", //light blue gas
@@ -131,7 +131,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: "",
                 sulphurPercentageMin: "",
-                iconImageUrl: "img/vts_fuelicons/icon_LPG.png",
+                iconimageurl: "img/vts_fuelicons/icon_LPG.png",
             },
             {
                 description: "Methane gas in liquid form under high pressure.", //light brown gas
@@ -140,7 +140,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: "",
                 sulphurPercentageMin: "",
-                iconImageUrl: "img/vts_fuelicons/icon_LNG.png",
+                iconimageurl: "img/vts_fuelicons/icon_LNG.png",
             },
             {
                 description: "Another fuel type which is not described.",
@@ -149,7 +149,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 sulphurContentDenomination: "",
                 sulphurPercentageMax: "",
                 sulphurPercentageMin: "",
-                iconImageUrl: "img/vts_fuelicons/icon_all_questionmark.png",
+                iconimageurl: "img/vts_fuelicons/icon_all_questionmark.png",
             }
         ];
 
@@ -338,6 +338,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         $scope.reportSummary = { //what is sent to the VTS
 
+            version: 4, //increments of 1
             //VTS information
             vtsShortName: "",
             vtsCallSign: "",
@@ -403,6 +404,33 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             voyagePortOfDestinationEta: "" //string ETA from AIS - is only visible if AIS data is used - cannot be edited.
         };
 
+        //Load the saved reportsummary from localstorage - if none, save an empty one - has version check to overwrite old saves
+        $scope.loadReportSummaryFromLocalstorage = function(){
+            var tmpStr = $window.localStorage.getItem('vts_reportsummary_object');
+            if(!tmpStr) tmpStr = "";
+            var tmpObj = {};
+            try{
+                tmpObj = JSON.parse(tmpStr);
+                if(tmpObj.version < $scope.reportSummary.version){ //new version, overwrite the localstorage - could be handled more intelligently
+                    $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary));
+                    growl.warning("Previous report was an older version and has been replaced!");
+                }
+            }catch(failedLoadReportSummary){ //none there, create it
+                $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary));
+                growl.info("New VTS/SRS report has been initialized");
+            }
+            if(tmpObj.version == $scope.reportSummary.version){
+                $scope.reportSummary = tmpObj;
+                growl.success("Previous report has been recreated from cache");
+            }
+        };
+        $scope.loadReportSummaryFromLocalstorage();
+        /** Info regarding localstorage loading
+            Fuel list is populated by ngrepeat - dont look for a function
+            All fields using AIS data
+        **/
+
+
         $scope.aisData = { //data prefetched from AIS - used with MMSI
             vesselName: "",
             vesselCallsign: "",
@@ -423,7 +451,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.aisdataReady = false;
 
 
-        //test if all items check out, then display "SEND" button
+            //test if all items check out, then display "SEND" button
         $scope.VTSValidationAllDone = function () {
 
             console.log("Make check if fuel types is required, $scope.reportSummary.fuelManifest must have at least 1 entry ");
@@ -487,6 +515,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             }
             // console.log("VTSReadyToSend", $scope.VTSReadyToSend);
 
+            //TODO: Should always save the latest validated form in localstorage
         };
 
         $scope.displayVtsCenterData = false;
@@ -707,10 +736,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         };
 
 
-
+        /** ******************************************************************************************************* **/
+        /**  FUEL INTERFACE  **/
 
         $scope.showFuelSpecification = false;
         $scope.currentlySelectedFuel = {
+            index:null,
             name:"",
             shortname:"",
             quantity:0,
@@ -730,8 +761,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.setvtsAddButtonEnabled = false;
         $scope.fuelNoteInput = "";
         $scope.currentlySelectedFuelTypeLabel = "";
+        $scope.fuelTotalTonnageText = "";
 
-        $scope.setFuelTypesSelection = function(shortname){
+        $scope.setFuelTypesSelection = function(shortname, index){
             for(var i=0;i!=$scope.fuelTypes.length;i++){
                 if(!shortname || shortname!=""){
                     if($scope.fuelTypes[i].shortname && $scope.fuelTypes[i].shortname == shortname) {
@@ -756,8 +788,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.fuelCancelFunction = function(){ //clears selction, removes input UI, resets object
             $scope.fuelTypeMouseOverDisabled = false;
             $scope.clearFuelTypesSelection(false); // hides overlay
-
             $scope.currentlySelectedFuel = { //reset the current object
+                index: null,
                 name:"",
                 shortname:"",
                 quantity:0,
@@ -767,7 +799,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 iconimageurl:"",
                 unit:"t" //defaults tonnes
             };
-
             $scope.fuelTypeQuantityInput = "";
             $scope.fuelSulphurPercentageInput = "";
             $scope.fuelNoteInput = "";
@@ -775,14 +806,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.fuelTypeQuantityInputValidate();
             $scope.fuelSulphurInputValidate();
         };
-        $scope.fuelTypeMouseClick = function(name,shortname,description,iconImageUrl,sulphurPercentageMax,iconimageurl){
+
+        $scope.fuelTypeMouseClick = function(name,shortname,description,sulphurPercentageMax,iconimageurl, quantity){
+            if(quantity && quantity != ""){
+                $scope.fuelTypeQuantityInput = quantity;
+            }
             $scope.currentlySelectedFuel.shortname = shortname;
             $scope.fuelTypeMouseOverDisabled = true;
-            console.log("sulphurPercentageMax:"+sulphurPercentageMax+".");
-            // $scope.vtsFuelSelectedTypeDescriptionText = description + " ("+shortname+")";
-            $scope.setFuelTypesSelection(shortname); //set highlighted - also displays overlay
-            $scope.vtsFuelSelectedTypeImageUrl = iconImageUrl;
-
+            $scope.setFuelTypesSelection(shortname); //set highlighted - also displays overlay - if index then update existing index
+            $scope.vtsFuelSelectedTypeImageUrl = iconimageurl;
             if(sulphurPercentageMax!="" ){
                 $scope.fuelSulphurPercentageInput = sulphurPercentageMax;
                 $scope.displayFuelSulphurPercentageInput = true;
@@ -794,14 +826,17 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.currentlySelectedFuel.name = name;
             $scope.currentlySelectedFuel.shortname = shortname;
             $scope.currentlySelectedFuel.description = description;
-            $scope.currentlySelectedFuel.iconImageUrl = iconimageurl;
+            $scope.currentlySelectedFuel.iconimageurl = iconimageurl;
             $scope.updateSelectedFuelDescriptionText();
             window.setTimeout(function () { //sets focus on tonnage input
                 var el = document.getElementById('vts-fuel-quantity-input');
                 el.focus(); //set focus
                 el.setSelectionRange(0, el.value.length); //select value
             }, 0);
+        };
 
+        $scope.fuelTypeMouseOver = function(description){
+            $scope.vtsFuelSelectedTypeDescriptionText = description;
         };
 
         $scope.fuelInputKeypress = function(e){ //user hits Enter key - counts as clicking OK
@@ -810,14 +845,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             }
         };
 
-        $scope.updateSelectedFuelDescriptionText = function(){
-            //update UI description
+        $scope.updateSelectedFuelDescriptionText = function(){ //update UI description
             $scope.vtsFuelSelectedTypeDescriptionText = $scope.currentlySelectedFuel.name + " - " +
                 " (" + $scope.currentlySelectedFuel.shortname + ") - " +
-                $scope.currentlySelectedFuel.quantity + " " + $scope.currentlySelectedFuel.unit + " - " +
+                (($scope.currentlySelectedFuel.quantity != "") ? $scope.currentlySelectedFuel.quantity + " " + $scope.currentlySelectedFuel.unit + " - " : "") +
                 (($scope.fuelSulphurPercentageInput != "") ? "(" + $scope.fuelSulphurPercentageInput  + "% S)" : "") + // sulphur, if any.
                 (($scope.fuelNoteInput != "") ? " - " + $scope.fuelNoteInput : ""); //note, if any.
-
             //check if add button should be enabled or not
             var q = $scope.setvtsFuelQuantityInputValid;
             var s = $scope.setvtsFuelSulphurInputValid;
@@ -825,19 +858,42 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             (s && q) ? $scope.setvtsAddButtonEnabled = true : $scope.setvtsAddButtonEnabled = false;
         };
 
+        $scope.updateFuelTotalTonnage = function(){
+            var tmpfueltot = 0.0;
+            for(var i=0;i!=$scope.reportSummary.fuelManifest.length;i++){
+                var multiplier = 1000; //default tonnes
+                if($scope.reportSummary.fuelManifest[i].unit != "t"){
+                    multiplier = 1; //kg
+                }
+                tmpfueltot += parseFloat($scope.reportSummary.fuelManifest[i].quantity) * multiplier;
+            }
+            $scope.reportSummary.fuelTotalFuel = (tmpfueltot/1000); //update the report
+            $scope.fuelTotalTonnageText = ($scope.reportSummary.fuelTotalFuel).toLocaleString('de-DE'); //out as tonnes, european locale
+            if($scope.reportSummary.fuelTotalFuel == 0){$scope.fuelTotalTonnageText = ""}
+        };
+        $scope.updateFuelTotalTonnage(); //object needs to load - brutal timeout for that
+
         $scope.fuelAddToManifestFunction = function(){
             if($scope.setvtsAddButtonEnabled){
-                console.log("TODO: add total tonnage field which is automatically populated");
-                $scope.reportSummary.fuelManifest.push($scope.currentlySelectedFuel);
+                var ix = $scope.currentlySelectedFuel.index; //if index is null, it is added, any index number means it is edited
+                delete $scope.currentlySelectedFuel.index; //remove the index from model
+                if(ix === null){
+                    $scope.reportSummary.fuelManifest.push($scope.currentlySelectedFuel);
+                }else{
+                    $scope.reportSummary.fuelManifest[ix] = $scope.currentlySelectedFuel;
+                }
+                $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
                 $scope.fuelCancelFunction();
                 $scope.vtsFuelSelectedTypeDescriptionText = "";
+                $scope.updateFuelTotalTonnage();
             }
-            // var insertedFuelTonnage = parseFloat($scope.fuelTypeQuantityInput)/$scope.fuelQuantitySelectedUnitModifier;
         };
 
         $scope.fuelManifestRemoveItem = function(index){
             $scope.reportSummary.fuelManifest.splice(index,1);
-            console.log("Removed item:",index);
+            $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
+            $scope.vtsFuelSelectedTypeDescriptionText = "";
+            $scope.updateFuelTotalTonnage();
         };
 
         $scope.fuelTypeQuantityInputValidate = function(){
@@ -875,30 +931,43 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.updateSelectedFuelDescriptionText(); //send changes to UI
         };
 
-        $scope.fuelManifestItemMouseOver = function(index){
+        $scope.fuelManifestItemRemoveMouseOver = function(index){
             $scope.setvtsFuelIndexSelected = [];
             var len = $scope.reportSummary.fuelManifest.length;
             for(var i=0;i!=len;i++){
                 if(index==i){
-                    $scope.setvtsFuelIndexSelected.push(true);
+                    $scope.setvtsFuelIndexSelected.push({remove:true,edit:false});
+                    $scope.vtsFuelSelectedTypeDescriptionText = "Click to remove fuel manifest entry.";
                 }else{
-                    $scope.setvtsFuelIndexSelected.push(false);
+                    $scope.setvtsFuelIndexSelected.push({remove:false,edit:false});
+                }
+            }
+            $scope.$apply;
+        };
+        $scope.fuelManifestItemEditMouseOver = function(index){
+            $scope.setvtsFuelIndexSelected = [];
+            var len = $scope.reportSummary.fuelManifest.length;
+            var txt = "";
+            for(var i=0;i!=len;i++){
+                if(index==i){
+                    $scope.setvtsFuelIndexSelected.push({remove:false,edit:true});
+                    $scope.vtsFuelSelectedTypeDescriptionText = "Click manifest entry to edit";
+                }else{
+                    $scope.setvtsFuelIndexSelected.push({remove:false,edit:false});
                 }
             }
             $scope.$apply;
         };
 
-        $scope.VTSFuelTypeValidation = function(){
-          console.log("validate fuel volume input");
+        $scope.fuelManifestEditItemClick = function(index){ //gets the obj of that index and makes it editable
+            $scope.currentlySelectedFuel.index = index; //needed for saving
+            var o = $scope.reportSummary.fuelManifest[index];
+            $scope.fuelTypeMouseClick(o.name,o.shortname,o.description,o.sulphurpercentage,o.iconimageurl,o.quantity);
         };
 
-        //     //display total tonnage of fuel
-        //     $scope.vtsTotalFuel = parseInt(totFuel).toLocaleString().replace(/,/g, '.'); // totfuel kilo/mega/giga seperator to period from comma: 9.999.999,999
-        //     $scope.VTSValidationAllDone();
+        /**  END FUEL INTERFACE  **/
+        /** ******************************************************************************************************* **/
 
-
-
-        // END FUEL ****************************************************************************************************
 
 
 

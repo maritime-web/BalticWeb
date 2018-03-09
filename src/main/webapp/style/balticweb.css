@@ -198,10 +198,28 @@ abbr::after {
     max-width:330px;
 }
 .vts-fuel-even-backcolor{
-    background-color: rgba(247,247,247,1);
+    background-color: rgb(235, 235, 235);
 }
-.vts-fuel-manifest-item-selected{
-    background-color: rgba(200,0,0,0.45) !important;
+.vts-fuel-manifest-item-selected-edit{
+    background-color: rgba(48, 78, 117, 0.6) !important;
+    cursor: pointer;
+}
+.vts-fuel-manifest-item-selected-remove{
+    background-color: rgba(205, 61, 73, 0.55) !important;
+}
+.vts-element-cover-fuel-manifestlist{
+    position: absolute;
+    left:0px;
+    top:0px;
+    height:0%;
+    width:100%;
+}
+.vts-element-cover-fuel-manifestlist.block{
+    background-color:rgba(255,255,255,0.5);
+    height:100%;
+}
+.vts-element-cover-fuel-manifestlist.unblock{
+    height:0%;
 }
 .vts-input-fuel-large{width:301px;}
 .vts-input-fuel-modheight{height:23px;}
