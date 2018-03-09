@@ -1379,7 +1379,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.selectedVesselType = '0'; //reset select
             $scope.setvtsVesselTypeValid = false; //UI update
             $scope.VTSVesselLengthValidation(false);
-            $scope.VTSFuelTypeValidation(false);
             $scope.VTSVesselDWTValidation(false);
             $scope.VTSVesselGTValidation(false);
             $scope.VTSVesselFuelQuantityValidation(false);
@@ -1449,8 +1448,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             // $scope.VTSSelectedTrafficCenterData = $sce.trustAsHtml(html);
             $scope.VTSSelectedTrafficCenterShortname = $sce.trustAsHtml(VTSData[vtsID].shortname);
-
-            $scope.VTSFuelTypeValidation(); //disables all fuel inputs if nothing
 
             //places VTS area in minimap
             VtsHelperService.miniMapUpdate(VTSData[vtsID].areaWKT, null, null);
