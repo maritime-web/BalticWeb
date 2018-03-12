@@ -3,7 +3,7 @@
     <span id="loadingspinner"><a href ng-if="loadingData"><i class="fa fa-cog fa-spin fa-lg fa-fw fa-5x"></i><span class="sr-only">Loading...</span></a></span>
 </div>
 <div id="wrap">
-    <ol-map class="map col-xs-12 col-sm-12 col-md-12 col-lg-12" map-state="mapState" minzoom="3" swlon="-31" swlat="30" nelon="61" nelat="80">
+    <ol-map class="map col-xs-12 col-sm-12 col-md-12 col-lg-12" style="overflow:hidden;" map-state="mapState" minzoom="3" swlon="-31" swlat="30" nelon="61" nelat="80">
         <map-layer-group layer-group="mapSeaMapLayer"></map-layer-group>
         <map-layer-group layer-group="mapBackgroundLayers"></map-layer-group>
         <map-satellite-layer></map-satellite-layer>

@@ -76,7 +76,8 @@ angular.module('maritimeweb.app')
                     lat:0,
                     cog:0
                 };
-                if(userEmailMd5 == "826af07e5d45f86e84bd586468dde926"){
+                    console.log("userEmailMd5",userEmailMd5);
+                if(userEmailMd5 == "826af07e5d45f86e84bd586468dde926" || userEmailMd5 == "93a674f2733e380c800501da076b2737"){
                     // zoomToVesselMMSI = 219018314; //default
                     // zoomToVesselMMSI = 219592000; //Crown Seaways
                     // zoomToVesselMMSI = 219945000; //Pearl Seaways
@@ -87,6 +88,8 @@ angular.module('maritimeweb.app')
                     $scope.hasMMSI = true; //so menu displays zoomtovessel icon
                     $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
                     forceZoomToVessel = true;
+                }else{
+                    $window.localStorage.setItem('mmsi', '');
                 }
                 function locateVesselPos(){
                     if(forceZoomToVessel) {

@@ -165,6 +165,9 @@ abbr::after {
     padding:0 !important;
     height:27px !important;
 }
+
+/* VTS FUEL */
+
 .vts-fuel-icon-container {
     width:64px;
     height:86px;
@@ -250,24 +253,11 @@ abbr::after {
     padding-left: 5px;
     padding-right: 5px;
 }
-/*.vts-fuel-manifest-list{*/
-    /*overflow-x: hidden;*/
-    /*overflow-y: scroll;*/
-    /*max-width:670px;*/
-    /*max-height:120px;*/
-/*}*/
-
 @media screen and (max-width: 755px) {
     .vts-fuel-specification{
         top:40px;
     }
 }
-/*@media screen and (max-width: 750px) {*/
-    /*.vts-fuel-specification{*/
-        /*top:40px;*/
-    /*}*/
-/*}*/
-
 .vts-fuel-icon-label {
     width:64px;
     height:22px;
@@ -288,6 +278,64 @@ abbr::after {
     min-height:29px;
     padding-top:3px;
 }
+
+
+
+/* VTS CARGO */
+
+
+
+.vts-cargo-specification-container {
+    position: absolute;
+    left:-2px;
+    top:0px;
+    margin: 0;
+    padding: 0;
+    width:100%;
+    height:100%;
+    min-height:100%;
+    max-width: 670px;
+    background-color: rgba(255,255,255,1);
+    border: 3px solid rgb(167, 167, 167);
+    border-radius: 8px;
+}
+.vts-cargo-unitchange-button {
+    position: relative;
+    padding: 0px 6px;
+    background-color: rgba(250,250,250,1);
+}
+.vts-cargo-unitchange-button:focus{
+    outline: none !important;
+}
+.vts-cargo-specification-control {
+    position:absolute;
+    left:0px;
+    top:0px;
+    height:100%;
+    min-height:86px;
+    width:100%;
+}
+.vts-cargo-specification{
+    min-width:350px;
+    max-width: 350px;
+    position:relative;
+    margin-left:auto;
+    margin-right:auto;
+    max-height:86px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+@media screen and (max-width: 755px) {
+    .vts-cargo-specification{
+        top:40px;
+    }
+}
+.vts-cargo-description-box{
+    overflow:hidden;
+    min-height:29px;
+    padding-top:3px;
+}
+
 
 
 .vts-popup-hero {
@@ -534,11 +582,10 @@ abbr::after {
     position: relative;
     top: 0px;
     left:3px;
-
 }
 .vts-checkbox-label{
     position: relative;
-    top: 3px;
+    top: 0px;
     display: inline;
     padding-left: 9px;
     padding-right:10px;

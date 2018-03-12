@@ -305,7 +305,7 @@
                             </button>
                         </div>
                         <div style="position:absolute;bottom:0;height:35px;width:100%">
-                            <button class="btn btn-success vts-less-padding" ng-disabled="!setvtsAddButtonEnabled" style="position:relative;float:right;margin:5px;" type="button" ng-click="fuelAddToManifestFunction()">
+                            <button class="btn btn-success vts-less-padding" ng-disabled="!setvtsAddFuelButtonEnabled" style="position:relative;float:right;margin:5px;" type="button" ng-click="fuelAddToManifestFunction()">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 Add
                             </button>
@@ -346,10 +346,6 @@
 
                 </div>
             </div>
-            <!--<div ng-show="showFuelDetails" class="" name="vts-fueltype-image-select" ng-options="q.Shortname as q.Shortname for q in (FuelTypes | filter:isListItemNull)" ng-model="FuelTypes.Shortname" ng-change="">-->
-                <!--{{q.Shortname}}-->
-            <!--</div>-->
-
 
             <div class="vts-fuel-description-box vts-grey-text">
                 {{vtsFuelSelectedTypeDescriptionText}}
@@ -390,75 +386,81 @@
             <hr class="vts-hr" > <!-- CARGO INFORMATION ------------------------------------------------------------------- -->
             <div ><span class="bold" >Cargo information </span><span class="vts-grey-text" > - detailed cargo description</span></div>
 
-            <div class="vts-pad-top" >
-                <span class="vts-force-spacing-300">
+            <div class="vts-pad-top" style="padding-bottom: 10px;" >
+                <span class="vts-force-spacing-250">
                     <select class="form-control vts-force-spacing-200 vts-select" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]" name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
                         <option value="" selected disabled class="ng-binding ng-scope ">Select a cargo type:</option>
                     </select>
                 </span>
-                <span class="vts-force-spacing-300" ng-show="showCargoTypesCheckbox">
+                <span class="vts-force-spacing-250" ng-show="showCargoTypesCheckbox" style="line-height: 13px;">
                     <input type="checkbox" ng-disabled="vtsDangCargoCheckDisabled" class="vts-checkbox" ng-checked="vtsDangCargoCheckBoxState" ng-change="VTSDangerousCargoCheckbox(vtsDangCargoCheckBoxState)" ng-model="vtsDangCargoCheckBoxState"><span class="vts-checkbox-label">Dangerous cargo on board</span>
                 </span>
             </div>
 
-            <div  ng-show="showCargoTypeFields">
+            <div  ng-show="showCargoTypeFields" style="position: relative;">
                 <!-- Cargo class icon selector -->
                 <div class="vts-pad-top " >
                     <div class="" >
                         <div class="vts-pad-top">Please select an IMO dangerous goods classification:</div>
                         <div>
-                            <div class="vts-force-spacing-350 vts-pad-top">
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType1]" ng-click="VTSDangerousCargoTypeSelection('1')">
-                                    <div class="vts-center bold">Class 1</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.1.animated.gif">
-                                    </div>
-                                </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType21]" ng-click="VTSDangerousCargoTypeSelection('2.1')">
-                                    <div class="vts-text-center bold">Class 2.1</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.2.1.gif">
-                                    </div>
-                                </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType22]" ng-click="VTSDangerousCargoTypeSelection('2.2')">
-                                    <div class="vts-text-center bold">Class 2.2</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.2.2.animated.gif">
-                                    </div>
-                                </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType23]" ng-click="VTSDangerousCargoTypeSelection('2.3')">
-                                    <div class="vts-text-center bold">Class 2.3</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.2.3.gif">
-                                    </div>
+                            <div class="vts-force-spacing-222 vts-pad-top" >
+                                <div class="vts-fuel-icon-container" ng-repeat="p in cargoTypes.slice(0,3)" ng-mouseover="cargoTypeMouseOver(p.description)" ng-click="cargoTypeMouseClick(p.class, p.description, p.iconimageurl)" ng-class="{false:'', true:'vts-box-selected-highlight'}[p.selected]">
+                                    <div class="vts-fuel-icon-label">{{p.shortname}}</div>
+                                    <div class="vts-fuel-icon" style="background-image: url({{p.iconimageurl}})"></div>
                                 </div>
                             </div>
-                            <div class="vts-force-spacing-350 vts-pad-top">
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType3]" ng-click="VTSDangerousCargoTypeSelection('3')">
-                                    <div class="vts-text-center bold">Class 3</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.3.gif">
-                                    </div>
-                                </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType41]" ng-click="VTSDangerousCargoTypeSelection('4.1')">
-                                    <div class="vts-text-center bold">Class 4.1</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.4.1.gif">
-                                    </div>
-                                </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType42]" ng-click="VTSDangerousCargoTypeSelection('4.2')">
-                                    <div class="vts-text-center bold">Class 4.2</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.4.2.gif">
-                                    </div>
-                                </div>
-                                <div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType43]" ng-click="VTSDangerousCargoTypeSelection('4.3')">
-                                    <div class="vts-text-center bold">Class 4.3</div>
-                                    <div>
-                                        <img style="width:100%" src="img/cargo_labels/dg.4.3.gif">
-                                    </div>
-                                </div>
-                            </div>
+                            <!--<div class="vts-force-spacing-350 vts-pad-top">-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType1]" ng-click="VTSDangerousCargoTypeSelection('1')">-->
+                                    <!--<div class="vts-center bold">Class 1</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.1.animated.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType21]" ng-click="VTSDangerousCargoTypeSelection('2.1')">-->
+                                    <!--<div class="vts-text-center bold">Class 2.1</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.2.1.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType22]" ng-click="VTSDangerousCargoTypeSelection('2.2')">-->
+                                    <!--<div class="vts-text-center bold">Class 2.2</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.2.2.animated.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType23]" ng-click="VTSDangerousCargoTypeSelection('2.3')">-->
+                                    <!--<div class="vts-text-center bold">Class 2.3</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.2.3.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="vts-force-spacing-350 vts-pad-top">-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType3]" ng-click="VTSDangerousCargoTypeSelection('3')">-->
+                                    <!--<div class="vts-text-center bold">Class 3</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.3.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType41]" ng-click="VTSDangerousCargoTypeSelection('4.1')">-->
+                                    <!--<div class="vts-text-center bold">Class 4.1</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.4.1.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType42]" ng-click="VTSDangerousCargoTypeSelection('4.2')">-->
+                                    <!--<div class="vts-text-center bold">Class 4.2</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.4.2.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="vts-force-spacing-80 vts-text-center vts-cargotype-hover-highlight vts-cargotype-border" ng-class="{false:'', true:'vts-box-selected-highlight'}[dgSelectedType43]" ng-click="VTSDangerousCargoTypeSelection('4.3')">-->
+                                    <!--<div class="vts-text-center bold">Class 4.3</div>-->
+                                    <!--<div>-->
+                                        <!--<img style="width:100%" src="img/cargo_labels/dg.4.3.gif">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
                         </div>
                         <div>
                             <div class="vts-force-spacing-350 vts-pad-top">
@@ -529,6 +531,64 @@
                         <hr class="vts-hr-seperator" >
                         <div class="vts-cargolist-border" compile="cargoManifestList"></div> <!-- CARGO LIST ENTERED HERE -->
                         <hr class="vts-hr-seperator" >
+                    </div>
+
+
+
+                    <!-- NEW CARGO ******************************************************************* -->
+
+
+
+                    <div class="vts-cargo-specification-container" ng-show="showCargoSpecification">
+                        <div class="vts-cargo-specification-control" style="">
+                            <div style="position:relative;width:100%;height:40px;">
+                                <button class="btn btn-danger vts-less-padding" style="position:relative;top:0%;float:right;margin:5px;"  type="button" ng-click="cargoCancelFunction()">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                            </div>
+                            <div style="position:absolute;bottom:0;height:35px;width:100%">
+                                <button class="btn btn-success vts-less-padding" ng-disabled="!setvtsAddCargoButtonEnabled" style="position:relative;float:right;margin:5px;" type="button" ng-click="cargoAddToManifestFunction()">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                        <div class="vts-cargo-specification">
+                            <div style="max-width:330px;">
+                                Please enter cargo weight in
+                                <button class="btn btn-secondary vts-less-padding vts-cargo-unitchange-button" type="button" ng-click="VTSCargoUnitInputChange()">
+                                    <i class="glyphicon glyphicon-chevron-left"></i>
+                                    {{cargoQuantitySelectedUnitText}}.
+                                    <i class="glyphicon glyphicon-chevron-right"></i>
+                                </button>
+                            </div>
+
+                            <hr class="vts-hr-seperator" style="margin-left:0px;top:0px;padding:0px;color:#c2c2c2;">
+
+                            <div class="vts-pad-top vts-fuel-inputs">
+                                <div class="" style="position:relative;width:70%;height:100%;float:left;">
+                                    <img src="{{vtsCargoSelectedTypeImageUrl}}" style="width:24px;height:24px;"> {{cargoTypeSelectedText}}
+                                </div>
+                                <div class="" style="position: relative;width:30%;height:100%;float:right;">
+                                    <!--<input id="vts-fuel-quantity-input" ng-keypress="fuelInputKeypress($event)" class="vts-input-medium vts-text-center vts-input-fuel-modheight" ng-trim="false" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsFuelQuantityInputValid]"  ng-change="fuelTypeQuantityInputValidate()" ng-model="fuelTypeQuantityInput"> {{fuelQuantitySelectedUnit}}&nbsp;-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="vts-pad-top vts-fuel-inputs" ng-show="displayFuelSulphurPercentageInput">-->
+                                <!--<div class="" style="position:relative;width:70%;height:100%;float:left;">-->
+                                    <!--Percentage of Sulphur in fuel:-->
+                                <!--</div>-->
+                                <!--<div class="" style="position: relative;width:30%;height:100%;float:right;">-->
+                                    <!--<input class="vts-input-medium vts-text-center vts-input-fuel-modheight" ng-keypress="fuelInputKeypress($event)" ng-trim="false"  ng-model="fuelSulphurPercentageInput" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsFuelSulphurInputValid]" ng-change="fuelSulphurInputValidate()"> &percnt;-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class=" vts-fuel-inputs" style="padding-top:4px;min-height:24px;">-->
+                                <!--<input class="vts-input-fuel-large vts-input-fuel-modheight" ng-keypress="fuelInputKeypress($event)" ng-trim="false" ng-model="fuelNoteInput" ng-change="fuelNoteInputValidate()" placeholder=" Notes and/or other specifications">-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vts-cargo-description-box vts-grey-text">
+                            {{vtsCargoSelectedTypeDescriptionText}}
+                        </div>
                     </div>
                 </div>
             </div>
