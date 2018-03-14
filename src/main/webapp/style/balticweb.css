@@ -335,6 +335,200 @@ abbr::after {
     min-height:29px;
     padding-top:3px;
 }
+.vts-cargo-description-box{
+    overflow:hidden;
+    min-height:29px;
+    padding-top:3px;
+}
+
+.vts-cargo-diamond {
+    margin-left: 10px;
+    margin-top: 7px;
+    width: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    background-color: #bb0000;
+    border: 1px solid #a9a9a9;
+}
+.vts-cargo-diamond-internal-bordered{
+    margin-left: 2px;
+    margin-top: 2px;
+    width: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    border: 1px solid #333333;
+}
+.vts-cargo-reversediamond-label {
+    margin-top: -5px;
+    margin-left: 8px;
+    width: 100%;
+    min-height: 20px;
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    font-size: 20px;
+}
+
+.vts-cargolabel-color-rotate {
+    animation-duration: 5s;
+    animation-timing-function: ease-in, ease-out;/*linear; ease-out;*/
+    animation-delay: 500ms;
+    animation-direction: alternate-reverse;
+    animation-iteration-count: infinite;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+.vts-cargo-color-1{
+    background-color: #FF7400;
+    animation-name: vts-cargo-label-1;
+}
+@keyframes vts-cargo-label-1 {
+    0% {
+        background-color: #FF7400;
+        border-color: #BBBBBB;
+    }
+    100% {
+        background-color: #FF7400;
+        border-color: #BBBBBB;
+    }
+}
+.vts-cargo-color-2{
+    background-color: #18A100;
+    animation-name: vts-cargo-label-2;
+}
+@keyframes vts-cargo-label-2 {
+    0% {
+        background-color: #FFFFFF;
+    }
+    50% {
+        background-color: #18A100;
+    }
+    100% {
+        background-color: #FF3F3F;
+    }
+}
+.vts-cargo-color-3{
+    background-color: #FFFFFF;
+    animation-name: vts-cargo-label-3;
+}
+@keyframes vts-cargo-label-3 {
+    0% {
+        background-color: #FF3F3F;
+    }
+    100% {
+        background-color: #FF3F3F;
+    }
+}
+.vts-cargo-color-4{
+    background-color: #002CF1;
+    animation-name: vts-cargo-label-4;
+}
+@keyframes vts-cargo-label-4 {
+    0% {
+        background-color: #FF3F3F;
+    }
+    50% {
+        background-color: #FFFFFF;
+    }
+    100% {
+        background-color: #002CF1;
+    }
+}
+.vts-cargo-color-5{
+    background-color: #F1D400;
+    animation-name: vts-cargo-label-5;
+}
+@keyframes vts-cargo-label-5 {
+    0% {
+        background-color: #FF3F3F;
+    }
+    50% {
+        background-color: #F1D400;
+    }
+    100% {
+        background-color: #FF3F3F;
+    }
+}
+.vts-cargo-color-6{
+    background-color: #FFFFFF;
+    animation-name: vts-cargo-label-6;
+}
+@keyframes vts-cargo-label-6 {
+    0% {
+        background-color: #FFFFFF;
+    }
+    100% {
+        background-color: #FFFFFF;
+    }
+}
+.vts-cargo-color-7{
+    background-color: #F1D400;
+    animation-name: vts-cargo-label-7;
+}
+@keyframes vts-cargo-label-7 {
+    0% {
+        background-color: #FFFFFF;
+    }
+    50% {
+        background-color: #F1D400;
+    }
+    100% {
+        background-color: #FFFFFF;
+    }
+}
+.vts-cargo-color-8{
+    background-color: #FFFFFF;
+    animation-name: vts-cargo-label-8;
+}
+@keyframes vts-cargo-label-8 {
+    0% {
+        background-color: #FFFFFF;
+    }
+    100% {
+        background-color: #FFFFFF;
+    }
+}
+.vts-cargo-color-9{
+    background-color: #FFFFFF;
+    animation-name: vts-cargo-label-9;
+}
+@keyframes vts-cargo-label-9 {
+    0% {
+        background-color: #FFFFFF;
+    }
+    100% {
+        background-color: #FFFFFF;
+    }
+}
+
+/*.vts-cargo-diamond.orange{*/
+    /*border-top-color: rgba(255, 116, 0, 1);*/
+    /*border-bottom-color: rgba(255, 116, 0, 1);*/
+/*}*/
+
+.vts-cargo-icon-container {
+    width:64px;
+    height:86px;
+    max-width:64px;
+    margin-right:10px;
+    display: inline-block;
+    border:solid 1px #eeeeee;
+}
+.vts-cargo-icon-container:hover {
+    border:solid 1px #666666;
+}
+.vts-cargo-icon-label {
+    width:64px;
+    height:22px;
+    max-width:64px;
+    max-height:22px;
+    text-align: center;
+    padding-right:2px;
+}
+/*  CARGO END  */
 
 
 
@@ -749,6 +943,7 @@ abbr::after {
         background-color: #ffffff;
     }
 }
+
 
 .vts-responsive-info-container{
     min-height:30px;

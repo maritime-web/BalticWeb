@@ -153,32 +153,199 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             }
         ];
 
-
-        $scope.cargoTypes = [
+        $scope.IMODangerousCargoTypes = [
             {
-                description: "Explosives - hazard warning yolo!",
-                class: "1.0", //IMO Dangerous Goods class
-                shortname: "Explosives",
-                iconimageurl: "img/cargo_labels/dg.1.animated.gif"
+                "IMOClass": 1,
+                "description":"Explosives",
+                "shortname":"Expl.",
+                "types": [
+                    {
+                        "IMOSubClass": 1.1,
+                        "name": "Explosives",
+                        "description": "Mass explosion hazard.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 1.2,
+                        "name": "Explosives",
+                        "description": "Projection explosion hazard.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 1.3,
+                        "name": "Explosives",
+                        "description": "Fire and explosion hazard but not mass explosion hazard.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 1.4,
+                        "name": "Explosives",
+                        "description": "Fire and minor explosion hazard but not mass explosion hazard.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 1.5,
+                        "name": "Explosives",
+                        "description": "Insensitive explosives, has fire and minor explosion hazard with little probability of mass explosion.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 1.6,
+                        "name": "Explosives",
+                        "description": "Very insensitive explosives, has fire and minor explosion hazard with little very probability of explosion or mass explosion.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
             },
             {
-                description: "Explosives - Even worse",
-                class: "2", //IMO Dangerous Goods class
-                shortname: "Explosives",
-                iconimageurl: "img/vts_fuelicons/icon_HFO.png"
+                "IMOClass": 2,
+                "description":"Gases",
+                "shortname":"Gas",
+                "types": [
+                    {
+                        "IMOSubClass": 2.1,
+                        "name": "Flammable Gas",
+                        "description": "Gaseous at 20C or below, can ignite under pressure or by fire, with air from 13 percent or below. ",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                        "colorcode": "CD0000"
+                    },
+                    {
+                        "IMOSubClass": 2.2,
+                        "name": "Non-flammable, Non-poisonus Gas",
+                        "description": "A non-flammable and nonpoisonous compressed gas, under pressure. Not Oxygen.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 2.2,
+                        "name": "Oxygen Gas",
+                        "description": "Liquid or compressed Oxygen gas.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 2.3,
+                        "name": "Poison Gas",
+                        "description": "Toxic to humans or assumed toxic. Gaseous state below 20C under pressure.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
+            },
+            {
+                "IMOClass": 3,
+                "description":"Flammable Liquids",
+                "shortname":"Liq.",
+                "types": [
+                    {
+                        "IMOSubClass": 3,
+                        "name": "Flammable Liquid",
+                        "description": "Any flammable liquid meeting specification 49CFR 173.115, or ASTM 4206 incl. app. H, or ISO 2592.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
+            },
+            {
+                "IMOClass": 4,
+                "description":"Solids",
+                "shortname":"Solid",
+                "types": [
+                    {
+                        "IMOSubClass": 4.1,
+                        "name": "Flammable Solids or Substances",
+                        "description": "Desensitized explosives, self-reacting materials which can burn with or without oxygen, or readily combustible materials.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 4.2,
+                        "name": "Flammable Solids",
+                        "description": "Spontaneously Combustible material, liquid or solid, which can selfignite in contact with in under 5 minutes.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 4.3,
+                        "name": "Substances which, in contact with water, emit flammable gases",
+                        "description": "Dangerous When Wet - possibly spontaiously combustible when in contact with water, or creates combustible or toxic gas when in contact with water.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
+            },
+            {
+                "IMOClass": 5,
+                "description":"Oxidizing Substances",
+                "shortname":"Oxids.",
+                "types": [
+                    {
+                        "IMOSubClass": 5.1,
+                        "name": "Oxidizing Substance",
+                        "description": "Delivers Oxygen, can supply oxygen to a fire, increased firehazard.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 5.2,
+                        "name": "Organic peroxides",
+                        "description": "Will burn rapidly, sensitive to friction and heat, contains more than 1 but less than 7 percent Hydrogen Peroxide.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
+            },
+            {
+                "IMOClass": 6,
+                "description": "Toxic, Poisoneous or Infectious substances",
+                "shortname": "Tox-Inf.",
+                "types": [
+                    {
+                        "IMOSubClass": 6.1,
+                        "name": "Toxic or poisonous substances",
+                        "description": "Toxic or poisonous substances, in any form.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    },
+                    {
+                        "IMOSubClass": 6.2,
+                        "name": "Infectious Substances",
+                        "description": "Is or is suspected to be pathogenic - all medical and clinical waste, and infected animals are also included.",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
+            },
+            {
+                "IMOClass": 7,
+                "description": "Radioactive substances",
+                "shortname": "Radio.",
+                "types": [
+                    {
+                        "IMOSubClass": 7,
+                        "name": "Radioactive Materials",
+                        "description": "All radioactive materials",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
+            },
+            {
+                "IMOClass": 8,
+                "description": "Corrosive substances",
+                "shortname": "Corr.",
+                "types": [
+                    {
+                        "IMOSubClass": 8,
+                        "name": "Corrosives",
+                        "description": "All corrosive materials, acidic or basic. ",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                        "colorcode": "FF7400"
+                    }
+                ]
+            },
+            {
+                "IMOClass": 9,
+                "description": "Miscellaneous dangerous substances and articles",
+                "shortname": "Misc.",
+                "types": [
+                    {
+                        "IMOSubClass": 9,
+                        "name": "Miscellaneous hazardous materials",
+                        "description": "Any hazardous material which cannot be classified under classes 1 to 8 and their subclasses. ",
+                        "iconImageEncoded": "base64-encoded-image-comes-here-OPTIONAL",
+                    }
+                ]
             }
         ];
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1011,6 +1178,31 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.cargoTypeSelectedText = "";
 
 
+        $scope.cargoTypeSelected = 0;
+        $scope.cargoTypeSelectedColorClass = "";
+        $scope.showCargoSpecification = false;
+
+        $scope.cargoTypeMouseClick = function(){
+            $scope.showCargoSpecification = true;
+        };
+
+
+        $scope.cargoTypeMouseOver = function(str){ //mostly description
+            $scope.vtsSelectedCargoClassDescription = str; //can also empty it
+        };
+
+        $scope.VTSDangerousCargoCheckbox = function (check) {
+            if (check == true) {
+                $scope.showCargoSpecification = true;
+                // $scope.showCargoTypeFields = true;
+                $scope.showCargoContactInformationInput = true;
+            } else {
+                $scope.showCargoSpecification = false;
+                // $scope.showCargoTypeFields = false;
+                if ($scope.vtsvesselcargotypeholder == "Ballast") $scope.showCargoContactInformationInput = false;
+            }
+            $scope.VTSCargoContactInformationChange();
+        };
 
         $scope.clearCargoTypeSelection = function(){
             for(var i=0;i!=$scope.cargoTypes.length;i++) {
@@ -1096,16 +1288,18 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.VTSValidationAllDone();
         };
 
-        $scope.VTSDangerousCargoCheckbox = function (check) {
-            if (check == true) {
-                $scope.showCargoTypeFields = true;
-                $scope.showCargoContactInformationInput = true;
-            } else {
-                $scope.showCargoTypeFields = false;
-                if ($scope.vtsvesselcargotypeholder == "Ballast") $scope.showCargoContactInformationInput = false;
-            }
-            $scope.VTSCargoContactInformationChange();
-        };
+        // $scope.VTSDangerousCargoCheckbox = function (check) {
+        //     if (check == true) {
+        //         $scope.showCargoSpecification = true;
+        //         // $scope.showCargoTypeFields = true;
+        //         $scope.showCargoContactInformationInput = true;
+        //     } else {
+        //         $scope.showCargoSpecification = false;
+        //         // $scope.showCargoTypeFields = false;
+        //         if ($scope.vtsvesselcargotypeholder == "Ballast") $scope.showCargoContactInformationInput = false;
+        //     }
+        //     $scope.VTSCargoContactInformationChange();
+        // };
 
         $scope.clearHighlightedDangerousCargoTypeSelector = function () {
             $scope.dgSelectedType1 = false;
