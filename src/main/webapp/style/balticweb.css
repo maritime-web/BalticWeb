@@ -286,7 +286,7 @@ abbr::after {
 
 
 .vts-cargo-specification-container {
-    position: absolute;
+    position: relative;
     left:-2px;
     top:0px;
     margin: 0;
@@ -294,7 +294,7 @@ abbr::after {
     width:100%;
     height:100%;
     min-height:100%;
-    max-width: 670px;
+    /*max-width: 670px;*/
     background-color: rgba(255,255,255,1);
     border: 3px solid rgb(167, 167, 167);
     border-radius: 8px;
@@ -316,31 +316,49 @@ abbr::after {
     width:100%;
 }
 .vts-cargo-specification{
-    min-width:350px;
-    max-width: 350px;
+    min-width:333px;
     position:relative;
     margin-left:auto;
     margin-right:auto;
-    max-height:86px;
     padding-left: 5px;
     padding-right: 5px;
 }
-@media screen and (max-width: 755px) {
+@media screen and (max-width: 550px) {
     .vts-cargo-specification{
-        top:40px;
+        margin-top:40px;
     }
 }
 .vts-cargo-description-box{
-    overflow:hidden;
-    min-height:29px;
-    padding-top:3px;
+    overflow: hidden;
+    position: relative;
+    min-height: 70px;
+    padding-top: 15px;
+    padding-left: 5px;
+    padding-bottom: 10px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
-.vts-cargo-description-box{
-    overflow:hidden;
-    min-height:29px;
-    padding-top:3px;
+.vts-cargo-subclass-description-box{
+    overflow: hidden;
+    position: relative;
+    min-height: 70px;
+    padding-top: 15px;
+    padding-left: 5px;
+    padding-bottom: 10px;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
-
+.vts-cargo-input-container{
+    width:100%;
+    height:60px;
+    min-height:60px;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+}
 .vts-cargo-diamond {
     margin-left: 10px;
     margin-top: 7px;
@@ -370,6 +388,12 @@ abbr::after {
     -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
     font-size: 20px;
+}
+.vts-subcargo-inputs{
+    text-align: center;
+    min-height:26px;
+    min-width:330px;
+    overflow:hidden;
 }
 
 .vts-cargolabel-color-rotate {
@@ -516,6 +540,20 @@ abbr::after {
     margin-right:10px;
     display: inline-block;
     border:solid 1px #eeeeee;
+    overflow:hidden;
+}
+.vts-cargo-subclass-icon-container {
+    width:86px;
+    height:86px;
+    max-width:86px;
+    margin-right:10px;
+    display: inline-block;
+    border:solid 1px #eeeeee;
+    overflow:hidden;
+    cursor: pointer;
+}
+.vts-icon-disabled {
+    opacity:0.5;
 }
 .vts-cargo-icon-container:hover {
     border:solid 1px #666666;
@@ -846,11 +884,19 @@ abbr::after {
     border:solid 1px #666666;
 }
 .vts-box-selected-highlight {
-    background:#cccccc;
+    border: 2px solid #03ca00;
+    opacity:1.0 !important;
 }
 .vts-cargolist-border{
     border:solid 1px #666666;
 }
+.vts-hr-invalid{
+    border-bottom:solid 1px rgba(229, 103, 23, 1);
+}
+.vts-hr-valid{
+    border-bottom:solid 1px #c2c2c2;
+}
+
 .vts-cargoentry-listitem{
     overflow:hidden;
     max-height:29px;
