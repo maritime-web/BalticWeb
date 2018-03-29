@@ -11,12 +11,11 @@
                 <span class="badge sidebar-badge" ng-bind="nwNmMessages.length"></span>
             </uib-tab-heading>
 
-            <div class="panel" ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
-                <div class="panel-heading cursor-default" ng-click="sidebarUncollapse()">Navigational Warnings and Notices to Mariners
+            <div class="panel"  ng-class="(nwNmServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+                <div style="height:60px;" class="panel-heading cursor-default" ng-click="sidebarUncollapse()">Navigational Warnings and Notices to Mariners
                     <small tooltip="Refresh" class="glyphicon glyphicon-refresh"
                            ng-click="refreshNwNmServices()"></small>
-
-                    <div class="small pull-right">
+                    <div class="small">
                         Display &nbsp;&nbsp;
                         <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()">&nbsp;NW
                         &nbsp;&nbsp;

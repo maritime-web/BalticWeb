@@ -353,7 +353,7 @@ abbr::after {
 }
 .vts-cargo-input-container{
     width:100%;
-    height:60px;
+    height:68px;
     min-height:60px;
     max-width: 340px;
     margin-left: auto;
@@ -405,6 +405,69 @@ abbr::after {
     animation-fill-mode: none;
     animation-play-state: running;
 }
+
+.vts-cargo-icon-container {
+    width:64px;
+    height:86px;
+    max-width:64px;
+    margin-right:10px;
+    display: inline-block;
+    border:solid 1px #eeeeee;
+    overflow:hidden;
+}
+.vts-cargo-subclass-icon-container {
+    width:86px;
+    height:86px;
+    max-width:86px;
+    margin-right:10px;
+    display: inline-block;
+    border:solid 1px #eeeeee;
+    overflow:hidden;
+    cursor: pointer;
+}
+.vts-icon-disabled {
+    opacity:0.4;
+}
+.vts-cargo-icon-container:hover {
+    border:solid 1px #666666;
+}
+.vts-cargo-icon-label {
+    width:64px;
+    height:22px;
+    max-width:64px;
+    max-height:22px;
+    text-align: center;
+    padding-right:2px;
+}
+.vts-cargo-even-backcolor{
+    background-color: rgb(235, 235, 235);
+}
+.vts-cargo-manifest-item-selected-edit{
+    background-color: rgba(48, 78, 117, 0.6) !important;
+    cursor: pointer;
+}
+.vts-cargo-manifest-item-selected-remove{
+    background-color: rgba(205, 61, 73, 0.55) !important;
+}
+.vts-element-cover-cargo-manifestlist{
+    position: absolute;
+    left:0px;
+    top:0px;
+    height:0%;
+    width:100%;
+}
+.vts-element-cover-cargo-manifestlist.block{
+    background-color:rgba(255,255,255,0.5);
+    height:100%;
+}
+.vts-element-cover-cargo-manifestlist.unblock{
+    height:0%;
+}
+
+
+
+/*CARGO ANIMATIONS*/
+
 .vts-cargo-color-1{
     background-color: #FF7400;
     animation-name: vts-cargo-label-1;
@@ -528,44 +591,7 @@ abbr::after {
     }
 }
 
-/*.vts-cargo-diamond.orange{*/
-    /*border-top-color: rgba(255, 116, 0, 1);*/
-    /*border-bottom-color: rgba(255, 116, 0, 1);*/
-/*}*/
 
-.vts-cargo-icon-container {
-    width:64px;
-    height:86px;
-    max-width:64px;
-    margin-right:10px;
-    display: inline-block;
-    border:solid 1px #eeeeee;
-    overflow:hidden;
-}
-.vts-cargo-subclass-icon-container {
-    width:86px;
-    height:86px;
-    max-width:86px;
-    margin-right:10px;
-    display: inline-block;
-    border:solid 1px #eeeeee;
-    overflow:hidden;
-    cursor: pointer;
-}
-.vts-icon-disabled {
-    opacity:0.5;
-}
-.vts-cargo-icon-container:hover {
-    border:solid 1px #666666;
-}
-.vts-cargo-icon-label {
-    width:64px;
-    height:22px;
-    max-width:64px;
-    max-height:22px;
-    text-align: center;
-    padding-right:2px;
-}
 /*  CARGO END  */
 
 

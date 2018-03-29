@@ -58,43 +58,49 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
             var errorMsg = "",
                 isValid = false, outputString = "", hasPeriod = false;
 
-            inputString = inputString.toString().trim(); // space only trim works because inputs have ng-trim="false" and triggers validate
+            if(inputString) {
 
-            if (decimals > 0) {
-                inputString = inputString.replace(/[^0-9.,]/g, '');
-                inputString = inputString.replace(/[,]/g, '.');
-            } else {
-                inputString = inputString.replace(/[^0-9]/g, ''); //no decimals allowed
-            }
-            hasPeriod = inputString.indexOf(".") > -1;
-            if (!decimals || decimals == "") decimals = 0;
-            inputString = String(inputString); //force to string
-            if (inputString == "." || inputString == "0.0") inputString = "0.";
-            if (inputString.length < 1) errorMsg = "Missing number to validate on in function 'validateNumber'.";
-            if (inputString.length > 0) {
-                var inputFloat = parseFloat(inputString); //float it
-                if (isNaN(inputFloat)) inputFloat = 0.0;
-                var retvalidation = inputFloat.validateBetween(min, max, true);
-                if (!retvalidation.minValid) errorMsg += "\nValue is smaller than allowed!";
-                if (!retvalidation.maxValid) errorMsg += "\nValue is larger than allowed!";
-                if (retvalidation.minValid && retvalidation.maxValid) isValid = true;
-                outputString = inputString; //swap!
-                if (hasPeriod === true) {
-                    var tmpStr2 = "";
-                    var numStr = outputString.split('.');
-                    var tmpStr = numStr[0];
-                    try {
-                        tmpStr2 = numStr[1].substring(0, decimals);
-                    } catch (noDecimals) {
+                inputString = inputString.toString().trim(); // space only trim works because inputs have ng-trim="false" and triggers validate
+
+                if (decimals > 0) {
+                    inputString = inputString.replace(/[^0-9.,]/g, '');
+                    inputString = inputString.replace(/[,]/g, '.');
+                } else {
+                    inputString = inputString.replace(/[^0-9]/g, ''); //no decimals allowed
+                }
+                hasPeriod = inputString.indexOf(".") > -1;
+                if (!decimals || decimals == "") decimals = 0;
+                inputString = String(inputString); //force to string
+                if (inputString == "." || inputString == "0.0") inputString = "0.";
+                if (inputString.length < 1) errorMsg = "Missing number to validate on in function 'validateNumber'.";
+                if (inputString.length > 0) {
+                    var inputFloat = parseFloat(inputString); //float it
+                    if (isNaN(inputFloat)) inputFloat = 0.0;
+                    var retvalidation = inputFloat.validateBetween(min, max, true);
+                    if (!retvalidation.minValid) errorMsg += "\nValue is smaller than allowed!";
+                    if (!retvalidation.maxValid) errorMsg += "\nValue is larger than allowed!";
+                    if (retvalidation.minValid && retvalidation.maxValid) isValid = true;
+                    outputString = inputString; //swap!
+                    if (hasPeriod === true) {
+                        var tmpStr2 = "";
+                        var numStr = outputString.split('.');
+                        var tmpStr = numStr[0];
+                        try {
+                            tmpStr2 = numStr[1].substring(0, decimals);
+                        } catch (noDecimals) {
+                        }
+                        outputString = tmpStr + "." + tmpStr2;
                     }
-                    outputString = tmpStr + "." + tmpStr2;
+                    if (debugMode) {
+                        console.log("tmpStr:", tmpStr);
+                        console.log("tmpStr2:", tmpStr2);
+                    }
                 }
-                if (debugMode) {
-                    console.log("tmpStr:", tmpStr);
-                    console.log("tmpStr2:", tmpStr2);
-                }
+                if (debugMode) console.log(errorMsg);
+
+            }else{
+                return {"valid": false, "val": null};
             }
-            if (debugMode) console.log(errorMsg);
             return {"valid": isValid, "val": outputString};
         };
 

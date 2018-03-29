@@ -391,8 +391,9 @@
 
             <div class="vts-pad-top" style="padding-bottom: 10px;" >
                 <span class="vts-force-spacing-250">
-                    <select class="form-control vts-force-spacing-200 vts-select" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]" name="vts-center-select" ng-options="items for items in cargoTypes" ng-model="selectedCargoType" ng-change="selectVesselCargoChange(selectedCargoType)" >
-                        <option value="" selected disabled class="ng-binding ng-scope ">Select a cargo type:</option>
+                    <select class="form-control vts-force-spacing-200 vts-select" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoTypeValid]"
+                            name="vts-center-select" ng-options="items for items in cargoTypes" data-ng-model="selectedCargoType"
+                            ng-change="selectVesselCargoChange(selectedCargoType)" >
                     </select>
                 </span>
                 <span class="vts-force-spacing-250" ng-show="showCargoTypesCheckbox" style="line-height: 13px;">
@@ -407,9 +408,9 @@
                         <!-- DEFAULT MSG, changes according to what user does-->
                         <div class="vts-pad-top" ng-show="!showCargoSpecification">Please select an IMO dangerous goods classification:</div>
                         <!-- USER HAS SELECTED A CARGO CLASS MSG-->
-                        <div class="vts-pad-top bold" ng-show="showCargoSpecification && selectedCargoSubTypeObject.IMOSubClass == 0">You have selected to report cargo IMO class {{selectedCargoTypeObject.IMOClass}}: {{selectedCargoTypeObject.description}}.</div>
+                        <div class="vts-pad-top bold" ng-show="showCargoSpecification && selectedCargoSubClassObject.IMOSubClass == 0">You have selected to report cargo <span style="color:#345ec6">IMO class {{selectedCargoTypeObject.IMOClass}}: {{selectedCargoTypeObject.description}}</span>.</div>
                         <!-- USER HAS SELECTED A CARGO SUBCLASS MSG-->
-                        <div class="vts-pad-top bold" ng-show="showCargoSpecification && selectedCargoSubTypeObject.IMOSubClass > 0">You have selected to report cargo IMO class, {{selectedCargoSubTypeObject.IMOSubClass}}: {{selectedCargoSubTypeObject.name}}.</div>
+                        <div class="vts-pad-top bold" ng-show="showCargoSpecification && selectedCargoSubClassObject.IMOSubClass > 0">You have selected to report cargo <span style="color:#345ec6">IMO class, {{selectedCargoSubClassObject.IMOSubClass}}: {{selectedCargoSubClassObject.name}}</span>.</div>
 
                         <!-- CARGO CLASS SELECTION BOX -->
                         <div class="vts-pad-top" ng-show="!showCargoSpecification" style="position:relative;">
@@ -432,22 +433,25 @@
 
                         <!-- CARGO SUBCLASS SELECTION BOX -->
                         <div class="vts-cargo-specification-container" ng-show="showCargoSpecification">
+                            <!-- ADD & CANCEL BUTTONS -->
                             <div class="vts-cargo-specification-control" style="">
                                 <div style="position:relative;width:100%;height:40px;">
-                                    <button class="btn btn-danger vts-less-padding" style="z-index:10;position:relative;top:0%;float:right;margin:5px;"  type="button" ng-click="cargoCancelFunction()">
+                                    <button class="btn btn-danger vts-less-padding" style="z-index:10;position:relative;top:0%;float:right;margin:5px;"
+                                            type="button" ng-click="cargoCancelFunction()">
                                         <i class="glyphicon glyphicon-remove"></i>
                                     </button>
                                 </div>
                                 <div style="position:absolute;bottom:0;height:35px;width:100%;">
-                                    <button class="btn btn-success vts-less-padding" ng-disabled="!setvtsAddCargoButtonEnabled" style="z-index:11;position:relative;float:right;margin:5px;" type="button" ng-click="cargoAddToManifestFunction()">
+                                    <button class="btn btn-success vts-less-padding" ng-disabled="!setvtsCargoQuantityInputValid" style="z-index:11;position:relative;float:right;margin:5px;"
+                                            type="button" ng-click="cargoAddToManifestFunction()">
                                         <i class="glyphicon glyphicon-plus"></i>
                                         Add
                                     </button>
                                 </div>
                             </div>
                             <div class="vts-cargo-specification">
-                                <div style="min-height:30px;max-width:340px;width:340px;margin-left:auto;margin-right:auto;text-align:center;">
-                                    <!-- UNIT SELECTOR -->
+                                <div style="position:relative;left:-6px;min-height:30px;max-width:340px;width:340px;margin-left:auto;margin-right:auto;text-align:center;">
+                                    <!-- UNIT SELECTOR TON/KG -->
                                     <span ng-show="showCargoUnitSelection">Please enter cargo weight in </span>
                                     <button ng-show="showCargoUnitSelection" class="btn btn-secondary vts-less-padding vts-cargo-unitchange-button" type="button" ng-click="VTSCargoUnitInputChange()">
                                         <i class="glyphicon glyphicon-chevron-left"></i>
@@ -455,11 +459,11 @@
                                         <i class="glyphicon glyphicon-chevron-right"></i>
                                     </button>
                                     <!-- SELECT A CARGO SUB CLASS MSG -->
-                                    <span ng-show="!showCargoUnitSelection">Please select a cargo subclass</span>
+                                    <span class="bold" ng-show="!showCargoUnitSelection">Please select a cargo subclass</span>
                                 </div>
 
                                 <hr class="vts-hr-seperator" style="margin-left:auto;margin-right:auto;width:80%;top:0px;padding:0px;"
-                                    ng-class="{true:'vts-hr-valid',false:'vts-hr-invalid'}[selectedCargoSubTypeObject.index != null]">
+                                    ng-class="{true:'vts-hr-valid',false:'vts-hr-invalid'}[selectedCargoSubClassObject.selected == true]">
 
                                 <div class="vts-pad-top vts-subcargo-inputs">
                                     <div class="" style="position:relative;width:100%;height:100%;">
@@ -468,39 +472,74 @@
                                              ng-mouseover="cargoSubClassMouseOver(p)"
                                              ng-mouseleave="cargoSubClassMouseOver()"
                                              ng-click="cargoSubClassMouseClick(p, $index)"
-                                             ng-class="[{true:'vts-box-selected-highlight',false:''}[(selectedCargoSubTypeObject.index == $index)],
-                                             {true:'', false:'vts-icon-disabled'}[selectedCargoSubTypeObject.index==null]]">
-                                            <img src="{{p.iconImageEncoded}}" style="width:100%"/>
+                                             ng-class="[{true:'vts-box-selected-highlight',false:''}[(cargoSubTypeSelectedIndex == $index)],
+                                             {true:'', false:'vts-icon-disabled'}[selectedCargoSubClassObject.selected==false]]">
+                                            <img src="{{p.iconimageurl}}" style="width:100%"/>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="vts-cargo-input-container" ng-show="selectedCargoSubTypeObject.index != null">
-                                    <input id="vts-cargo-quantity-input" ng-keypress="cargoInputKeypress($event)" class="vts-input-medium vts-text-center vts-input-fuel-modheight" ng-trim="false" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoQuantityInputValid]"  ng-change="cargoSubClassQuantityInputValidate()" ng-model="cargoSubClassQuantityInput"> {{cargoQuantitySelectedUnit}}&nbsp;
+                                <!-- QUANTITY INPUT & NOTE -->
+                                <hr class="vts-hr-seperator" style="height:8px;margin-left:auto;margin-right:auto;width:80%;top:0px;padding:0px;"
+                                    ng-show="selectedCargoSubClassObject.selected == true"
+                                >
+                                <div class="vts-cargo-input-container" ng-show="selectedCargoSubClassObject.selected == true">
+                                    <div style="width:313px;text-align:right;">
+                                        Quantity of goods, <span style="color:#345ec6">IMO class {{selectedCargoSubClassObject.IMOSubClass}}</span>:&nbsp;
+                                        <span style="float: right">&nbsp;{{cargoQuantitySelectedUnit}}&nbsp;</span>
+                                        <input style="float:right;" id="vts-cargo-quantity-input" ng-keypress="cargoInputKeypress($event)"
+                                               class="vts-input-medium vts-text-center vts-input-fuel-modheight"
+                                               ng-trim="false" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsCargoQuantityInputValid]"
+                                               ng-change="cargoSubClassQuantityInputValidate()" ng-model="cargoSubClassQuantityInput"
+                                        >
+                                    </div>
                                     <div class=" vts-fuel-inputs" style="padding-top:4px;min-height:24px;">
-                                        <input class="vts-input-fuel-large vts-input-fuel-modheight" ng-keypress="fuelInputKeypress($event)" ng-trim="false" ng-model="fuelNoteInput" ng-change="fuelNoteInputValidate()" placeholder=" Notes and/or other specifications">
+                                        <input class="vts-input-fuel-large vts-input-fuel-modheight" ng-keypress="cargoInputKeypress($event)"
+                                               style="top:5px;position:relative;"
+                                               ng-trim="false" ng-model="cargoNoteInput" placeholder=" Notes and/or other specifications"
+                                        >
                                     </div>
                                 </div>
 
                                 <hr class="vts-hr-seperator" style="margin-left:auto;margin-right:auto;width:80%;top:0px;padding:0px;"
-                                    ng-class="{true:'vts-hr-valid',false:'vts-hr-invalid'}[selectedCargoSubTypeObject.index != null]">
+                                    ng-class="{true:'vts-hr-valid',false:'vts-hr-invalid'}[selectedCargoSubClassObject.selected == true]">
 
+                                <!-- DESCRIPTION TEXT -->
                                 <div ng-show="showCargoSpecification" class="vts-cargo-subclass-description-box ">
-                                    <span ng-class="{true:'bold',false:'vts-grey-text'}[selectedCargoSubTypeObject.index != null]">
+                                    <span style="color:#345ec6;" ng-class="{true:'bold',false:'vts-grey-text'}[selectedCargoSubClassObject.selected == true]">
                                         {{vtsCargoSelectedSubTypeSelectionText_Subclass_Name}}
                                     </span>
                                     <br>
                                     <span class="vts-grey-text">{{vtsCargoSelectedSubTypeSelectionText_Description}}</span>
-
                                 </div>
                             </div>
                         </div>
 
-
-
-
+                        <!-- CARGO MANIFEST LIST -->
                         <hr class="vts-hr-seperator" >
-                        <div class="vts-cargolist-border" compile="cargoManifestList"></div> <!-- CARGO LIST ENTERED HERE -->
+                        <div class="cargo-cargo-manifest-list" style="position: relative;">
+                            <div class=""  ng-repeat="f in reportSummary.cargoManifest track by $index" >
+                                <div style="display:inline-block;width:36px;">
+                                    <button class="btn btn-danger vts-less-padding" style="position:relative;margin:5px;top:-8px;" type="button"
+                                            ng-mouseover="cargoManifestItemRemoveMouseOver($index)" ng-mouseout="cargoManifestItemRemoveMouseOver()"
+                                            ng-click="cargoManifestRemoveItem($index)">
+                                        <i class="glyphicon glyphicon-remove"></i>
+                                    </button>
+                                </div>
+                                <div style="display:inline-block;width:88%;max-width:632px;overflow:hidden;white-space:nowrap;"
+                                    ng-class="[{true:'vts-cargo-manifest-item-selected-remove', false:''}[setvtsCargoIndexSelected[$index].remove && !cargoTypeMouseOverDisabled],
+                                    {true:'vts-cargo-manifest-item-selected-edit', false:''}[setvtsCargoIndexSelected[$index].edit && !cargoTypeMouseOverDisabled]]"
+                                    ng-mouseover="cargoManifestItemEditMouseOver($index)" ng-mouseout="cargoManifestItemRemoveMouseOver()" ng-click="cargoManifestEditItemClick($index)"
+                                    ng-class-odd="'vts-cargo-even-backcolor'">
+
+                                    <img src="{{f.iconimageurl}}" style="width:24px;height:24px;">{{f.IMOSubClass}}: {{f.name}} - {{f.quantity}} {{f.unit}}
+                                    <span ng-show="f.note.length > 0"> - {{f.note}}</span>
+                                </div>
+                            </div>
+                            <div class="vts-element-cover-cargo-manifestlist" ng-class="{true:'block', false:'unblock'}[cargoTypeMouseOverDisabled]">
+                                <!--covers the entire element with a semi transparent background color to disable interaction-->
+                            </div>
+                        </div>
                         <hr class="vts-hr-seperator" >
                     </div>
 

@@ -163,37 +163,37 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 1.1,
                         name: "Explosives",
                         description: "Mass explosion hazard.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.1.gif"
                     },
                     {
                         IMOSubClass: 1.2,
                         name: "Explosives",
                         description: "Projection explosion hazard.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.2.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.2.gif"
                     },
                     {
                         IMOSubClass: 1.3,
                         name: "Explosives",
                         description: "Fire and explosion hazard but not mass explosion hazard.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.3.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.3.gif"
                     },
                     {
                         IMOSubClass: 1.4,
                         name: "Explosives",
                         description: "Fire and minor explosion hazard but not mass explosion hazard.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.4.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.4.gif"
                     },
                     {
                         IMOSubClass: 1.5,
                         name: "Explosives",
                         description: "Insensitive explosives, has fire and minor explosion hazard with little probability of mass explosion.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.5.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.5.gif"
                     },
                     {
                         IMOSubClass: 1.6,
                         name: "Explosives",
                         description: "Very insensitive explosives, has fire and minor explosion hazard with little very probability of explosion or mass explosion.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.6.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.6.gif"
                     }
                 ]
             },
@@ -206,25 +206,25 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 2.1,
                         name: "Flammable Gas",
                         description: "Gaseous at 20C or below, can ignite under pressure or by fire, with air from 13 percent or below. ",
-                        iconImageEncoded: "img/cargo_labels/dg.2.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.2.1.gif"
                     },
                     {
                         IMOSubClass: 2.2,
                         name: "Non-flammable, Non-poisonus Gas",
                         description: "A non-flammable and nonpoisonous compressed gas, under pressure. Not Oxygen.",
-                        iconImageEncoded: "img/cargo_labels/dg.2.2.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.2.2.1.gif"
                     },
                     {
                         IMOSubClass: 2.2,
                         name: "Oxygen Gas",
                         description: "Liquid or compressed Oxygen gas.",
-                        iconImageEncoded: "img/cargo_labels/dg.2.2.2.gif"
+                        iconimageurl: "img/cargo_labels/dg.2.2.2.gif"
                     },
                     {
                         IMOSubClass: 2.3,
                         name: "Poison Gas",
                         description: "Toxic to humans or assumed toxic. Gaseous state below 20C under pressure.",
-                        iconImageEncoded: "img/cargo_labels/dg.2.3.gif"
+                        iconimageurl: "img/cargo_labels/dg.2.3.gif"
                     }
                 ]
             },
@@ -237,7 +237,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 3,
                         name: "Flammable Liquid",
                         description: "Any flammable liquid meeting specification 49CFR 173.115, or ASTM 4206 incl. app. H, or ISO 2592.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.3.gif"
                     }
                 ]
             },
@@ -250,19 +250,19 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 4.1,
                         name: "Flammable Solids or Substances",
                         description: "Desensitized explosives, self-reacting materials which can burn with or without oxygen, or readily combustible materials.",
-                        iconImageEncoded: "img/cargo_labels/dg.4.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.4.1.gif"
                     },
                     {
                         IMOSubClass: 4.2,
                         name: "Flammable Solids",
                         description: "Spontaneously Combustible material, liquid or solid, which can selfignite in contact with in under 5 minutes.",
-                        iconImageEncoded: "img/cargo_labels/dg.4.2.gif"
+                        iconimageurl: "img/cargo_labels/dg.4.2.gif"
                     },
                     {
                         IMOSubClass: 4.3,
                         name: "Substances which, in contact with water, emit flammable gases",
                         description: "Dangerous When Wet - possibly spontaneously combustible when in contact with water, or creates combustible or toxic gas when in contact with water.",
-                        iconImageEncoded: "img/cargo_labels/dg.4.3.gif"
+                        iconimageurl: "img/cargo_labels/dg.4.3.gif"
                     }
                 ]
             },
@@ -275,13 +275,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 5.1,
                         name: "Oxidizing Substance",
                         description: "Delivers Oxygen, can supply oxygen to a fire, increased firehazard.",
-                        iconImageEncoded: "img/cargo_labels/dg.5.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.5.1.gif"
                     },
                     {
                         IMOSubClass: 5.2,
                         name: "Organic peroxides",
                         description: "Will burn rapidly, sensitive to friction and heat, contains more than 1 but less than 7 percent Hydrogen Peroxide.",
-                        iconImageEncoded: "img/cargo_labels/dg.5.2.gif"
+                        iconimageurl: "img/cargo_labels/dg.5.2.png"
                     }
                 ]
             },
@@ -294,13 +294,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 6.1,
                         name: "Toxic or poisonous substances",
                         description: "Toxic or poisonous substances, in any form.",
-                        iconImageEncoded: "img/cargo_labels/dg.6.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.6.1.gif"
                     },
                     {
                         IMOSubClass: 6.2,
                         name: "Infectious Substances",
                         description: "Is or is suspected to be pathogenic - all medical and clinical waste, and infected animals are also included.",
-                        iconImageEncoded: "img/cargo_labels/dg.6.2.gif"
+                        iconimageurl: "img/cargo_labels/dg.6.2.gif"
                     }
                 ]
             },
@@ -313,26 +313,26 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 7,
                         name: "Radioactive Materials - Class I",
                         description: "Packages with a maximum surface radiation level of 0.5 mrem/hr or containers that do not contain packages with higher categories.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.7.0.1.png"
                     },
                     {
                         IMOSubClass: 7,
                         name: "Radioactive Materials - Class II",
                         description: "Packages with a surface radiation level greater than 0.5 mrem/hr, but no more than 50 mrem/hr . The transport index must not exceed 1.0.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.7.0.2.png"
                     },
                     {
                         IMOSubClass: 7,
-                        name: "Radioactive Materials - Class IIII",
+                        name: "Radioactive Materials - Class III",
                         description: "Packages with a maximum surface radiation level of 200 mrem/hr, or containers whose transport index is less than or equal to 1.0 and which are transporting visible Category III packages.",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.7.0.3.png"
                     },
                     {
                         IMOSubClass: 7,
                         name: "Radioactive Materials - Class IV",
-                        description: "Fissionable materials",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
-                    },
+                        description: "Fissile materials",
+                        iconimageurl: "img/cargo_labels/dg.7.0.5.png"
+                    }
                 ]
             },
             {
@@ -344,7 +344,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 8,
                         name: "Corrosives",
                         description: "All corrosive materials, acidic or basic. ",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.1.gif"
                     }
                 ]
             },
@@ -357,7 +357,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 9,
                         name: "Miscellaneous hazardous materials",
                         description: "Any hazardous material which cannot be classified under classes 1 to 8 and their subclasses. ",
-                        iconImageEncoded: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.1.1.gif"
                     }
                 ]
             }
@@ -417,7 +417,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         // ];
 
         //displays as vessel type input but is really a cargo definition
-        $scope.cargoTypes = ["None", "Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"];
+        $scope.cargoTypes = ["Select a cargo type:", "None", "Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"];
 
         //Specific VTS center route dropdowns (They usually have predefined routes and abbreviations as specified in their pilot/master's guide )
         // CURRENTLY NOT IN USE - PENDING DECISION REGARDING STANDARD.
@@ -455,45 +455,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.vtsvesselspeedinput = "";
         $scope.vtsvesselemailreportcopy = ""; //sends copy of vts report to this email
 
-        //fuel information
-        // $scope.vtsvesselfueltype00_0input = "";
-        // $scope.vtsvesselfueltype00_1input = "";
-        // $scope.vtsvesselfueltype00_2input = "";
-        // $scope.vtsvesselfueltype01_0input = "";
-        // $scope.vtsvesselfueltype01_1input = "";
-        // $scope.vtsvesselfueltype01_2input = "";
-        // $scope.vtsvesselfueltype02_0input = "";
-        // $scope.vtsvesselfueltype02_1input = "";
-        // $scope.vtsvesselfueltype02_2input = "";
-        // $scope.vtsvesselfueltype03_0input = "";
-        // $scope.vtsvesselfueltype03_1input = "";
-        // $scope.vtsvesselfueltype03_2input = "";
-        // $scope.vtsvesselfueltype04_0input = "";
-        // $scope.vtsvesselfueltype04_1input = "";
-        // $scope.vtsvesselfueltype04_2input = "";
-        // $scope.vtsvesselfueltype05_0input = "";
-        // $scope.vtsvesselfueltype05_1input = "";
-        // $scope.vtsvesselfueltype05_2input = "";
-        // $scope.vtsvesselfueltype06_0input = "";
-        // $scope.vtsvesselfueltype06_1input = "";
-        // $scope.vtsvesselfueltype06_2input = "";
-
         //Cargo information
-        $scope.selectedCargoType = "";
-        $scope.selectedDangerousCargoType = "";
-        $scope.vtsvesselcargossnidinput = "";
         $scope.cargoAddToManifestDisabled = true;
-        $scope.vtsdangerouscargotonnageinput = "";
-        $scope.vtsvesselcargotypeholder = "";
         $scope.vtsdangerouscargooverboard = "";
         $scope.vtscargodesignatedpersonashorenameinput = "";
         $scope.vtscargodesignatedpersonashoretelephoneinput = "";
         $scope.vtscargodesignatedpersonashoreemailinput = "";
         $scope.vtsDangCargoCheckBoxState = false; //checkbox to activate dangerous cargo in case is not default
         $scope.vtsDangCargoCheckDisabled = true;
-        // $scope.setvtsCargoSSNIDValid = false; //SafeSeaNet manifest ID reference - has full manifest - should be autofilled through service at login - requires cooperation with SSN
         $scope.setvtsCargoTypeValid = false;
-        $scope.setvtsCargoTonnageValidState = 'invalid'; //'invalid, valid, neutral' - can be not mandatory
         $scope.setvtsvesselContactDetailsValid = false;
         $scope.setvtsvesselDPANameValid = false;
         $scope.setvtsvesselDPAPhoneValid = false;
@@ -535,8 +505,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         $scope.reportSummary = { //what is sent to the VTS
 
-            version: 4, //increments of 1
-            //VTS information
+            version: 9, //increments of 1
             vtsShortName: "",
             vtsCallSign: "",
             vtsEmail: "",
@@ -557,30 +526,10 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             //Fuel and fuel types - always in Tonnes (metric)
             fuelTotalFuel: 0, //Tonnes - all fuel added up
-            fuelManifest : [], //is populated
-            // fuelTypeHFORegular: 0, //Tonnes - regular means it is not low sulphur. (Heavy Fuel Oil)
-            // fuelTypeHFOLowSulphur: 0,
-            // fuelTypeHFOUltraLowSulphur: 0,
-            // fuelTypeIFORegular: 0, //(Intermediate Fuel Oil)
-            // fuelTypeIFOLowSulphur: 0,
-            // fuelTypeIFOUltraLowSulphur: 0,
-            // fuelTypeMDORegular: 0, //(Marine Diesel Oil)
-            // fuelTypeMDOLowSulphur: 0,
-            // fuelTypeMDOUltraLowSulphur: 0,
-            // fuelTypeMGORegular: 0, //(Marine Gas Oil)
-            // fuelTypeMGOLowSulphur: 0,
-            // fuelTypeMGOUltraLowSulphur: 0,
-            // fuelTypeLPG: 0, //(Liquid Petroleum Gas)
-            // fuelTypeLNG: 0, //(Liquid Natural Gas)
+            fuelManifest : [], //is populated by fuel interface
 
-            //Cargo Information in Tonnes, 3 decimals
-            cargoEntries: [
-                // {
-                // imoClass:"",
-                // tonnage:"",
-                // note:""
-                // }
-            ],
+            //Cargo Information
+            cargoManifest: [], //populated by cargo interface
             cargoType: "", //String, predefined by dropdown. Certain cargotypes demand listing of dangerous cargo/goods (DG/DC)
             cargoDangerousCargoOnBoard: false, //any cargoIMOClass on board makes this true
             cargoDangerousCargoTotalTonnage: 0, //sum of all dangerous cargo
@@ -601,31 +550,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             voyagePortOfDestinationEta: "" //string ETA from AIS - is only visible if AIS data is used - cannot be edited.
         };
 
-        //Load the saved reportsummary from localstorage - if none, save an empty one - has version check to overwrite old saves
-        $scope.loadReportSummaryFromLocalstorage = function(){
-            var tmpStr = $window.localStorage.getItem('vts_reportsummary_object');
-            if(!tmpStr) tmpStr = "";
-            var tmpObj = {};
-            try{
-                tmpObj = JSON.parse(tmpStr);
-                if(tmpObj.version < $scope.reportSummary.version){ //new version, overwrite the localstorage - could be handled more intelligently
-                    $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary));
-                    growl.warning("Previous report was an older version and has been replaced!");
-                }
-            }catch(failedLoadReportSummary){ //none there, create it
-                $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary));
-                growl.info("New VTS/SRS report has been initialized");
-            }
-            if(tmpObj.version == $scope.reportSummary.version){
-                $scope.reportSummary = tmpObj;
-                growl.success("Previous report has been recreated from cache");
-            }
-        };
-        $scope.loadReportSummaryFromLocalstorage();
-        /** Info regarding localstorage loading
-            Fuel list is populated by ngrepeat - dont look for a function
-            All fields using AIS data
-        **/
 
 
         $scope.aisData = { //data prefetched from AIS - used with MMSI
@@ -1176,12 +1100,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             shortname:"",
             description:"",
         };
-        $scope.selectedCargoSubTypeObject = { //scratchpad SUBTYPE
+        $scope.selectedCargoSubClassObject = { //scratchpad SUBTYPE
             selected: false,
             index:null,
             IMOSubClass:0,
             name:"",
-            shortname:"",
             quantity:0,
             note:"",
             description:"",
@@ -1190,38 +1113,60 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.cargoQuantitySelectedUnitText = "metric tonnes"; //or 'kilograms'
         $scope.cargoQuantitySelectedUnit = "t"; //or 'kg'
         $scope.cargoQuantitySelectedUnitModifier = 1; //defaults as kilo, multiply with this to get tonnes (plz note inversion)
-        // $scope.fuelTypeQuantityInput = "";
-        // $scope.displayFuelSulphurPercentageInput = false;
-        // $scope.setvtsFuelQuantityInputValid = false;
-        // $scope.setvtsFuelSulphurInputValid = false;
         $scope.setvtsAddCargoButtonEnabled = false;
-        // $scope.fuelNoteInput = "";
-        // $scope.currentlySelectedFuelTypeLabel = "";
-        // $scope.fuelTotalTonnageText = "";
         $scope.cargoTypeSelectedText = "";
         $scope.setvtsCargoQuantityInputValid = false;
-
-
         $scope.cargoTypeSelectedIndex = null;
         $scope.cargoSubTypeSelectedIndex = null;
         $scope.cargoTypeSelectedColorClass = "";
         $scope.showCargoSpecification = false;
         $scope.showCargoUnitSelection = false;
+        $scope.cargoTypeMouseOverDisabled = false;
+
+        $scope.cargoManifestEditItemClick = function(index){ //gets the obj of that index and makes it editable
+            $scope.selectedCargoSubClassObject.index = index;
+            $scope.showCargoSpecification = true;
+            var o = $scope.reportSummary.cargoManifest[index];
+            $scope.cargoSubClassQuantityInput = o.quantity;//update UI
+            (o.unit == "t") ? $scope.cargoQuantitySelectedUnitText = "kilograms" : $scope.cargoQuantitySelectedUnitText = "metric tonnes"; //state opposite
+            $scope.VTSCargoUnitInputChange();//update UI
+            $scope.cargoSubClassMouseClick(o,index);
+            $scope.cargoSubClassQuantityInputValidate();//update UI
+        };
+
+        $scope.cargoManifestRemoveItem = function(index){
+            $scope.reportSummary.cargoManifest.splice(index,1); //remove item and update UI
+            if($scope.cargoTypes[0] == "Select a cargo type:") $scope.cargoTypes.splice(0, 1); //remove from default list of cargo types TODO - change this to model from SMA after final conf.
+            if($scope.cargoTypes[0] == "None") $scope.cargoTypes.splice(0, 1); //remove from default list of cargo types TODO - change this to model from SMA after final conf.
+            $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
+            $scope.updateCargoTotalTonnage(); //update total tonnage
+        };
 
         $scope.cargoAddToManifestFunction = function(){
-            if($scope.setvtsAddFuelButtonEnabled){
-                var ix = $scope.currentlySelectedFuel.index; //if index is null, it is added, any index number means it is edited
-                delete $scope.currentlySelectedFuel.index; //remove the index from model
-                if(ix === null){
-                    $scope.reportSummary.fuelManifest.push($scope.currentlySelectedFuel);
-                }else{
-                    $scope.reportSummary.fuelManifest[ix] = $scope.currentlySelectedFuel;
-                }
-                $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
-                $scope.fuelCancelFunction();
-                $scope.vtsFuelSelectedTypeDescriptionText = "";
-                $scope.updateFuelTotalTonnage();
+            var ix = $scope.selectedCargoSubClassObject.index; //if index is null, it is added, any index number means it is being edited
+            delete $scope.selectedCargoSubClassObject.index; //remove the index from model
+            delete $scope.selectedCargoSubClassObject.selected; //remove the selected status from model
+            if(ix === null){
+                $scope.reportSummary.cargoManifest.push($scope.selectedCargoSubClassObject);
+            }else{
+                $scope.reportSummary.cargoManifest[ix] = $scope.selectedCargoSubClassObject;
             }
+            $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
+            $scope.cargoCancelFunction(); //reset the object and interface
+            $scope.updateCargoTotalTonnage();
+        };
+
+        $scope.updateCargoTotalTonnage = function(){
+            var o = $scope.reportSummary.cargoManifest;
+            var totalTonnage = parseFloat(0);
+            for(var i=0;i!=o.length;i++){
+                if(o[i].unit == "t"){
+                    totalTonnage = totalTonnage + parseFloat(o[i].quantity); //tonnes
+                }else{
+                    totalTonnage = totalTonnage + (parseFloat(o[i].quantity)/1000); //kilograms
+                }
+            }
+            $scope.vtsdangerouscargotonnagelabel = totalTonnage.toLocaleString('de-DE'); //out as tonnes, european locale;
         };
 
         $scope.cargoInputKeypress = function(e){ //user hits Enter key - counts as clicking OK
@@ -1234,57 +1179,50 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             var test = VtsHelperService.validateNumber($scope.cargoSubClassQuantityInput, 0, 999999999, 3);
             (test.valid == true) ? $scope.setvtsCargoQuantityInputValid = true : $scope.setvtsCargoQuantityInputValid = false;
             $scope.cargoSubClassQuantityInput = test.val;
-            // $scope.currentlySelectedFuel.quantity = $scope.fuelTypeQuantityInput;
+            $scope.selectedCargoSubClassObject.quantity = test.val;
+
         };
 
         $scope.cargoClassMouseClick = function(object, index){
             $scope.cargoTypeSelectedIndex = index;
             $scope.showCargoSpecification = true;
             $scope.selectedCargoTypeObject = object;
-            console.log("Selected class",object);
-            $scope.$apply; //do or not..
+            if(object.types.length == 1){
+                $scope.cargoSubClassMouseClick(object.types[0],0);
+            }
+            $scope.$apply; //do or not - angular fun.
         };
 
         $scope.cargoSubClassMouseClick = function(object, index){
-            console.log("selectedCargoSubTypeObject.IMOSubClass",$scope.selectedCargoSubTypeObject.IMOSubClass);
-            $scope.selectedCargoSubTypeObject = object;
-            $scope.selectedCargoSubTypeObject.selected = true;
-            $scope.selectedCargoSubTypeObject.index = index;
+            //populate the selected object
+            $scope.selectedCargoSubClassObject.IMOSubClass = object.IMOSubClass;
+            $scope.selectedCargoSubClassObject.name = object.name;
+            $scope.selectedCargoSubClassObject.description = object.description;
+            $scope.selectedCargoSubClassObject.iconimageurl = object.iconimageurl;
+            $scope.selectedCargoSubClassObject.selected = true;
 
+            //update interface
+            $scope.cargoSubTypeSelectedIndex = index;
             $scope.showCargoUnitSelection = true;
             $scope.vtsCargoSelectedSubTypeSelectionText_Subclass_Name = "IMO Class " + object.IMOSubClass + ": " + object.name;
             $scope.vtsCargoSelectedSubTypeSelectionText_Description = object.description;
-
             window.setTimeout(function () { //sets focus on quantity input
                 var el = document.getElementById('vts-cargo-quantity-input');
                 el.focus(); //set focus
                 el.setSelectionRange(0, el.value.length); //select value
             }, 0);
-            console.log("selectedCargoSubTypeObject.IMOSubClass",$scope.selectedCargoSubTypeObject.IMOSubClass);
-
         };
 
         $scope.cargoClassMouseOver = function(str){ //mostly description
             $scope.vtsSelectedCargoClassDescription = str; //can also empty it
         };
         $scope.cargoSubClassMouseOver = function(object){ //shows a description text to user
-            if (!object && $scope.selectedCargoSubTypeObject.index == null) {
+            if (!object && $scope.selectedCargoSubClassObject.selected == false) {
                 $scope.vtsSelectedCargoClassDescription = "";
-            } else if(object && $scope.selectedCargoSubTypeObject.index == null){ //only mouseover if none is actually selected
+            } else if(object && $scope.selectedCargoSubClassObject.selected == false){ //only mouseover if none is actually selected
                 $scope.vtsCargoSelectedSubTypeSelectionText_Subclass_Name = "IMO Class " + object.IMOSubClass + ": " + object.name;
                 $scope.vtsCargoSelectedSubTypeSelectionText_Description = object.description;
             }
-        };
-
-        $scope.VTSDangerousCargoCheckbox = function (check) {
-            if (check == true) {
-                $scope.showCargoSpecification = true;
-                $scope.showCargoContactInformationInput = true;
-            } else {
-                $scope.showCargoSpecification = false;
-                if ($scope.vtsvesselcargotypeholder == "Ballast") $scope.showCargoContactInformationInput = false;
-            }
-            $scope.VTSCargoContactInformationChange();
         };
 
         $scope.clearCargoTypeSelection = function(){
@@ -1294,18 +1232,21 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.cargoTypeSelectedText = "";
             $scope.showCargoSpecification = false; //hide the input overlay
             $scope.vtsCargoSelectedTypeDescriptionText = "";
-            $scope.selectedCargoSubTypeObject.index = null;
+            $scope.selectedCargoSubClassObject.index = null; //selected item fromcargo manifest list
         };
         $scope.clearCargoTypeSelection(); //init
 
         $scope.cargoCancelFunction = function(){ //clears selection, removes input UI, resets object
-            $scope.fuelTypeMouseOverDisabled = false;
+            $scope.cargoSubClassQuantityInput = "";
+            $scope.cargoNoteInput = "";
             $scope.showCargoSpecification = false;
             $scope.cargoTypeSelectedIndex = null;
             $scope.selectedCargoTypeObject = null;
             $scope.cargoSubTypeSelectedIndex = null;
             $scope.showCargoUnitSelection = false;
             $scope.clearCargoTypeSelection(false); // hides overlay
+            $scope.vtsCargoSelectedSubTypeSelectionText_Subclass_Name = "";
+            $scope.vtsCargoSelectedSubTypeSelectionText_Description = "";
             $scope.selectedCargoTypeObject = {
                 selected: false,
                 index:null,
@@ -1317,7 +1258,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 description:"",
                 unit:"t" //defaults tonnes
             };
-            $scope.selectedCargoSubTypeObject = { //scratchpad SUBTYPE
+            $scope.selectedCargoSubClassObject = { //scratchpad SUBTYPE
                 selected: false,
                 index:null,
                 IMOSubClass:0,
@@ -1331,12 +1272,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.cargoTypeQuantityInput = "";
             $scope.cargoNoteInput = "";
             $scope.vtsCargoSelectedTypeDescriptionText = "";
-            // $scope.fuelTypeQuantityInputValidate();
+            $scope.cargoSubClassQuantityInputValidate();
         };
 
-
-        $scope.VTSCargoUnitInputChange = function(){
-            if($scope.cargoQuantitySelectedUnitText == "metric tonnes"){
+        $scope.VTSCargoUnitInputChange = function(unit){
+            if($scope.cargoQuantitySelectedUnitText == "metric tonnes"){ //swap unit
                 $scope.cargoQuantitySelectedUnitText = "kilograms";
                 $scope.cargoQuantitySelectedUnit = "kg";
                 $scope.cargoQuantitySelectedUnitModifier = 1000;
@@ -1345,34 +1285,32 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 $scope.cargoQuantitySelectedUnit = "t";
                 $scope.cargoQuantitySelectedUnitModifier = 1
             }
-            $scope.selectedCargoTypeObject.unit = $scope.cargoQuantitySelectedUnit;
-            $scope.updateSelectedCargoDescriptionText(); //send changes to UI
+            $scope.selectedCargoSubClassObject.unit = $scope.cargoQuantitySelectedUnit;
         };
 
-        $scope.updateSelectedCargoDescriptionText = function(){
-
-            console.log("Need to make function $scope.updateSelectedCargoDescriptionText");
-
+        $scope.VTSDangerousCargoCheckbox = function (check) {
+            if (check == true) {
+                $scope.showCargoTypeFields = true;
+                $scope.showCargoContactInformationInput = true;
+                $scope.showCargoSpecification = false;
+            } else {
+                $scope.showCargoTypeFields = false;
+                if ($scope.selectedCargoType == "Ballast") $scope.showCargoContactInformationInput = false;
+            }
+            $scope.VTSCargoContactInformationChange();
         };
 
 
-        /**  END CARGO INTERFACE  **/
-
-        /** ******************************************************************************************************* **/
-
-
-
-
+        // $scope.selectedCargoType = $scope.reportSummary.cargoType
         $scope.selectVesselCargoChange = function (selectedItem) {
             if (selectedItem != "None" && selectedItem != "Bulk - grain" && selectedItem != "Ballast" && selectedItem != "Passenger" && selectedItem != "Bulk - other than grain"
                 && selectedItem != "Reefer" && selectedItem != "Container/Trailer" && selectedItem != "General Cargo") {
-                $scope.clearHighlightedDangerousCargoTypeSelector();
                 $scope.showCargoTypeFields = true;
                 $scope.cargoAddToManifestDisabled = true;
                 $scope.showCargoTypesCheckbox = true;
                 $scope.vtsDangCargoCheckBoxState = true;
                 $scope.vtsDangCargoCheckDisabled = true; //cannot turn off
-                $scope.showCargoContactInformationInput = true;
+                $scope.showCargoContactInformationInput = true; //contact information only
             } else {
                 $scope.showCargoTypeFields = false;
                 (selectedItem == "None") ? $scope.showCargoTypesCheckbox = false : $scope.showCargoTypesCheckbox = true;
@@ -1384,216 +1322,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                     $scope.showCargoContactInformationInput = true;
                 }
             }
+            $scope.selectedCargoType = selectedItem;
             $scope.setvtsCargoTypeValid = true;
-            $scope.vtsvesselcargotypeholder = selectedItem;
+            $scope.reportSummary.cargoType = selectedItem; //update the report
+            $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
             $scope.VTSCargoContactInformationChange();
             $scope.VTSValidationAllDone();
         };
-
-        // $scope.VTSDangerousCargoCheckbox = function (check) {
-        //     if (check == true) {
-        //         $scope.showCargoSpecification = true;
-        //         // $scope.showCargoTypeFields = true;
-        //         $scope.showCargoContactInformationInput = true;
-        //     } else {
-        //         $scope.showCargoSpecification = false;
-        //         // $scope.showCargoTypeFields = false;
-        //         if ($scope.vtsvesselcargotypeholder == "Ballast") $scope.showCargoContactInformationInput = false;
-        //     }
-        //     $scope.VTSCargoContactInformationChange();
-        // };
-
-        $scope.clearHighlightedDangerousCargoTypeSelector = function () {
-            $scope.dgSelectedType1 = false;
-            $scope.dgSelectedType21 = false;
-            $scope.dgSelectedType22 = false;
-            $scope.dgSelectedType23 = false;
-            $scope.dgSelectedType3 = false;
-            $scope.dgSelectedType41 = false;
-            $scope.dgSelectedType42 = false;
-            $scope.dgSelectedType43 = false;
-            $scope.dgSelectedType51 = false;
-            $scope.dgSelectedType52 = false;
-            $scope.dgSelectedType61 = false;
-            $scope.dgSelectedType62 = false;
-            $scope.dgSelectedType7 = false;
-            $scope.dgSelectedType8 = false;
-            $scope.dgSelectedType9 = false;
-            $scope.vtsdangerouscargotonnageinput = ""; //clear tonnage input
-            $scope.vtsdangerouscargonoteinput = ""; //clear note
-        };
-
-
-        $scope.VTSDangerousCargoTypeSelection = function (number) {
-
-        };
-
-        // $scope.VTSDangerousCargoTypeSelection = function (number) {
-        //     $scope.clearHighlightedDangerousCargoTypeSelector();
-        //     $scope.selectedDangerousCargoType = number;
-        //     $scope.vtsdangerouscargoselectedinput = number;
-        //     $scope.cargoAddToManifestDisabled = false;
-        //
-        //     switch (number) {
-        //         case "": //clear everything
-        //             $scope.vtsSelectedDangerousCargoDescription = "You can now add another entry to the dangerous cargo manifest.";
-        //             $scope.vtsdangerouscargoselectedinput = "";
-        //             $scope.vtsdangerouscargotonnageinput = "";
-        //             $scope.cargoAddToManifestDisabled = true;
-        //             $scope.vtsdangerouscargonoteinput = "";
-        //             break;
-        //         case "1":
-        //             $scope.dgSelectedType1 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Explosives - all types";
-        //             break;
-        //         case "2.1":
-        //             $scope.dgSelectedType21 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Flammable gas";
-        //             break;
-        //         case "2.2":
-        //             $scope.dgSelectedType22 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Non flammable, non poisonous gas or Oxygen";
-        //             break;
-        //         case "2.3":
-        //             $scope.dgSelectedType23 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Poisonous gas";
-        //             break;
-        //         case "3":
-        //             $scope.dgSelectedType3 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Flammable liquid";
-        //             break;
-        //         case "4.1":
-        //             $scope.vtsSelectedDangerousCargoDescription = "Flammable solids or substances - readily combustible";
-        //             $scope.dgSelectedType41 = true;
-        //             break;
-        //         case "4.2":
-        //             $scope.dgSelectedType42 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Flammable solids - spontaneously combustible";
-        //             break;
-        //         case "4.3":
-        //             $scope.dgSelectedType43 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Flammable substances - Dangerous When Wet";
-        //             break;
-        //         case "5.1":
-        //             $scope.dgSelectedType51 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Oxydizing agents";
-        //             break;
-        //         case "5.2":
-        //             $scope.dgSelectedType52 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Organic peroxides";
-        //             break;
-        //         case "6.1":
-        //             $scope.dgSelectedType61 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Toxic substances";
-        //             break;
-        //         case "6.2":
-        //             $scope.dgSelectedType62 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Infectious substances";
-        //             break;
-        //         case "7":
-        //             $scope.dgSelectedType7 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Radioactive substances";
-        //             break;
-        //         case "8":
-        //             $scope.dgSelectedType8 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Corrosive substances";
-        //             break;
-        //         case "9":
-        //             $scope.dgSelectedType9 = true;
-        //             $scope.vtsSelectedDangerousCargoDescription = "Other dangerous or polluting substances";
-        //             break;
-        //     }
-        //
-        //     window.setTimeout(function () { //sets focus on tonnage input
-        //         var el = document.getElementById('vts-cargo-tonnage-input');
-        //         el.focus(); //set focus
-        //         el.setSelectionRange(0, el.value.length); //select value
-        //         $scope.validateDangerousCargoTonnage(); //clears selection when no parameter
-        //     }, 0);
-        //     if (number != "") {
-        //         angular.element(document.querySelector(".vts-cargo-tonnage-input-selector")).addClass("vts-quick-pulse");
-        //         window.setTimeout(function () { //sets focus on tonnage input
-        //             angular.element(document.querySelector(".vts-cargo-tonnage-input-selector")).removeClass("vts-quick-pulse");
-        //         }, 1000);
-        //     }
-        //     ($scope.reportSummary.cargoEntries.length == 0 ) ? $scope.setvtsCargoTonnageValidState = 'invalid' : $scope.setvtsCargoTonnageValidState = 'neutral';
-        //
-        // };
-
-
-        // $scope.validateDangerousCargoTonnage = function () {
-        //     var test = VtsHelperService.validateNumber($scope.vtsdangerouscargotonnageinput, 0, 999999999, 3);
-        //     $scope.vtsdangerouscargotonnageinput = test.val;
-        //     if (test.valid == true) {
-        //         $scope.setvtsCargoTonnageValidState = 'valid';
-        //         $scope.cargoAddToManifestDisabled = false;
-        //     } else {
-        //         $scope.setvtsCargoTonnageValidState = 'invalid';
-        //     }
-        // };
-        //
-        // $scope.cargoRemoveFromManifest = function (number) {
-        //     $scope.reportSummary.cargoEntries.splice(number, 1);
-        //     $scope.cargoAddToManifestListFunction();
-        // };
-        //
-        // $scope.cargoAddToManifestListFunction = function () {
-        //     var tmpArr = $scope.reportSummary.cargoEntries;
-        //     var IMOtypesofDG = "", totalDGTonnage = 0.0;
-        //     for (var i = 0; i != tmpArr.length; i++) {
-        //         IMOtypesofDG += tmpArr[i].imoClass;
-        //         (i == tmpArr.length - 1) ? IMOtypesofDG += "" : IMOtypesofDG += " - ";
-        //         totalDGTonnage += parseFloat(tmpArr[i].tonnage)
-        //
-        //     }
-        //
-        //     $scope.vtsdangerouscargotypeslabel = IMOtypesofDG;
-        //     $scope.vtsdangerouscargotonnagelabel = totalDGTonnage;
-        //
-        //
-        //     //prepare a nice list to display in GUI
-        //     var entries = "";
-        //     for (var i = $scope.reportSummary.cargoEntries.length - 1; i != -1; i--) {
-        //         if ($scope.reportSummary.cargoEntries.length - 1 == i) {
-        //             entries += "<div class='pulse-text-once vts-cargoentry-listitem'>"; //latest one flashes so user sees addition
-        //         } else {
-        //             entries += "<div class='vts-cargoentry-listitem'>";
-        //         }
-        //         var imgName = ""; //add the image - pending on type and animation
-        //         var ics = tmpArr[i].imoClass;
-        //         if (ics == "1" || ics == "2.2" || ics == "9") ics += ".animated";
-        //         imgName = 'img/cargo_labels/dg.' + ics + '.gif';
-        //         entries += "<button class='btn btn-default vts-btn-highlight-danger vts-lesspadding' id='myAnchor'  type='button' ng-click='cargoRemoveFromManifest(\"" + i + "\")' ><i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Remove</button>";
-        //         entries += "&nbsp;<img style='height:26px;' src=" + imgName + ">";
-        //         entries += "&nbsp;<span class='bold vts-force-spacing-100'>" + tmpArr[i].imoClass + "</span> - ";
-        //         entries += "&nbsp;&nbsp;&nbsp;&nbsp;<span class='vts-force-spacing-100'><strong>" + tmpArr[i].tonnage + "</strong> MT</span>";
-        //         //note is not mandatory
-        //         if (tmpArr[i].note && tmpArr[i].note != "" && tmpArr[i].note != "undefined") entries += " - <span class='italic'>" + tmpArr[i].note + "</span>";
-        //         entries += "</div>"; //close it
-        //     }
-        //     $scope.cargoManifestList = entries; //display in GUI using compile directive to allow buttons to work
-        //
-        // };
-        //
-        // $scope.cargoAddToManifestFunction = function () { //adds to the list then calls to update the GUI
-        //     var repEn = {//add to report summary
-        //         imoClass: $scope.vtsdangerouscargoselectedinput,
-        //         tonnage: $scope.vtsdangerouscargotonnageinput + "",
-        //         note: (($scope.vtsdangerouscargonoteinput != "" && typeof $scope.vtsdangerouscargonoteinput !== "undefined") ? ($scope.vtsdangerouscargonoteinput + "") : "")
-        //     };
-        //     $scope.reportSummary.cargoEntries.push(repEn);
-        //     $scope.selectedDangerousCargoType = "";
-        //     $scope.VTSDangerousCargoTypeSelection(""); //clears everything
-        //     $scope.vtsdangerouscargoselectedinput = "";
-        //     window.setTimeout(function () { //sets focus on additional input
-        //         var el = document.getElementById('vts-selected-cargo-input');
-        //         el.focus();
-        //         el.blur();
-        //     }, 500);
-        //     $scope.setvtsCargoTonnageValidState = 'neutral'; // is no longer mandatory
-        //     $scope.cargoAddToManifestListFunction(); //update GUI
-        // };
-        //
 
         $scope.VTSCargoContactInformationChange = function () {
             var input = $scope.vtscargoadditionalcontactdetailsinput;
@@ -1615,10 +1350,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.VTSValidationAllDone();
         };
 
-
         $scope.VTSDangerousCargoContactPhonenumberValidation = function () {
             var input = $scope.vtscargodesignatedpersonashoretelephoneinput;
-            input = input.replace(/[^-+()0-9]/g, '');
+            input = input.replace(/[^-+()0-9 ]/g, '');
             $scope.vtscargodesignatedpersonashoretelephoneinput = input;
             if (input != "" && input.length > 5) {
                 $scope.setvtsvesselDPAPhoneValid = true;
@@ -1639,6 +1373,61 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.VTSValidationAllDone();
         };
 
+        $scope.cargoInputKeyUp = function (evt) {
+            if (evt.keyCode == 13 && !$scope.cargoAddToManifestDisabled) {
+                $scope.cargoAddToManifestFunction();
+            }
+        };
+
+        $scope.cargoManifestItemEditMouseOver = function(index){
+            $scope.setvtsCargoIndexSelected = [];
+            var len = $scope.reportSummary.cargoManifest.length;
+            for(var i=0;i!=len;i++){
+                if(index==i){
+                    $scope.setvtsCargoIndexSelected.push({remove:false,edit:true});
+                }else{
+                    $scope.setvtsCargoIndexSelected.push({remove:false,edit:false});
+                }
+            }
+            $scope.$apply;
+        };
+        $scope.cargoManifestItemRemoveMouseOver = function(index){
+            $scope.setvtsCargoIndexSelected = [];
+            var len = $scope.reportSummary.cargoManifest.length;
+            for(var i=0;i!=len;i++){
+                if(index==i){
+                    $scope.setvtsCargoIndexSelected.push({remove:true,edit:false});
+                    $scope.vtsFuelSelectedTypeDescriptionText = "Click to remove fuel manifest entry.";
+                }else{
+                    $scope.setvtsCargoIndexSelected.push({remove:false,edit:false});
+                }
+            }
+            $scope.$apply;
+        };
+
+        //Initiated after getting localstorage to reportsummary
+        $scope.initCargo = function(){ //gets cargo list from localstorage and sets interface accordingly
+            $scope.selectedCargoType = $scope.reportSummary.cargoType;
+            if($scope.reportSummary.cargoType && $scope.reportSummary.cargoType.length > 2 && $scope.reportSummary.cargoType != "None"){
+                $scope.showCargoTypesCheckbox = true;
+                $scope.vtsDangCargoCheckBoxState = true;
+                $scope.showCargoTypeFields = true;
+                $scope.showCargoSpecification = false;
+                $scope.setvtsCargoTypeValid = true;
+                $scope.cargoTypes.splice(0, 2);
+            }else{
+                $scope.selectedCargoType = "Select a cargo type:";
+            }
+            $scope.updateCargoTotalTonnage(); //update total tonnage
+        };// $scope.initCargo();
+
+
+
+
+        /**  END CARGO INTERFACE  **/
+        /** ******************************************************************************************************* **/
+
+
         $scope.VTSCourseOverGroundValidation = function (validate) { //only appears in UI when using AIS data
             try {
                 var inputStr = $scope.vtsvesselcourseovergroundinput + "";
@@ -1648,6 +1437,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             } catch (donothing_courseoverground) {
             }
         };
+
 
         $scope.VTSVesselPortOfDestinationValidation = function (validate) {
             if ($scope.showPortOfDestination) { //only validate if displayed
@@ -1677,11 +1467,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
 
 
-        $scope.cargoInputKeyUp = function (evt) {
-            if (evt.keyCode == 13 && !$scope.cargoAddToManifestDisabled) {
-                $scope.cargoAddToManifestFunction();
-            }
-        };
 
         $scope.setRouteEtaTimeDatePicker = function(){
             var routeETATime = $scope.detectedRouteETA.substring(14,$scope.detectedRouteETA.length);
@@ -1730,8 +1515,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             }
 
         };
-
-
 
 
         //Change VTS center dropdown **********************************************************************************
@@ -1932,29 +1715,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             //fuel
             $scope.reportSummary.fuelTotalFuel = "" + (parseFloat($scope.vtsTotalFuel)); //all fuel added up
-            // $scope.reportSummary.fuelTypeHFORegular = "" + $scope.vtsvesselfueltype00_0input;
-            // $scope.reportSummary.fuelTypeHFOLowSulphur = "" + $scope.vtsvesselfueltype00_1input;
-            // $scope.reportSummary.fuelTypeHFOUltraLowSulphur = "" + $scope.vtsvesselfueltype00_2input;
-            // $scope.reportSummary.fuelTypeIFORegular = "" + $scope.vtsvesselfueltype01_0input;
-            // $scope.reportSummary.fuelTypeIFOLowSulphur = "" + $scope.vtsvesselfueltype01_1input;
-            // $scope.reportSummary.fuelTypeIFOUltraLowSulphur = "" + $scope.vtsvesselfueltype01_2input;
-            // $scope.reportSummary.fuelTypeMDORegular = "" + $scope.vtsvesselfueltype02_0input;
-            // $scope.reportSummary.fuelTypeMDOLowSulphur = "" + $scope.vtsvesselfueltype02_1input;
-            // $scope.reportSummary.fuelTypeMDOUltraLowSulphur = "" + $scope.vtsvesselfueltype02_2input;
-            // $scope.reportSummary.fuelTypeMGORegular = "" + $scope.vtsvesselfueltype03_0input;
-            // $scope.reportSummary.fuelTypeMGOLowSulphur = "" + $scope.vtsvesselfueltype03_1input;
-            // $scope.reportSummary.fuelTypeMGOUltraLowSulphur = "" + $scope.vtsvesselfueltype03_2input;
-            // $scope.reportSummary.fuelTypeLPG = "" + $scope.vtsvesselfueltype04_0input;
-            // $scope.reportSummary.fuelTypeLNG = "" + $scope.vtsvesselfueltype05_0input;
 
             //cargo
-            $scope.reportSummary.cargoType = $scope.vtsvesselcargotypeholder;
+            // $scope.reportSummary.cargoType = $scope.vtsvesselcargotypeholder;
+            // $scope.reportSummary.cargoManifest = $scope.vtsvesselcargotypeholder;
             $scope.reportSummary.cargoDangerousCargoTotalTonnage = (typeof $scope.vtsdangerouscargotonnagelabel !== "undefined") ? ("" + ($scope.vtsdangerouscargotonnagelabel)) : "";
             if ($scope.reportSummary.vtsdangerouscargotonnagelabel != "" && typeof $scope.vtsdangerouscargotonnagelabel !== "undefined") $scope.reportSummary.cargoDangerousCargoOnBoard = true;
             $scope.reportSummary.cargoIMOClassesOnBoard = "" + ($scope.vtsdangerouscargotypeslabel);
             $scope.reportSummary.cargoPollutantOrDCLostOverBoard = "" + ($scope.vtsdangerouscargooverboard);
             $scope.reportSummary.cargoAdditionalContactInformation = "" + ($scope.vtscargoadditionalcontactdetailsinput);
-
             $scope.reportSummary.cargoDPAName = "" + ($scope.vtscargodesignatedpersonashorenameinput);
             $scope.reportSummary.cargoDPATelephone = "" + ($scope.vtscargodesignatedpersonashoretelephoneinput);
             $scope.reportSummary.cargoDPAEmail = "" + ($scope.vtscargodesignatedpersonashoreemailinput);
@@ -2105,6 +1874,35 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.placeholderAisVesselLatDegrees = "";
             $scope.placeholderAisVesselLatDecimalMinutes = "";
         };
+
+
+
+        //Load the saved reportsummary from localstorage - if none, save an empty one - has version check to overwrite old saves
+        $scope.loadReportSummaryFromLocalstorage = function(){
+            var tmpStr = $window.localStorage.getItem('vts_reportsummary_object');
+            if(!tmpStr) tmpStr = "";
+            var tmpObj = {};
+            try{
+                tmpObj = JSON.parse(tmpStr);
+                if(tmpObj.version < $scope.reportSummary.version){ //new version, overwrite the localstorage - could be handled more intelligently
+                    $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary));
+                    growl.warning("Previous report was an older version and has been replaced!");
+                }
+            }catch(failedLoadReportSummary){ //none there, create it
+                $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary));
+                growl.info("New VTS/SRS report has been initialized");
+            }
+            if(tmpObj.version == $scope.reportSummary.version){
+                $scope.reportSummary = tmpObj;
+                growl.success("Previous report has been recreated from cache");
+                setTimeout(function(){ $scope.initCargo() }, 500); //race condition
+            }
+        };
+        $scope.loadReportSummaryFromLocalstorage();
+        /** Info regarding localstorage loading
+         Fuel list is populated by ngrepeat - dont look for a function
+         All fields using AIS data
+         **/
 
 
         /**  POPUP  **/
