@@ -344,7 +344,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 8,
                         name: "Corrosives",
                         description: "All corrosive materials, acidic or basic. ",
-                        iconimageurl: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.8.gif"
                     }
                 ]
             },
@@ -357,7 +357,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         IMOSubClass: 9,
                         name: "Miscellaneous hazardous materials",
                         description: "Any hazardous material which cannot be classified under classes 1 to 8 and their subclasses. ",
-                        iconimageurl: "img/cargo_labels/dg.1.1.gif"
+                        iconimageurl: "img/cargo_labels/dg.9.0.1.gif"
                     }
                 ]
             }
@@ -404,17 +404,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
          RoRo 1.7803 (roll on roll off)
          *********************************
          */
-
-
-        // $scope.fuelTypes = [
-        //     {name: "HFO", description: "Heavy Fuel Oil"},
-        //     {name: "IFO", description: "Intermediate Fuel Oil"},
-        //     {name: "MDO", description: "Marine Diesel Oil"},
-        //     {name: "MGO", description: "Marine Gas Oil"},
-        //     {name: "LPG", description: "Liquid Petroleum Gas"},
-        //     {name: "LNG", description: "Liquid Natural Gas"},
-        //     {name: "Other", description: ""}
-        // ];
 
         //displays as vessel type input but is really a cargo definition
         $scope.cargoTypes = ["Select a cargo type:", "None", "Ballast", "Bulk - grain", "Bulk - other than grain", "Chemicals", "Container/Trailer", "General Cargo", "Gas", "Oil", "Passenger", "Reefer", "Other"];
@@ -1140,6 +1129,10 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             if($scope.cargoTypes[0] == "None") $scope.cargoTypes.splice(0, 1); //remove from default list of cargo types TODO - change this to model from SMA after final conf.
             $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
             $scope.updateCargoTotalTonnage(); //update total tonnage
+            if($scope.reportSummary.fuelManifest.length === 0){
+                $scope.vtsDangCargoCheckDisabled = false;
+                $scope.cargoManifestItemRemoveMouseOver();
+            }
         };
 
         $scope.cargoAddToManifestFunction = function(){
@@ -1151,6 +1144,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             }else{
                 $scope.reportSummary.cargoManifest[ix] = $scope.selectedCargoSubClassObject;
             }
+            $scope.vtsDangCargoCheckDisabled = true; //cannot remove check if there is cargo
             $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
             $scope.cargoCancelFunction(); //reset the object and interface
             $scope.updateCargoTotalTonnage();
@@ -1159,14 +1153,21 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.updateCargoTotalTonnage = function(){
             var o = $scope.reportSummary.cargoManifest;
             var totalTonnage = parseFloat(0);
+            var imoClasses = "", cd = ", ";
             for(var i=0;i!=o.length;i++){
                 if(o[i].unit == "t"){
                     totalTonnage = totalTonnage + parseFloat(o[i].quantity); //tonnes
                 }else{
                     totalTonnage = totalTonnage + (parseFloat(o[i].quantity)/1000); //kilograms
                 }
+                (imoClasses.length === 0) ? cd = "" : cd = " - "; //dash added or not
+                imoClasses = imoClasses + cd + o[i].IMOSubClass;
             }
+
+            //total tonnage
             $scope.vtsdangerouscargotonnagelabel = totalTonnage.toLocaleString('de-DE'); //out as tonnes, european locale;
+            //types of IMO classes in a CSV
+            $scope.vtsdangerouscargotypeslabel =  imoClasses;
         };
 
         $scope.cargoInputKeypress = function(e){ //user hits Enter key - counts as clicking OK
@@ -1312,14 +1313,26 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 $scope.vtsDangCargoCheckDisabled = true; //cannot turn off
                 $scope.showCargoContactInformationInput = true; //contact information only
             } else {
-                $scope.showCargoTypeFields = false;
                 (selectedItem == "None") ? $scope.showCargoTypesCheckbox = false : $scope.showCargoTypesCheckbox = true;
                 $scope.vtsDangCargoCheckBoxState = false;
                 $scope.vtsDangCargoCheckDisabled = false;
                 if ((selectedItem == "None" || selectedItem == "Ballast")) {
                     $scope.showCargoContactInformationInput = false;
+                    $scope.vtsDangCargoCheckBoxState = true;
+                    if($scope.reportSummary.cargoManifest.length === 0){
+                        $scope.showCargoTypeFields = false;
+                        $scope.vtsDangCargoCheckDisabled = false;
+                        $scope.showCargoContactInformationInput = false;
+                    }else{
+                        $scope.showCargoTypeFields = true;
+                        $scope.vtsDangCargoCheckDisabled = true;
+                        $scope.showCargoContactInformationInput = true;
+                    }
                 } else {
                     $scope.showCargoContactInformationInput = true;
+                    $scope.vtsDangCargoCheckDisabled = false;
+                    $scope.vtsDangCargoCheckBoxState = false;
+                    $scope.showCargoTypeFields = true;
                 }
             }
             $scope.selectedCargoType = selectedItem;
@@ -1399,7 +1412,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                     $scope.setvtsCargoIndexSelected.push({remove:true,edit:false});
                     $scope.vtsFuelSelectedTypeDescriptionText = "Click to remove fuel manifest entry.";
                 }else{
-                    $scope.setvtsCargoIndexSelected.push({remove:false,edit:false});
+                    $scope.setvtsCargoIndexSelected.push({remove:false,edit:false}); //index can be null
                 }
             }
             $scope.$apply;
@@ -1409,18 +1422,100 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.initCargo = function(){ //gets cargo list from localstorage and sets interface accordingly
             $scope.selectedCargoType = $scope.reportSummary.cargoType;
             if($scope.reportSummary.cargoType && $scope.reportSummary.cargoType.length > 2 && $scope.reportSummary.cargoType != "None"){
-                $scope.showCargoTypesCheckbox = true;
-                $scope.vtsDangCargoCheckBoxState = true;
-                $scope.showCargoTypeFields = true;
-                $scope.showCargoSpecification = false;
                 $scope.setvtsCargoTypeValid = true;
                 $scope.cargoTypes.splice(0, 2);
             }else{
                 $scope.selectedCargoType = "Select a cargo type:";
             }
+            $scope.selectVesselCargoChange($scope.reportSummary.cargoType);
+            if($scope.reportSummary.cargoManifest.length > 0 ){
+                $scope.showCargoContactInformationInput = true;
+                $scope.showCargoTypeFields = true;
+                $scope.showCargoSpecification = false;
+                $scope.vtsDangCargoCheckBoxState = true;
+                $scope.vtsDangCargoCheckDisabled = true;
+            }
             $scope.updateCargoTotalTonnage(); //update total tonnage
         };// $scope.initCargo();
 
+
+
+
+        $scope.testreport = {
+            Cargo:[
+                {
+                    Class:3,Quantity:0,Unit:"kg"
+                },
+                {
+                    Class:8,
+                    Quantity:0,
+                    Unit:"kg"
+                },
+                {
+                    Class:9,
+                    Quantity:12904,
+                    Unit:"kg"
+                }
+            ],
+            Bunker:[
+                {
+                    Type:"MDO",
+                    Quantity:324
+                },
+                {
+                    Type:"MGO",
+                    Quantity:183
+                }
+            ],
+            ShipName:"BW-TEST",
+            Callsign:"YOLO",
+            MMSI:"266262000",
+            IMO:"9010163",
+            ccMail:"cc@swag.com",
+            vesselEmail:"yolo@swag.com",
+            Email:"",
+            Phone:"+12345678",
+            Name:"Joe Dirt",
+            Draught:6.9,
+            AirDraught:40,
+            PersonsOnboard:183,
+            Destination:"Travemünde",
+            Route1:"F - Flintrännan",
+            CargoType:"Passenger",
+            DangerousCargoOnboard:true,
+            EtaSoundRep:"2018-03-14T15:00:00.000Z"
+        };
+
+        //sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE")
+        $scope.sendReport = function (endpoint, method, type, centername, content) { //type= 'application/text' or json
+            $http({
+                // url: endpoint,
+                // method: method, //POST, GET etc.
+                // data: data,
+                // headers: {'Content-Type': type}
+                // url: 'http://e2-demoapi.azurewebsites.net/api/input',
+                // method: "POST", //POST, GET etc.
+                // data: $scope.testreport,
+                // headers: {'Content-Type': 'application/json'}
+                // url: 'https://httpbin.org/post',
+                // dataType: 'json',
+                url: 'http://e2-demoapi.azurewebsites.net/api/input',
+                method: "POST", //POST, GET etc.
+                data: JSON.stringify({bob:"yolo"}),
+                headers: {'Content-Type': 'application/json'}
+
+            })
+                .then(function (data) {
+                        var parsedData = JSON.parse(JSON.stringify(data));
+                        growl.success("Report was sent to " + centername);
+                    },
+                    function (data) { // error
+                        console.log(data);
+                        growl.error("An error occurred while trying to send report to " + centername);
+                    });
+
+        }();
+        // $scope.sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE", $scope.testreport)();
 
 
 

@@ -72,15 +72,6 @@
                 <span class="bold">Fax:</span>
                 <span>{{VtsDataFax}}</span>
             </div>
-
-
-
-            <!--$scope.VtsDataEmail = VTSData[vtsID].email;-->
-            <!--$scope.VtsDataTelephone = VTSData[vtsID].telephone1;-->
-            <!--$scope.VtsDataTelephon2 = VTSData[vtsID].telephone2;-->
-            <!--$scope.VtsDataFax = VTSData[vtsID].fax;-->
-
-
         </div>
 
         <!-- VTS AREA MINIMAP -->
@@ -516,7 +507,7 @@
                         </div>
 
                         <!-- CARGO MANIFEST LIST -->
-                        <hr class="vts-hr-seperator" >
+                        <hr class="vts-hr-seperator" ng-show="reportSummary.cargoManifest.length > 0">
                         <div class="cargo-cargo-manifest-list" style="position: relative;">
                             <div class=""  ng-repeat="f in reportSummary.cargoManifest track by $index" >
                                 <div style="display:inline-block;width:36px;">
@@ -546,14 +537,15 @@
                 </div>
             </div>
 
-
-        <div  ng-show="showCargoTypeFields">
-
+        <div ng-show="showCargoTypeFields">
             <!-- Dangerous cargo classes on board and total tonnage -->
             <div class="vts-pad-top " >
                 <div class="" >
-                    <div class=" vts-pad-top">IMO classes of dangerous cargo on board: <strong>{{vtsdangerouscargotypeslabel}}</strong></div>
-                    <div class=" vts-pad-top">Total tonnage of dangerous cargo on board: <strong>{{vtsdangerouscargotonnagelabel}}</strong></div>
+                    <div ng-show="reportSummary.cargoManifest.length > 0" class="vts-pad-top">IMO classes of dangerous cargo on board: <strong>{{vtsdangerouscargotypeslabel}}</strong></div>
+                    <div ng-show="reportSummary.cargoManifest.length > 0" class="vts-pad-top">Total tonnage of dangerous cargo on board: <strong>{{vtsdangerouscargotonnagelabel}}</strong> metric tonnes.</div>
+                    <div class="vts-pad-top">More information on dangerous cargo can be found at: <a href="http://www.unece.org/trans/danger/publi/unrec/rev18/18files_e.html" target="_blank">unece.org</a>
+                        &nbsp;<abbr style="top:3px"  data-title="This link opens a new window to unece.org. Please contact {{VTSSelectedTrafficCenterShortname}} as soon as possible if you are in doubt." class="glyphicon glyphicon-question-sign vts-warning-abbr"></abbr>
+                    </div>
                 </div>
             </div>
 
@@ -582,22 +574,14 @@
                     <textarea class="vts-textarea-large" ng-model="vtscargoadditionalcontactdetailsinput"  ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselContactDetailsValid]" ng-change="VTSCargoContactInformationChange()"></textarea>
                 </div>
                 <br>
+
+                <hr class="vts-hr-seperator" >
+
                 <div class="vts-force-spacing-350 vts-pad-top" >
                     <span >Pollution or dangerous cargo lost overboard:</span>
                     <textarea class="vts-textarea-large" ng-model="vtsdangerouscargooverboard" placeholder="Please describe the pollutant and where it was lost. Any additional information may be of great value."></textarea>
                 </div>
             </div>
-
-
-
-
-            <!--<div class="vts-force-spacing-300 vts-pad-top">-->
-                <!--<span class="vts-force-spacing-300">SafeSeaNet manifest reference:</span>-->
-                <!--<input class="vts-input-standard" type="text" ng-model="vtsvesselcargossnidinput" ng-change="selectVesselSSNIDChange()" >-->
-            <!--</div>-->
-
-
-            <!--ng-show="showCargoTypeFields"-->
         </div>
 
         <hr class="vts-hr"> <!-- VOYAGE INFORMATION ------------------------------------------------------------------- -->

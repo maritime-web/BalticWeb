@@ -9,8 +9,8 @@
  *
  * **/
 
-angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
-    function ($window) {
+angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window', '$http', 'growl',
+    function ($window, $http, growl) {
 
 
         this.showVtsCenterSelect = false; //app.ctrl needs to force the select hidden/shown
