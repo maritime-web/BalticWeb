@@ -494,7 +494,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         $scope.reportSummary = { //what is sent to the VTS
 
-            version: 9, //increments of 1
+            version: 10, //increments of 1
             vtsShortName: "",
             vtsCallSign: "",
             vtsEmail: "",
@@ -561,10 +561,17 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.aisdataReady = false;
 
 
-            //test if all items check out, then display "SEND" button
-        $scope.VTSValidationAllDone = function () {
 
-            console.log("Make check if fuel types is required, $scope.reportSummary.fuelManifest must have at least 1 entry ");
+        $scope.VTSValidationAllDone = function () { //test if all items check out, then display "SEND" button
+            //grouped valid states to make easier debug
+            var group1valid = false,
+                group2valid = false,
+                group3valid = false,
+                group4valid = false, //fuel
+                group5valid = false, //cargo
+                group6valid = false, //cargo contact information
+                group7valid = false,
+                group8valid = false;
 
             //Validation exceptions for not required fields
             if (!VTSData[$scope.VTSID].showMaxDraught) $scope.setvtsvesselDraughtValid = true;
@@ -572,49 +579,48 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             if (!VTSData[$scope.VTSID].showDeadWeightTonnage) $scope.setvtsvesselDeadWeightValid = true;
             if (!VTSData[$scope.VTSID].showVesselType) $scope.setvtsVesselTypeValid = true;
             if (!VTSData[$scope.VTSID].showVesselLength) $scope.setvtsVesselLengthValid = true;
-            if (!VTSData[$scope.VTSID].showFuelDetails) $scope.fuelDetailsValid = true;
+            if (!VTSData[$scope.VTSID].showFuelDetails) group4valid = true;
             if (!$scope.showCourseOverGround) $scope.courseOverGroundValid = true;
-
             if (!$scope.showPortOfDestination) $scope.setvtsvesselPortOfDestinationValid = true;
+            if (!$scope.showCargoContactInformationInput) $scope.setvtsvesselContactDetailsValid = true;
 
-            //exception for cargo information - subject to change
-            // if($scope.showCargoContactInformationInput == false) $scope.setvtsvesselContactDetailsValid = true;
-
-            //grouped valid states to make easier debug
-            var group1valid = false,
-                group2valid = false,
-                group3valid = false,
-                group4valid = false,
-                group5valid = true, //position not mandatory but subject to change
-                group6valid = true, //position not mandatory but subject to change
-                group7valid = true,
-                group8valid = false;
-
-
+            //GROUP 1 ----------------------------------------------------------------------------------------------------------
             if ($scope.setvtsvesselnameValid && $scope.setvtsvesselcallsignValid && $scope.setvtsvesselMMSIValid) group1valid = true;
-
+            //GROUP 2 ----------------------------------------------------------------------------------------------------------
             if ($scope.setvtsvesselIMOValid && $scope.setvtsvesselDraughtValid && $scope.setvtsvesselAirDraughtValid) group2valid = true;
-
+            //GROUP 3 ----------------------------------------------------------------------------------------------------------
             if ($scope.setvtsvesselPersonsValid && $scope.setvtsVesselTypeValid && $scope.setvtsVesselLengthValid) group3valid = true;
-
-            if ($scope.fuelDetailsValid && $scope.setvtsCargoTypeValid) group4valid = true;
-            // if($scope.setvtsvesselPosLonDegreesValid && $scope.setvtsvesselPosLatDegreesValid) group5valid = true; //position not mandatory but subject to change
-            // if($scope.setvtsvesselPosLonMinutesValid && $scope.setvtsvesselPosLatMinutesValid) group6valid = true;
+            //GROUP 4 ----------------------------------------------------------------------------------------------------------
+            if(VTSData[$scope.VTSID].showFuelDetails && $scope.reportSummary.fuelManifest.length > 0 ) group4valid = true;
+            //GROUP 5 ----------------------------------------------------------------------------------------------------------
+            if($scope.reportSummary.cargoManifest.length > 0 && $scope.vtsDangCargoCheckBoxState == true){
+                $scope.setvtsCargoTypeValid = true;
+                group5valid = true;
+            }else if($scope.reportSummary.cargoManifest.length == 0 && $scope.vtsDangCargoCheckBoxState == false){
+                group5valid = true;
+            }
+            //GROUP 6 ----------------------------------------------------------------------------------------------------------
+            if(group5valid){
+                if($scope.setvtsvesselDPANameValid && $scope.setvtsvesselDPAPhoneValid && $scope.setvtsvesselDPAEmailValid){
+                    group6valid = true;
+                }
+            }
+            //GROUP 7 ----------------------------------------------------------------------------------------------------------
             console.log("Port of Destination must be added and validated!");
             if ($scope.setvtsvesselPortOfDestinationValid) group7valid = true;
-            // if ($scope.setvtsvesselSpeedValid && $scope.setvtsvesselPortOfDestinationValid) group7valid = true;
+            //GROUP 8 ----------------------------------------------------------------------------------------------------------
             if ($scope.setvtsvesseletaTimeDateValid) group8valid = true;
 
+
             VtsHelperService.displayTotalSumOfBytesInLocalStorage(); //debugmode must be enabled
-            console.log("validating..");
             if (group1valid) console.log("group1valid", group1valid);
             if (group2valid) console.log("group2valid", group2valid);
             if (group3valid) console.log("group3valid", group3valid);
-            if (group4valid) console.log("group4valid", group4valid);
-            if (group5valid) console.log("group5valid", group5valid);
-            if (group6valid) console.log("group6valid", group6valid);
+            if (group4valid) console.log("group4valid - fuel", group4valid);
+            if (group5valid) console.log("group5valid - cargo", group5valid);
+            if (group6valid) console.log("group6valid - cargo contact", group6valid);
             if (group7valid) console.log("group7valid", group7valid);
-            if (group8valid) console.log("group8valid", group8valid);
+            if (group8valid) console.log("group8valid - ETA", group8valid);
 
             if (group1valid == false || group2valid == false || group3valid == false || group4valid == false || group5valid == false || group6valid == false || group7valid == false || group8valid == false) {
                 $scope.VTSReadyToSend = false;
@@ -623,9 +629,23 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                     $scope.VTSReadyToSend = true;
                 }
             }
-            // console.log("VTSReadyToSend", $scope.VTSReadyToSend);
 
-            //TODO: Should always save the latest validated form in localstorage
+
+            $scope.reportSummary.vesselName = "" + $scope.vtsvesselnameinput;
+            $scope.reportSummary.vesselCallSign = "" + $scope.vtsvesselcallsigninput;
+            $scope.reportSummary.vesselMMSI = "" + $scope.vtsvesselmmsiinput;
+            $scope.reportSummary.vesselIMO = "" + $scope.vtsvesselimoinput;
+            $scope.reportSummary.vesselDraught = "" + $scope.vtsvesseldraughtinput;
+            $scope.reportSummary.vesselAirDraught = "" + $scope.vtsvesselairdraughtinput;
+            $scope.reportSummary.vesselPersonsOnboard = "" + $scope.vtsvesselpersonsinput;
+            $scope.reportSummary.vesselLength = "" + $scope.vtsvessellengthinput;
+            $scope.reportSummary.vesselDeadWeight = "" + $scope.vtsvesseldeadweightinput;
+            $scope.reportSummary.vesselGRT = "" + $scope.vtsvesselgrosstonnageinput;
+            $scope.reportSummary.vesselDefects = "" + $scope.vtsvesseldefectsinput;
+            $scope.reportSummary.vesselType = "" + $scope.vtsvesseltypeholder;
+
+            $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
+            console.log("Saved to localstorage!:",$scope.reportSummary.vesselCallSign);
         };
 
         $scope.displayVtsCenterData = false;
@@ -706,13 +726,25 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         //length greater than 1
         $scope.VTSVesselNameValidation = function (validate) {
-            ($scope.vtsvesselnameinput.length > 1) ? $scope.setvtsvesselnameValid = true : $scope.setvtsvesselnameValid = false;
+            if($scope.vtsvesselnameinput.length > 1){
+                $scope.setvtsvesselnameValid = true;
+                $scope.reportSummary.vesselName = $scope.vtsvesselnameinput;
+            }else{
+                $scope.setvtsvesselnameValid = false;
+                $scope.reportSummary.vesselName = "";
+            }
             if (validate) $scope.VTSValidationAllDone(); //If all done, display send button
         };
 
         //length greater than 1
         $scope.VTSVesselCallsignValidation = function (validate) {
-            ($scope.vtsvesselcallsigninput.length > 1) ? $scope.setvtsvesselcallsignValid = true : $scope.setvtsvesselcallsignValid = false;
+            if($scope.vtsvesselcallsigninput.length > 1){
+                $scope.setvtsvesselcallsignValid = true;
+                $scope.reportSummary.vtsCallSign = $scope.vtsvesselcallsigninput;
+            }else{
+                $scope.setvtsvesselcallsignValid = false;
+                $scope.reportSummary.vtsCallSign = "";
+            }
             if (validate) $scope.VTSValidationAllDone();
         };
 
@@ -721,11 +753,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             var input = $scope.vtsvesselmmsiinput;
             if (input.length == 9) {
                 $scope.setvtsvesselMMSIValid = true;
+                $scope.reportSummary.vesselMMSI = $scope.vtsvesselmmsiinput;
                 $scope.getAisDataByMmsi(); //fetches data, loads into placeholders, but does not populate
             } else if (input.length > 9) {
                 input = input.substring(0, 9);
             } else {
                 $scope.setvtsvesselMMSIValid = false;
+                $scope.reportSummary.vesselMMSI = "";
                 $scope.aisdataReady = false;
                 $scope.clearAISPlaceholders();
             }
@@ -791,13 +825,13 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         };
 
         //minimum 1 person on board
-        $scope.VTSVesselPersonsValidation = function () {
+        $scope.VTSVesselPersonsValidation = function (validate) {
             var persons = $scope.vtsvesselpersonsinput;
             persons = persons.toString().replace(/\D/g, '');
             if (persons.length > 5) persons = persons.substring(0, 5);
             (parseInt(persons) > 0) ? $scope.setvtsvesselPersonsValid = true : $scope.setvtsvesselPersonsValid = false;
             $scope.vtsvesselpersonsinput = persons; //send cleaned to input field
-            $scope.VTSValidationAllDone();
+            if (validate) $scope.VTSValidationAllDone();
         };
 
         $scope.selectVesselTypeChange = function (selectedItem) {
@@ -1163,11 +1197,15 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 (imoClasses.length === 0) ? cd = "" : cd = " - "; //dash added or not
                 imoClasses = imoClasses + cd + o[i].IMOSubClass;
             }
-
             //total tonnage
             $scope.vtsdangerouscargotonnagelabel = totalTonnage.toLocaleString('de-DE'); //out as tonnes, european locale;
+            $scope.reportSummary.cargoDangerousCargoTotalTonnage = $scope.vtsdangerouscargotonnagelabel;
+            //dangerous cargo on board?
+            (totalTonnage > 0.0) ? $scope.reportSummary.cargoDangerousCargoOnBoard = true : $scope.reportSummary.cargoDangerousCargoOnBoard = false;
             //types of IMO classes in a CSV
             $scope.vtsdangerouscargotypeslabel =  imoClasses;
+            $scope.reportSummary.cargoIMOClassesOnBoard = imoClasses;
+            $scope.VTSValidationAllDone();
         };
 
         $scope.cargoInputKeypress = function(e){ //user hits Enter key - counts as clicking OK
@@ -1323,6 +1361,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                         $scope.showCargoTypeFields = false;
                         $scope.vtsDangCargoCheckDisabled = false;
                         $scope.showCargoContactInformationInput = false;
+                        $scope.vtsDangCargoCheckBoxState = false;
                     }else{
                         $scope.showCargoTypeFields = true;
                         $scope.vtsDangCargoCheckDisabled = true;
@@ -1357,6 +1396,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             var input = $scope.vtscargodesignatedpersonashorenameinput;
             if (input != "" && input.length > 5) {
                 $scope.setvtsvesselDPANameValid = true;
+                $scope.reportSummary.cargoDPAName = input;
             } else {
                 $scope.setvtsvesselDPANameValid = false;
             }
@@ -1369,6 +1409,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.vtscargodesignatedpersonashoretelephoneinput = input;
             if (input != "" && input.length > 5) {
                 $scope.setvtsvesselDPAPhoneValid = true;
+                $scope.reportSummary.cargoDPATelephone = input;
             } else {
                 $scope.setvtsvesselDPAPhoneValid = false;
             }
@@ -1379,7 +1420,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             var input = $scope.vtscargodesignatedpersonashoreemailinput;
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if (input != "" && input.length > 5) {
-                (re.test(input)) ? $scope.setvtsvesselDPAEmailValid = true : $scope.setvtsvesselDPAEmailValid = false;
+                if(re.test(input)){
+                    $scope.setvtsvesselDPAEmailValid = true
+                    $scope.reportSummary.cargoDPAEmail = input;
+                }else{
+                    $scope.setvtsvesselDPAEmailValid = false;
+                }
             } else {
                 $scope.setvtsvesselDPAEmailValid = false;
             }
@@ -1501,7 +1547,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 // dataType: 'json',
                 url: 'http://e2-demoapi.azurewebsites.net/api/input',
                 method: "POST", //POST, GET etc.
-                data: JSON.stringify({bob:"yolo"}),
+                data: JSON.stringify($scope.testreport),
                 headers: {'Content-Type': 'application/json'}
 
             })
@@ -1515,7 +1561,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                     });
 
         }();
-        // $scope.sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE", $scope.testreport)();
+        // // $scope.sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE", $scope.testreport)();
 
 
 
@@ -1538,7 +1584,12 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             if ($scope.showPortOfDestination) { //only validate if displayed
                 $scope.showPortOfDestinationEta = true;
                 var input = $scope.vtsvesselportofdestinationinput;
-                (input != "" && input.length > 2) ? $scope.setvtsvesselPortOfDestinationValid = true : $scope.setvtsvesselPortOfDestinationValid = false;
+                if(input != "" && input.length > 2) {
+                    $scope.setvtsvesselPortOfDestinationValid = true;
+                    $scope.reportSummary.voyagePortOfDestination = input;
+                }else{
+                    $scope.setvtsvesselPortOfDestinationValid = false;
+                }
                 if (validate) $scope.VTSValidationAllDone();
             } else {
                 $scope.showPortOfDestinationEta = false;
@@ -1814,43 +1865,43 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             //cargo
             // $scope.reportSummary.cargoType = $scope.vtsvesselcargotypeholder;
             // $scope.reportSummary.cargoManifest = $scope.vtsvesselcargotypeholder;
-            $scope.reportSummary.cargoDangerousCargoTotalTonnage = (typeof $scope.vtsdangerouscargotonnagelabel !== "undefined") ? ("" + ($scope.vtsdangerouscargotonnagelabel)) : "";
-            if ($scope.reportSummary.vtsdangerouscargotonnagelabel != "" && typeof $scope.vtsdangerouscargotonnagelabel !== "undefined") $scope.reportSummary.cargoDangerousCargoOnBoard = true;
-            $scope.reportSummary.cargoIMOClassesOnBoard = "" + ($scope.vtsdangerouscargotypeslabel);
+            // $scope.reportSummary.cargoDangerousCargoTotalTonnage = (typeof $scope.vtsdangerouscargotonnagelabel !== "undefined") ? ("" + ($scope.vtsdangerouscargotonnagelabel)) : "";
+            // if ($scope.reportSummary.vtsdangerouscargotonnagelabel != "" && typeof $scope.vtsdangerouscargotonnagelabel !== "undefined") $scope.reportSummary.cargoDangerousCargoOnBoard = true;
+            // $scope.reportSummary.cargoIMOClassesOnBoard = "" + ($scope.vtsdangerouscargotypeslabel);
             $scope.reportSummary.cargoPollutantOrDCLostOverBoard = "" + ($scope.vtsdangerouscargooverboard);
             $scope.reportSummary.cargoAdditionalContactInformation = "" + ($scope.vtscargoadditionalcontactdetailsinput);
-            $scope.reportSummary.cargoDPAName = "" + ($scope.vtscargodesignatedpersonashorenameinput);
-            $scope.reportSummary.cargoDPATelephone = "" + ($scope.vtscargodesignatedpersonashoretelephoneinput);
-            $scope.reportSummary.cargoDPAEmail = "" + ($scope.vtscargodesignatedpersonashoreemailinput);
+            // $scope.reportSummary.cargoDPAName = "" + ($scope.vtscargodesignatedpersonashorenameinput);
+            // $scope.reportSummary.cargoDPATelephone = "" + ($scope.vtscargodesignatedpersonashoretelephoneinput);
+            // $scope.reportSummary.cargoDPAEmail = "" + ($scope.vtscargodesignatedpersonashoreemailinput);
 
             //voyage info
             // $scope.reportSummary.voyagePositionLon = "" + ($scope.vtsvesselposlondegreesinput + "," + $scope.vtsvesselposlonminutesinput);
             // $scope.reportSummary.voyagePositionLat = "" + ($scope.vtsvesselposlatdegreesinput + "," + $scope.vtsvesselposlatminutesinput);
-            $scope.reportSummary.voyageSpeed = "" + (parseFloat($scope.vtsvesselspeedinput));
-            $scope.reportSummary.voyagePortOfDestination = "" + ($scope.vtsvesselportofdestinationinput);
+            // $scope.reportSummary.voyageSpeed = "" + (parseFloat($scope.vtsvesselspeedinput));
+            // $scope.reportSummary.voyagePortOfDestination = "" + ($scope.vtsvesselportofdestinationinput);
             ($scope.showPortOfDestinationEta) ? $scope.reportSummary.voyagePortOfDestinationEta = "" + ($scope.vtsvesselportofdestinationetalabel) : ""; //only if used AIS data
             $scope.reportSummary.voyageVTSETADateTime = "" + ($scope.vtsLocalDate + " - " + $scope.vtsUtcTime);
 
-
             // debug
             console.log("VTS REPORT:", $scope.reportSummary);
+            growl.success("VTS report could successfully be sent to " + $scope.reportSummary.vtsShortName + "!");
             // console.log("post:"+JSON.stringify($scope.reportSummary)); //debug
             //Send form endpoint *************************************************************************************
-            $http({
-                url: '/rest/vtsemail',
-                method: "POST",
-                data: JSON.stringify($scope.reportSummary),
-                headers: {'Content-Type': 'application/json'}
-            })
-                .then(function (data) {
-                        console.log("JSON string sent", JSON.stringify(data)); //used for debug
-                        $uibModalInstance.close('forceclose', 'forceclose'); //close VTS interface
-                        growl.success("VTS report was successfully sent to " + $scope.reportSummary.vtsShortName + "!");
-                    },
-                    function (data) { // optional
-                        console.log(data);
-                        alert("Your report could not be sent. Please check your internet connection and try again.\nIf this message persists with an established internet connection, please contact the Department of E-Navigation: sfs@dma.dk");
-                    });
+            // $http({
+            //     url: '/rest/vtsemail',
+            //     method: "POST",
+            //     data: JSON.stringify($scope.reportSummary),
+            //     headers: {'Content-Type': 'application/json'}
+            // })
+            //     .then(function (data) {
+            //             console.log("JSON string sent", JSON.stringify(data)); //used for debug
+            //             $uibModalInstance.close('forceclose', 'forceclose'); //close VTS interface
+            //             growl.success("VTS report was successfully sent to " + $scope.reportSummary.vtsShortName + "!");
+            //         },
+            //         function (data) { // optional
+            //             console.log(data);
+            //             alert("Your report could not be sent. Please check your internet connection and try again.\nIf this message persists with an established internet connection, please contact the Department of E-Navigation: sfs@dma.dk");
+            //         });
         };
 
         $scope.populateInputsWithAisData = function () { //only populates empty fields
@@ -1875,7 +1926,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 $scope.showPortOfDestinationEta = false;
             }
 
-            if ($scope.vtsvesseldraughtinput == "") $scope.vtsvesseldraughtinput = $scope.aisData.vesselDraught;
+            if ($scope.vtsvesseldraughtinput == "" || $scope.vtsvesseldraughtinput == null) $scope.vtsvesseldraughtinput = $scope.aisData.vesselDraught;
             if ($scope.aisData.vesselDraught != "") $scope.VTSVesselDraughtValidation(false);
 
             if ($scope.vtsvessellengthinput == "") $scope.vtsvessellengthinput = $scope.aisData.vesselLength;
@@ -1991,6 +2042,27 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 $scope.reportSummary = tmpObj;
                 growl.success("Previous report has been recreated from cache");
                 setTimeout(function(){ $scope.initCargo() }, 500); //race condition
+
+                $scope.vtsvesselnameinput = $scope.reportSummary.vesselName;
+                $scope.vtsvesselcallsigninput = $scope.reportSummary.vesselCallSign;
+                $scope.vtsvesselimoinput = $scope.reportSummary.vesselIMO;
+                $scope.vtsvesselairdraughtinput = $scope.reportSummary.vesselAirDraught;
+                $scope.vtsvesseldefectsinput = $scope.reportSummary.vesselDefects;
+
+                $scope.vtscargodesignatedpersonashorenameinput = $scope.reportSummary.cargoDPAName;
+                $scope.vtscargodesignatedpersonashoretelephoneinput = $scope.reportSummary.cargoDPATelephone;
+                $scope.vtscargodesignatedpersonashoreemailinput = $scope.reportSummary.cargoDPAEmail;
+                $scope.vtscargoadditionalcontactdetailsinput = $scope.reportSummary.cargoAdditionalContactInformation;
+                $scope.vtsdangerouscargooverboard = $scope.reportSummary.cargoPollutantOrDCLostOverBoard;
+                $scope.vtsvesselpersonsinput = $scope.reportSummary.vesselPersonsOnboard;
+
+                $scope.VTSVesselNameValidation();
+                $scope.VTSVesselCallsignValidation();
+                $scope.VTSVesselIMOValidation();
+                $scope.VTSVesselPersonsValidation();
+                // $scope.VTSDangerousCargoContactEmailValidation();
+                // $scope.VTSDangerousCargoContactEmailValidation();
+                // $scope.VTSDangerousCargoContactEmailValidation();
             }
         };
         $scope.loadReportSummaryFromLocalstorage();

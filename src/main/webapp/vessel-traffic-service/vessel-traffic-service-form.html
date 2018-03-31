@@ -192,16 +192,13 @@
                     </span>
                 </span>
 
-                </span>
-                <!--<span class="vts-force-spacing-200">Present max. draught (m)</span>-->
-                <!--<input class="vts-input-small vts-text-center vts-placeholder-highlight" ng-class="{false:'vtsinvalid', true:'vtsvalid'}[setvtsvesselDraughtValid]"  ng-model="vtsvesseldraughtinput" ng-change="VTSVesselDraughtValidation(true)" placeholder="{{placeholderAisVesselDraught}}">-->
-                <input class="vts-input-small vts-text-center vts-placeholder-highlight" ng-trim="false"
-                       ng-class="{'vtsvalid': (setvtsvesselDraughtValid && maxDraughtExceedsLimit == false) == true,
+                <input ng-model="vtsvesseldraughtinput" class="vts-input-small vts-text-center vts-placeholder-highlight"
+                    ng-trim="false"
+                    ng-class="{'vtsvalid': (setvtsvesselDraughtValid && maxDraughtExceedsLimit == false) == true,
                     'vtsinvalid': setvtsvesselDraughtValid == false,
                     'vtsvalid-alert': (setvtsvesselDraughtValid && maxDraughtExceedsLimit == true) == true}"
-                       ng-model="vtsvesseldraughtinput"
-                       ng-change="VTSVesselDraughtValidation(true)"
-                       placeholder="{{placeholderAisVesselDraught}}"
+                    ng-change="VTSVesselDraughtValidation(true)"
+                    placeholder="{{placeholderAisVesselDraught}}"
                 >
                 <div class="vts-force-spacing-20">
                     &nbsp;<abbr data-title="Draught is the maximum depth of a vessel below waterline." class="glyphicon glyphicon-question-sign vts-abbr"></abbr>
@@ -654,7 +651,7 @@
         <button class="btn btn-primary" ng-disabled="!showReportInterface" ng-show="!isLoggedIn" type="button" ng-click="login()">
             Login
         </button>
-        <button class="btn btn-success disabled" ng-show="VTSReadyToSend" type="button" ng-click="sendVTSForm()">
+        <button class="btn btn-success" ng-class="{true:'',false:'disabled'}[isLoggedIn]" ng-show="VTSReadyToSend" type="button" ng-click="sendVTSForm()">
             <i class="fa fa-check" aria-hidden="true"></i> Send
         </button>
         <button class="btn btn-danger" type="button" ng-click="hideVTSForm()"><i class="fa fa-ban" aria-hidden="true"></i>
