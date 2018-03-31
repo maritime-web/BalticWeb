@@ -166,6 +166,34 @@ abbr::after {
     height:27px !important;
 }
 
+
+/* WEATHER ON ROUTE*/
+
+.wor-map-button-style {
+    color: white;
+    top: 147px;
+    left: 8px;
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 3px;
+    border-radius: 4px;
+    border: 2px  rgba(255, 255, 255, 0.9) solid;
+    background-color: rgba(0, 60, 136, 0.5);
+    transition: background .5s ease-in-out;
+    -moz-transition: background .5s ease-in-out;
+    -webkit-transition: background .5s ease-in-out;
+    width:40px;
+    height:40px;
+    border-radius: 50%;
+}
+.wor-map-button-style:hover {
+    cursor: pointer;
+    background-color: rgba(0, 60, 136, 0.9);
+}
+
+
+
 /* VTS FUEL */
 
 .vts-fuel-icon-container {

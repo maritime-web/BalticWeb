@@ -1172,7 +1172,7 @@ angular.module('maritimeweb.route')
                                 radius: 3,
                                 stroke: new ol.style.Stroke({
                                     color: 'red',
-                                    width: 2
+                                    width: 3
                                 }),
                                 fill: new ol.style.Fill({
                                     color: [255, 0, 0, 0.5]
@@ -1181,6 +1181,16 @@ angular.module('maritimeweb.route')
                         }),
                         visible: true
                     });
+
+                    console.log("Bob is here");
+                    scope.$watch(function () { return window.localStorage['wor_enabled']; },function(newVal,oldVal){
+                        if(newVal && (newVal+"")!="" && (newVal+"") != (oldVal+"")){
+                            if((newVal+"")=="true"){
+                                console.log("Bob says this is rtz watching");
+                            }
+                        }
+                    });
+
 
                      routeLayers = new ol.layer.Group({
                         title: 'Route',

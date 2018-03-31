@@ -662,6 +662,29 @@ angular.module('maritimeweb.map')
             }
         };
     }])
+
+    .directive('mapWorBtn', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            require: '^olMap',
+            template: "<span class='wor-map-button-style' ng-click='toggleWOR()'" +
+            " tooltip='Toggle Weather On Route' data-toggle='tooltip' title='Toggle Weather On Route'" +
+            "style='font-size:11px;font-weight: bold;padding-top: 11px;padding-left: 5px;'" +
+            ">WOR</span>",
+            scope: {},
+            link: function (scope) {
+                scope.toggleWOR = function () {
+                    var worstate = JSON.parse(localStorage.getItem('wor_enabled'));
+                    if(worstate != null){
+                        localStorage.setItem('wor_enabled', !worstate);
+                    }else{
+                        localStorage.setItem('wor_enabled', true);
+                    }
+                }
+            }
+        };
+    }])
     /**
      *
      */
@@ -690,4 +713,3 @@ angular.module('maritimeweb.map')
             }
         };
     }]);
-

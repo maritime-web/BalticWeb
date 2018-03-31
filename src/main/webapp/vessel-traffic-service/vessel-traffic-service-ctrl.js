@@ -1464,7 +1464,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.$apply;
         };
 
-        //Initiated after getting localstorage to reportsummary
+        //Initiated after getting localstorage to reportsummary +500ms
         $scope.initCargo = function(){ //gets cargo list from localstorage and sets interface accordingly
             $scope.selectedCargoType = $scope.reportSummary.cargoType;
             if($scope.reportSummary.cargoType && $scope.reportSummary.cargoType.length > 2 && $scope.reportSummary.cargoType != "None"){
@@ -1482,85 +1482,85 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 $scope.vtsDangCargoCheckDisabled = true;
             }
             $scope.updateCargoTotalTonnage(); //update total tonnage
-        };// $scope.initCargo();
-
-
-
-
-        $scope.testreport = {
-            Cargo:[
-                {
-                    Class:3,Quantity:0,Unit:"kg"
-                },
-                {
-                    Class:8,
-                    Quantity:0,
-                    Unit:"kg"
-                },
-                {
-                    Class:9,
-                    Quantity:12904,
-                    Unit:"kg"
-                }
-            ],
-            Bunker:[
-                {
-                    Type:"MDO",
-                    Quantity:324
-                },
-                {
-                    Type:"MGO",
-                    Quantity:183
-                }
-            ],
-            ShipName:"BW-TEST",
-            Callsign:"YOLO",
-            MMSI:"266262000",
-            IMO:"9010163",
-            ccMail:"cc@swag.com",
-            vesselEmail:"yolo@swag.com",
-            Email:"",
-            Phone:"+12345678",
-            Name:"Joe Dirt",
-            Draught:6.9,
-            AirDraught:40,
-            PersonsOnboard:183,
-            Destination:"Travemünde",
-            Route1:"F - Flintrännan",
-            CargoType:"Passenger",
-            DangerousCargoOnboard:true,
-            EtaSoundRep:"2018-03-14T15:00:00.000Z"
         };
 
-        //sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE")
-        $scope.sendReport = function (endpoint, method, type, centername, content) { //type= 'application/text' or json
-            $http({
-                // url: endpoint,
-                // method: method, //POST, GET etc.
-                // data: data,
-                // headers: {'Content-Type': type}
-                // url: 'http://e2-demoapi.azurewebsites.net/api/input',
-                // method: "POST", //POST, GET etc.
-                // data: $scope.testreport,
-                // headers: {'Content-Type': 'application/json'}
-                // url: 'https://httpbin.org/post',
-                // dataType: 'json',
-                url: 'http://e2-demoapi.azurewebsites.net/api/input',
-                method: "POST", //POST, GET etc.
-                data: JSON.stringify($scope.testreport),
-                headers: {'Content-Type': 'application/json'}
 
-            })
-                .then(function (data) {
-                        var parsedData = JSON.parse(JSON.stringify(data));
-                        growl.success("Report was sent to " + centername);
-                    },
-                    function (data) { // error
-                        console.log(data);
-                        growl.error("An error occurred while trying to send report to " + centername);
-                    });
 
-        }();
+
+        // $scope.testreport = {
+        //     Cargo:[
+        //         {
+        //             Class:3,Quantity:0,Unit:"kg"
+        //         },
+        //         {
+        //             Class:8,
+        //             Quantity:0,
+        //             Unit:"kg"
+        //         },
+        //         {
+        //             Class:9,
+        //             Quantity:12904,
+        //             Unit:"kg"
+        //         }
+        //     ],
+        //     Bunker:[
+        //         {
+        //             Type:"MDO",
+        //             Quantity:324
+        //         },
+        //         {
+        //             Type:"MGO",
+        //             Quantity:183
+        //         }
+        //     ],
+        //     ShipName:"BW-TEST",
+        //     Callsign:"YOLO",
+        //     MMSI:"266262000",
+        //     IMO:"9010163",
+        //     ccMail:"cc@swag.com",
+        //     vesselEmail:"yolo@swag.com",
+        //     Email:"",
+        //     Phone:"+12345678",
+        //     Name:"Joe Dirt",
+        //     Draught:6.9,
+        //     AirDraught:40,
+        //     PersonsOnboard:183,
+        //     Destination:"Travemünde",
+        //     Route1:"F - Flintrännan",
+        //     CargoType:"Passenger",
+        //     DangerousCargoOnboard:true,
+        //     EtaSoundRep:"2018-03-14T15:00:00.000Z"
+        // };
+        //
+        // //sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE")
+        // $scope.sendReport = function (endpoint, method, type, centername, content) { //type= 'application/text' or json
+        //     $http({
+        //         // url: endpoint,
+        //         // method: method, //POST, GET etc.
+        //         // data: data,
+        //         // headers: {'Content-Type': type}
+        //         // url: 'http://e2-demoapi.azurewebsites.net/api/input',
+        //         // method: "POST", //POST, GET etc.
+        //         // data: $scope.testreport,
+        //         // headers: {'Content-Type': 'application/json'}
+        //         // url: 'https://httpbin.org/post',
+        //         // dataType: 'json',
+        //         url: 'http://e2-demoapi.azurewebsites.net/api/input',
+        //         method: "POST", //POST, GET etc.
+        //         data: JSON.stringify($scope.testreport),
+        //         headers: {'Content-Type': 'application/json'}
+        //
+        //     })
+        //         .then(function (data) {
+        //                 var parsedData = JSON.parse(JSON.stringify(data));
+        //                 growl.success("Report was sent to " + centername);
+        //             },
+        //             function (data) { // error
+        //                 console.log(data);
+        //                 growl.error("An error occurred while trying to send report to " + centername);
+        //             });
+        //
+        // }();
         // // $scope.sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE", $scope.testreport)();
 
 
