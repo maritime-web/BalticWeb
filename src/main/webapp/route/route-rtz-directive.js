@@ -997,7 +997,7 @@ angular.module('maritimeweb.route')
     /**
      * very simple route in a map. The key is that it doesn't have an animation.
      */
-    .directive('simpleRtzRoute', ['MapService', '$rootScope', '$log', '$window', function (MapService, $rootScope, $log, $window) {
+    .directive('simpleRtzRoute', ['MapService', '$rootScope', '$log', '$window', '$http', 'growl', function (MapService, $rootScope, $log, $window, $http, growl) {
         return {
             restrict: 'E',
             replace: true,
@@ -1031,7 +1031,7 @@ angular.module('maritimeweb.route')
             },
             link: function(scope, element, attrs, ctrl) {
                 // $log.info("The simple rtz route got features: ");// + $rootScope.route_oLfeatures.length + " and oLpoints:" + $rootScope.route_oLpoints.length );
-                var olScope         = ctrl.getOpenlayersScope();
+                var olScope = ctrl.getOpenlayersScope();
 
                 scope.populatePopupWaypoint = function (feature) {
                     scope.waypoint = {};
@@ -1063,6 +1063,40 @@ angular.module('maritimeweb.route')
                             src: 'img/vessel_green_moored.png'
                         }))
                     });
+
+                    //WEATHER ON ROUTE
+                    scope.wor_enabled = false;
+                    //on change
+                    scope.$watch(function () { return window.localStorage['wor_enabled']; },function(newVal,oldVal){
+                        if(newVal && (newVal+"")!="" && (newVal+"") != (oldVal+"")){
+                            if((newVal+"")=="true"){
+                                scope.wor_enabled = true;
+                                growl.info("Getting Weather On Route");
+                                routeFeatureLayer.getSource().clear(); //route markers
+                                $rootScope.wor_route_oLfeatures = $rootScope.route_oLfeatures; //start with fresh route
+                                routeFeatureLayer.getSource().addFeatures($rootScope.wor_route_oLfeatures); //route markers
+                                scope.getWeatherDataForWaypoint(1); //get weather on route but skip the starting point
+                            }else{
+                                scope.wor_enabled = false;
+                                growl.info("Removing Weather On Route");
+                                setTimeout(function(){scope.getRouteFromLocalstorage()}, 200); //race condition
+                                setTimeout(function(){routeFeatureLayer.getSource().clear();}, 500); //race condition
+                                setTimeout(function(){ routeFeatureLayer.getSource().addFeatures($rootScope.route_oLfeatures);}, 1000); //race condition
+                            }
+                            console.log("WOR?",scope.wor_enabled);
+                        }
+                    });
+                    //on load:
+                    var lcl_wor = window.localStorage['wor_enabled'];
+                    if(lcl_wor && (lcl_wor+"")=="true"){
+                        scope.wor_enabled = true;
+                    }else{
+                        scope.wor_enabled = false;
+                    }
+
+
+
+
 
                     var markerStyle = new ol.style.Style({
                         image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -1138,26 +1172,62 @@ angular.module('maritimeweb.route')
                                 stroke: new ol.style.Stroke({color: "white", width: 5})
                                 //rotation: 45
                             })
-
+                        }),
+                        worstyle: new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 6,
+                                stroke: new ol.style.Stroke({
+                                    color: 'white',
+                                    width: 2
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [255, 0, 0, 0.5]
+                                })
+                            }),
+                            text: new ol.style.Text({
+                                text: 'wor', // attribute code
+                                font: 'bold 14 Verdana',
+                                offsetY: 20,
+                                stroke: new ol.style.Stroke({color: "white", width: 5})
+                                //rotation: 45
+                            })
                         })
                     };
 
                     var routeLayers;
+                    var pathLayer; //With or without weather
 
-                    var pathLayer = new ol.layer.Vector({
-                        source: new ol.source.Vector({
-                            features: []
-                        }),
-                        style: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                //lineDash: [10, 20, 0, 20],
-                                lineDash: [5, 10, 0, 10],
-                                lineJoin: 'miter',
-                                width: 2,
-                                color: [255, 0, 0, 0.8]
+                    // if(!scope.wor_enabled) {
+                    //     //ROUTE
+                    //     pathLayer = new ol.layer.Vector({
+                    //         source: new ol.source.Vector({
+                    //             features: []
+                    //         }),
+                    //         style: new ol.style.Style({
+                    //             stroke: new ol.style.Stroke({
+                    //                 lineDash: [5, 10, 0, 10],
+                    //                 lineJoin: 'miter',
+                    //                 width: 2,
+                    //                 color: [255, 0, 0, 0.8]
+                    //             })
+                    //         })
+                    //     });
+                    // }else{
+                        pathLayer = new ol.layer.Vector({
+                            source: new ol.source.Vector({
+                                features: []
+                            }),
+                            style: new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    lineJoin: 'miter',
+                                    width: 3,
+                                    color: [255, 0, 0, 0.8]
+                                })
                             })
-                        })
-                    });
+                        });
+                    // }
+
+
 
                     var vectorSource = new ol.source.Vector({
                         features: []
@@ -1182,17 +1252,9 @@ angular.module('maritimeweb.route')
                         visible: true
                     });
 
-                    console.log("Bob is here");
-                    scope.$watch(function () { return window.localStorage['wor_enabled']; },function(newVal,oldVal){
-                        if(newVal && (newVal+"")!="" && (newVal+"") != (oldVal+"")){
-                            if((newVal+"")=="true"){
-                                console.log("Bob says this is rtz watching");
-                            }
-                        }
-                    });
 
-
-                     routeLayers = new ol.layer.Group({
+                    //ROUTE
+                    routeLayers = new ol.layer.Group({
                         title: 'Route',
                         layers: [pathLayer, routeFeatureLayer],
                         visible: true
@@ -1202,22 +1264,132 @@ angular.module('maritimeweb.route')
                     pathLayer.getSource().clear();
                     routeFeatureLayer.getSource().clear();
 
-                    if($window.localStorage.getItem('route_oLfeaturesGeoJson')){
-                        var geoJSONFormat = new ol.format.GeoJSON();
-                        var olFeaturesGeojson = $window.localStorage.getItem('route_oLfeaturesGeoJson');
-                        var olPointsJSON = $window.localStorage.getItem('route_oLpoints');
-
-                        $rootScope.route_oLfeatures = geoJSONFormat.readFeatures(olFeaturesGeojson);
-                        $rootScope.route_oLpoints = JSON.parse(olPointsJSON);
-                    }
+                    scope.getRouteFromLocalstorage = function(){
+                        if($window.localStorage.getItem('route_oLfeaturesGeoJson')){
+                            var geoJSONFormat = new ol.format.GeoJSON();
+                            var olFeaturesGeojson = $window.localStorage.getItem('route_oLfeaturesGeoJson');
+                            var olPointsJSON = $window.localStorage.getItem('route_oLpoints');
+                            $rootScope.route_oLfeatures = geoJSONFormat.readFeatures(olFeaturesGeojson);
+                            $rootScope.wor_route_oLfeatures = geoJSONFormat.readFeatures(olFeaturesGeojson);
+                            $rootScope.route_oLpoints = JSON.parse(olPointsJSON);
+                        }
+                    };
+                    scope.getRouteFromLocalstorage();
 
                     if($rootScope.route_oLfeatures ){
                         $log.info("Loading features! ");
-                        var routeFeature = new ol.Feature({
+
+                        var routeFeature;
+                        routeFeature = new ol.Feature({
                             type: 'route',
                             geometry: new ol.geom.LineString($rootScope.route_oLpoints)
                         });
 
+                        scope.worData = []; //array of weatherdata as long as route_oLfeatures.length (number of waypoints
+                        scope.getWeatherDataForWaypoint = function (pointnumber) { //type= 'application/text' or json
+                            if(scope.wor_enabled) {
+                                //draw a little square along the route and get some weather data from it
+                                var coords = ol.proj.transform($rootScope.wor_route_oLfeatures[pointnumber].getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326');
+                                var time1 = moment(moment().add(1,'days')).utc().format("YYYY-MM-DDThh:mm:ss");
+                                time1 = time1 + ".000+0100";
+                                var time2 = moment(moment().add(1,'days').add(10,'minutes')).utc().format("YYYY-MM-DDThh:mm:ss");
+                                time2 = time2 + ".000+0100";
+                                var req2 = { "mssi": 999999999,
+                                    "datatypes":["current","wave","wind"],
+                                    "dt":15,
+                                    "waypoints":[
+                                        {
+                                            "eta":time1,
+                                            "heading":"GC",
+                                            "lat":coords[1],
+                                            "lon":coords[0]},
+                                        {
+                                            "eta":time2,
+                                            "heading":"GC",
+                                            "lat":(parseFloat(coords[1]) + 0.1), //add a bit to coords
+                                            "lon":(parseFloat(coords[0]) + 0.1)}
+                                    ]
+                                };
+                                var reqx = encodeURI(JSON.stringify(req2)).replace(/[+]/g, '%2B');
+
+                                if($rootScope.wor_route_oLfeatures.length > 1){ //must be a barely valid route
+                                    $http({
+                                        url: 'http://sejlrute.dmi.dk/SejlRute/SR?req='+reqx,
+                                        method: "GET", //POST, GET etc.
+                                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                                    })
+                                        .then(function (data) {
+                                            var parsedData = JSON.parse(JSON.stringify(data));
+                                            //data is in, now find the 6 data types: wave (height & direction), wind (strength & direction), current (strength & direction)
+                                            var tmpwd = {error:true,winddir:null,windspd:null,wavedir:null,wavehgt:null,currdir:null,currspd:null};
+                                            try{ //can fail for so many reasons
+                                                if(parsedData.error != 0){ //no point if fail
+                                                    var pd = parsedData.data.metocForecast.forecasts;
+                                                    for(var i=0;i!=pd.length;i++){ //prepare the data types
+                                                        if(pd[i]["wind-dir"] && tmpwd.winddir == null) tmpwd.winddir = pd[i]["wind-dir"].forecast;
+                                                        if(pd[i]["wind-speed"] && tmpwd.windspd == null) tmpwd.windspd = pd[i]["wind-speed"].forecast;
+
+                                                        if(pd[i]["current-dir"] && tmpwd.currdir == null) tmpwd.currdir = pd[i]["current-dir"].forecast;
+                                                        if(pd[i]["current-speed"] && tmpwd.currspd == null) tmpwd.currspd = pd[i]["current-speed"].forecast;
+
+                                                        if(pd[i]["wave-dir"] && tmpwd.wavedir == null) tmpwd.wavedir = pd[i]["wave-dir"].forecast;
+                                                        if(pd[i]["wave-height"] && tmpwd.wavehgt == null) tmpwd.wavehgt = pd[i]["wave-height"].forecast;
+                                                    }
+                                                    tmpwd.error = false;
+                                                    scope.worData.push(tmpwd); // add one to the array
+
+                                                    console.log("create a service which returns the markers and styles as needed");
+
+                                                    // worstyle: new ol.style.Style({
+                                                    //     image: new ol.style.Circle({
+                                                    //         radius: 6,
+                                                    //         stroke: new ol.style.Stroke({
+                                                    //             color: 'white',
+                                                    //             width: 2
+                                                    //         }),
+                                                    //         fill: new ol.style.Fill({
+                                                    //             color: [255, 0, 0, 0.5]
+                                                    //         })
+                                                    //     }),
+                                                    //     text: new ol.style.Text({
+                                                    //         text: 'wor', // attribute code
+                                                    //         font: 'bold 14 Verdana',
+                                                    //         offsetY: 20,
+                                                    //         stroke: new ol.style.Stroke({color: "white", width: 5})
+                                                    //         //rotation: 45
+                                                    //     })
+                                                    // })
+
+
+
+                                                    $rootScope.wor_route_oLfeatures[pointnumber].setStyle(styles['worstyle']);
+                                                }
+
+                                            }catch(objectReturnedError){
+                                                scope.worData.push({error:true}); //only error
+                                                growl.error("An error occurred while trying to parse weather data");
+                                            }
+
+                                            //create new point content from waypoint
+                                            if(pointnumber && pointnumber < $rootScope.wor_route_oLfeatures.length -2){ //good to go
+                                                pointnumber = pointnumber + 1;
+                                                scope.getWeatherDataForWaypoint(pointnumber);
+                                            }else{
+                                                growl.success("Weather On Route is loaded.");
+                                                // console.log("scope.worData:",scope.worData);
+                                            }
+                                        },
+                                        function (data) { // error
+                                            console.log(data);
+                                            growl.error("An error occurred while trying to get weather data!");
+                                        });
+                                }
+
+                            }
+                        };
+                        if(scope.wor_enabled) scope.getWeatherDataForWaypoint(1); //get weather on route but skip the starting point
+
+                        //RTZ
                         var startMarker = $rootScope.route_oLfeatures[0];
                         var endMarker = $rootScope.route_oLfeatures[$rootScope.route_oLfeatures.length - 1];
 
@@ -1300,13 +1472,18 @@ angular.module('maritimeweb.route')
 
 
                         //animationLayer.getSource().addFeatures(scope.animatedfeatures);
-                        pathLayer.getSource().addFeature(routeFeature);
-                        routeFeatureLayer.getSource().addFeatures($rootScope.route_oLfeatures);
-                        routeFeatureLayer.getSource().addFeature(startMarker);
-                        routeFeatureLayer.getSource().addFeature(endMarker);
-                        routeFeatureLayer.setZIndex(13);
-                        pathLayer.setZIndex(13);
-                        map.addLayer(routeLayers);
+                            pathLayer.getSource().addFeature(routeFeature); //routeline
+                            if(scope.wor_enabled){
+                                routeFeatureLayer.getSource().addFeatures($rootScope.wor_route_oLfeatures); //route markers
+                            }else {
+                                routeFeatureLayer.getSource().addFeatures($rootScope.route_oLfeatures); //route markers
+                            }
+                            routeFeatureLayer.getSource().addFeature(startMarker);
+                            routeFeatureLayer.getSource().addFeature(endMarker);
+                            routeFeatureLayer.setZIndex(13);
+                            pathLayer.setZIndex(13);
+                            map.addLayer(routeLayers);
+
 
                         var extent = routeFeatureLayer.getSource().getExtent();
                         map.getView().fit(extent, map.getSize());  // automatically zoom and pan the map to fit my features

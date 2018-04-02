@@ -664,7 +664,7 @@ angular.module('maritimeweb.map')
     }])
 
     .directive('mapWorBtn', [function () {
-        return {
+        return { //weather on route is loaded onto route layer (route-rtz-directive)
             restrict: 'E',
             replace: true,
             require: '^olMap',
