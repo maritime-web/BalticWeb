@@ -31,6 +31,8 @@ import dk.dma.embryo.vessel.json.ScheduleRestService;
 import dk.dma.enav.services.nwnm.NwNmRestService;
 import dk.dma.enav.services.registry.ServiceLookupRestService;
 import dk.dma.enav.services.vtsreport.service.VtsInterfacePopulationService;
+import dk.dma.enav.services.vtsreport.service.VtsReportForwardingService;
+import dk.dma.enav.services.vtsreport.service.WeatherRequestForwarding;
 import dk.dma.enav.services.vtsreport.service.VtsService;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -75,6 +77,8 @@ public class ApplicationConfig extends Application {
                 NwNmRestService.class,
                 VtsService.class,
                 VtsInterfacePopulationService.class,
+                VtsReportForwardingService.class,
+                WeatherRequestForwarding.class, //gets http, forwards to https and sends results back again
                 ServiceLookupRestService.class));
 
         return set;

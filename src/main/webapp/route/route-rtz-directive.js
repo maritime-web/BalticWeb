@@ -1311,14 +1311,21 @@ angular.module('maritimeweb.route')
                                     ]
                                 };
                                 var reqx = encodeURI(JSON.stringify(req2)).replace(/[+]/g, '%2B');
+                                var reqxjson = {data:(reqx + "")}
+                                // console.log("reqx",reqx);
 
                                 if($rootScope.wor_route_oLfeatures.length > 1){ //must be a barely valid route
                                     $http({
-                                        url: 'http://sejlrute.dmi.dk/SejlRute/SR?req='+reqx,
-                                        method: "GET", //POST, GET etc.
-                                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                                        // url: 'http://sejlrute.dmi.dk/SejlRute/SR?req='+reqx,
+                                        // method: "GET", //POST, GET etc.
+                                        // headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                                        url: 'rest/weatherforwarding',
+                                        method: "POST", //POST, GET etc.
+                                        headers: {'Content-Type': 'application/json'},
+                                        data: reqxjson
                                     })
                                         .then(function (data) {
+                                            console.log("data:",data);
                                             var parsedData = JSON.parse(JSON.stringify(data));
                                             //data is in, now find the 6 data types: wave (height & direction), wind (strength & direction), current (strength & direction)
                                             var tmpwd = {error:true,winddir:null,windspd:null,wavedir:null,wavehgt:null,currdir:null,currspd:null};
@@ -1376,7 +1383,7 @@ angular.module('maritimeweb.route')
                                                 scope.getWeatherDataForWaypoint(pointnumber);
                                             }else{
                                                 growl.success("Weather On Route is loaded.");
-                                                // console.log("scope.worData:",scope.worData);
+                                                console.log("scope.worData:",scope.worData);
                                             }
                                         },
                                         function (data) { // error
@@ -1387,6 +1394,7 @@ angular.module('maritimeweb.route')
 
                             }
                         };
+                        console.log("make a hop in enav services which does the wor over https");
                         if(scope.wor_enabled) scope.getWeatherDataForWaypoint(1); //get weather on route but skip the starting point
 
                         //RTZ
