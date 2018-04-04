@@ -19,8 +19,10 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
         };
 
         this.detectedRouteETA = null;
+        this.detectedRouteETAForReport = null;
         this.returnDetectedRouteETA = function() {
-            return this.detectedRouteETA;
+            var etas = {eta:this.detectedRouteETA, reportEta:this.detectedRouteETAForReport};
+            return etas;
         };
 
         this.detectedRouteIntersect = null;
@@ -274,6 +276,7 @@ angular.module('maritimeweb.vts-report').service('VtsHelperService', ['$window',
                             var routeETA = moment(time1).utc().format("DD MMM YYYY - hh:mm");
                             if(debugMode) console.log("Routepoint"+etaPoint1+":",routeETA);
                             this.detectedRouteETA = routeETA; //set the variable so the CTRL can retrieve it
+                            this.detectedRouteETAForReport = moment(time1).utc().format("YYYY-MM-DDThh:mm:ss") + ".000Z"; //2018-03-05T15:00:00.000Z
                         }
                         // Get the Rhumb line heading at entry of VTS area, then put into localstorage
                         var pointArrAsWKT = convertPosToLonLat();

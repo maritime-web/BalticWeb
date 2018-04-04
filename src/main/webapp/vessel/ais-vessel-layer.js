@@ -203,6 +203,7 @@ angular.module('maritimeweb.vessel')
                             var scale = scope.retForcedScale([0.4,1.2,0.5,0.7,1.2,1.2,1.2,1.2]); //by look and feel
                             var markerStyle = new ol.style.Style({
                                 image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                                    zIndex: 10,
                                     anchor: [0.5, 0.5],
                                     scale:0.9,
                                     opacity: 1,

@@ -590,6 +590,9 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             if ($scope.setvtsvesselIMOValid && $scope.setvtsvesselDraughtValid && $scope.setvtsvesselAirDraughtValid) group2valid = true;
             //GROUP 3 ----------------------------------------------------------------------------------------------------------
             if ($scope.setvtsvesselPersonsValid && $scope.setvtsVesselTypeValid && $scope.setvtsVesselLengthValid) group3valid = true;
+            console.log("setvtsvesselPersonsValid:",$scope.setvtsvesselPersonsValid);
+            console.log("setvtsVesselTypeValid:",$scope.setvtsVesselTypeValid);
+            console.log("setvtsVesselLengthValid:",$scope.setvtsVesselLengthValid);
             //GROUP 4 ----------------------------------------------------------------------------------------------------------
             if(VTSData[$scope.VTSID].showFuelDetails && $scope.reportSummary.fuelManifest.length > 0 ) group4valid = true;
             //GROUP 5 ----------------------------------------------------------------------------------------------------------
@@ -606,7 +609,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                 }
             }
             //GROUP 7 ----------------------------------------------------------------------------------------------------------
-            console.log("Port of Destination must be added and validated!");
             if ($scope.setvtsvesselPortOfDestinationValid) group7valid = true;
             //GROUP 8 ----------------------------------------------------------------------------------------------------------
             if ($scope.setvtsvesseletaTimeDateValid) group8valid = true;
@@ -645,7 +647,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.reportSummary.vesselType = "" + $scope.vtsvesseltypeholder;
 
             $window.localStorage.setItem('vts_reportsummary_object',JSON.stringify($scope.reportSummary)); //update localstorage
-            console.log("Saved to localstorage!:",$scope.reportSummary.vesselCallSign);
         };
 
         $scope.displayVtsCenterData = false;
@@ -703,6 +704,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.dateInputChange = function (now) {
             $scope.vtsLocalDate = moment(now._d).format('DD MMM YYYY');
             $scope.vtsDateStamp = moment()._locale._weekdaysShort[moment().day()] + " " + $scope.vtsLocalDate;
+            $scope.reportSummary.voyageVTSETADateTime = moment.utc(now._d).format('YYYY-MM-DDTHH:mm:ss')+".000Z";
+            console.log("datechange:",$scope.reportSummary.voyageVTSETADateTime);
             angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsLocalDate); //update timepicker display correct month format
             $scope.vtsDisplayEtaDateTime = $scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC";
             $scope.validateEtaTimeDate();
@@ -710,6 +713,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         $scope.timeInputChange = function (now) {
             $scope.vtsUtcTime = moment.utc(now._d).format('HH : mm'); //update selected time
+            $scope.reportSummary.voyageVTSETADateTime = moment.utc(now._d).format('YYYY-MM-DDTHH:mm:ss')+".000Z";
+            console.log("timechange:",$scope.reportSummary.voyageVTSETADateTime);
             angular.element(document.querySelector(".vts-timedatepicker.datetime-input.time .display .time")).html($scope.vtsUtcTime);
             //display time and date on label
             $scope.vtsDisplayEtaDateTime = $scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC";
@@ -1486,78 +1491,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
 
 
-
-        $scope.testreport = {
-            '': {
-                Cargo: [
-                    {
-                        Class: 3, Quantity: 0, Unit: "kg"
-                    },
-                    {
-                        Class: 8,
-                        Quantity: 0,
-                        Unit: "kg"
-                    },
-                    {
-                        Class: 9,
-                        Quantity: 12904,
-                        Unit: "kg"
-                    }
-                ],
-                Bunker: [
-                    {
-                        Type: "MDO",
-                        Quantity: 324
-                    },
-                    {
-                        Type: "MGO",
-                        Quantity: 183
-                    }
-                ],
-                ShipName: "SWAGACIDE2",
-                Callsign: "YOLO",
-                MMSI: "266262000-test2",
-                IMO: "9010163",
-                ccMail: "cc@swag.com",
-                vesselEmail: "yolo@swag.com",
-                Email: "",
-                Phone: "+12345678",
-                Name: "Joe Dirt",
-                Draught: 6.9,
-                AirDraught: 40,
-                PersonsOnboard: 183,
-                Destination: "Travemünde",
-                Route1: "F - Flintrännan",
-                CargoType: "Passenger",
-                DangerousCargoOnboard: true,
-                EtaSoundRep: "2018-03-04T15:00:00.000Z"
-            }
-        };
-
-        //sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE")
-        $scope.sendReport = function (endpoint, method, type, centername, content) { //type= 'application/text' or json
-            $http({
-                // dataType: 'json',
-                headers: {'Content-Type': 'application/json'},
-                url: 'http://e2-demoapi.azurewebsites.net/api/input',
-                method: "POST", //POST, GET etc.
-                data: $scope.testreport,
-
-            })
-                .then(function (data) {
-                        var parsedData = JSON.parse(JSON.stringify(data));
-                        growl.success("Report was sent to " + centername);
-                    },
-                    function (data) { // error
-                        console.log(data);
-                        growl.error("An error occurred while trying to send report to " + centername);
-                    });
-
-        }();
-        // $scope.sendReport("http://e2-demoapi.azurewebsites.net/api/input", "POST", "application/json", "SOMEWHERE", $scope.testreport)();
-
-
-
         /**  END CARGO INTERFACE  **/
         /** ******************************************************************************************************* **/
 
@@ -1613,6 +1546,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             $scope.vtsTimeStamp = routeETATime;
             $scope.vtsDateStamp = routeETADate;
             $scope.vtsDisplayEtaDateTime = $scope.vtsDateStamp + " - " + $scope.vtsUtcTime + " UTC";
+            // $scope.reportSummary.voyageVTSETADateTime = moment.utc(now._d).format('YYYY-MM-DDTHH:mm:ss')+".000Z";
+            console.log("detectedRouteETA:",$scope.detectedRouteETA);
             $scope.renderedStaticRouteETA = $scope.vtsDateStamp + " - " + $scope.vtsTimeStamp + " UTC";
             angular.element(document.querySelector(".datetime-input.date .display .date")).html($scope.vtsDateStamp); //update timepicker display with now
             angular.element(document.querySelector(".datetime-input.time .display .time")).html($scope.vtsTimeStamp); //update timepicker display with now
@@ -1640,7 +1575,8 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
         $scope.detectRouteEtaAtVts = function(){
             //gets ETA from route if loaded, and if route actually intersects currently selected VTS
-            $scope.detectedRouteETA = VtsHelperService.returnDetectedRouteETA();
+            $scope.detectedRouteETA = VtsHelperService.returnDetectedRouteETA().eta; //frontend only
+            $scope.reportSummary.voyageVTSETADateTime = VtsHelperService.returnDetectedRouteETA().reportEta; //update the report
             $scope.detectedRouteIntersect = VtsHelperService.returnDetectedRouteIntersect();
             if($scope.detectedRouteETA && $scope.detectedRouteETA.length>10 && $scope.detectedRouteIntersect){
                 $scope.setRouteEtaTimeDatePicker();
@@ -1873,11 +1809,106 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             // $scope.reportSummary.voyageSpeed = "" + (parseFloat($scope.vtsvesselspeedinput));
             // $scope.reportSummary.voyagePortOfDestination = "" + ($scope.vtsvesselportofdestinationinput);
             ($scope.showPortOfDestinationEta) ? $scope.reportSummary.voyagePortOfDestinationEta = "" + ($scope.vtsvesselportofdestinationetalabel) : ""; //only if used AIS data
-            $scope.reportSummary.voyageVTSETADateTime = "" + ($scope.vtsLocalDate + " - " + $scope.vtsUtcTime);
+            // $scope.reportSummary.voyageVTSETADateTime = "" + ($scope.vtsLocalDate + " - " + $scope.vtsUtcTime);
 
             // debug
             console.log("VTS REPORT:", $scope.reportSummary);
             growl.success("VTS report could successfully be sent to " + $scope.reportSummary.vtsShortName + "!");
+
+
+            var formattedVtsEtaTime = $scope.reportSummary.voyageVTSETADateTime;
+
+
+            var tmpReport = {
+                Cargo: [
+                    {
+                        Class: 3, Quantity: 0, Unit: "kg"
+                    }
+                ],
+                Bunker: [
+                    {
+                        Type: "MDO",
+                        Quantity: 324
+                    }
+                ],
+                ShipName: $scope.reportSummary.vesselName,
+                Callsign: $scope.reportSummary.callsign,
+                MMSI: $scope.reportSummary.vesselMMSI,
+                IMO: $scope.reportSummary.vesselIMO,
+                ccMail: "not@defined.com",
+                vesselEmail: "alsonot@defined.com",
+                Email: "stillnot@defined.com",
+                Phone: "+12345678",
+                Name: "Joe Dirt",
+                Draught: $scope.reportSummary.vesselDraught,
+                AirDraught: $scope.reportSummary.vesselAirDraught,
+                PersonsOnboard: $scope.reportSummary.vesselPersonsOnboard,
+                Destination: $scope.reportSummary.voyagePortOfDestination,
+                Route1: "F - Flintrännan",
+                CargoType: $scope.reportSummary.vesselType,
+                DangerousCargoOnboard: $scope.reportSummary.cargoDangerousCargoOnBoard,
+                EtaSoundRep: $scope.reportSummary.voyageVTSETADateTime // "2018-03-05T15:00:00.000Z"
+            };
+
+
+
+            //05 Apr 2018 - 16 : 22
+            console.log("post:"+JSON.stringify(tmpReport)); //debug
+
+            $scope.sendReport($scope.reportSummary.vtsShortName, tmpReport);
+
+
+
+
+            // $scope.testreport = {
+            //         Cargo: [
+            //             {
+            //                 Class: 3, Quantity: 0, Unit: "kg"
+            //             },
+            //             {
+            //                 Class: 8,
+            //                 Quantity: 0,
+            //                 Unit: "kg"
+            //             },
+            //             {
+            //                 Class: 9,
+            //                 Quantity: 12904,
+            //                 Unit: "kg"
+            //             }
+            //         ],
+            //         Bunker: [
+            //             {
+            //                 Type: "MDO",
+            //                 Quantity: 324
+            //             },
+            //             {
+            //                 Type: "MGO",
+            //                 Quantity: 183
+            //             }
+            //         ],
+            //         ShipName: "BW - FORWARD - TEST 52",
+            //         Callsign: "YOLO",
+            //         MMSI: "266262000-test2",
+            //         IMO: "9010163",
+            //         ccMail: "cc@swag.com",
+            //         vesselEmail: "yolo@swag.com",
+            //         Email: "",
+            //         Phone: "+12345678",
+            //         Name: "Joe Dirt",
+            //         Draught: 6.9,
+            //         AirDraught: 40,
+            //         PersonsOnboard: 183,
+            //         Destination: "Travemünde",
+            //         Route1: "F - Flintrännan",
+            //         CargoType: "Passenger",
+            //         DangerousCargoOnboard: true,
+            //         EtaSoundRep: "2018-03-05T15:00:00.000Z"
+            // };
+            // $scope.badcontent = {bad:true};
+
+
+
+
             // console.log("post:"+JSON.stringify($scope.reportSummary)); //debug
             //Send form endpoint *************************************************************************************
             // $http({
@@ -1896,6 +1927,38 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             //             alert("Your report could not be sent. Please check your internet connection and try again.\nIf this message persists with an established internet connection, please contact the Department of E-Navigation: sfs@dma.dk");
             //         });
         };
+
+        $scope.sendReport = function (centername, content) { //type= 'application/text' or json
+            if(centername && content){
+                $http({
+                    // headers: {'Content-Type': 'application/json; charset=UTF-8'},
+                    // url: 'http://e2-demoapi.azurewebsites.net/api/input',
+                    // method: "POST", //POST, GET etc.
+                    // // dataType: 'json',
+                    // data: $scope.bob,
+                    headers: {'Content-Type': 'application/json; charset=UTF-8'},
+                    url: 'https://beeres.dk/BW/reportforwarding.aspx', //Uses monkeystuff because unknown issue with sending and too little time to fix.
+                    method: "POST", //POST, GET etc.
+                    data: JSON.stringify(content),
+                })
+                    .then(function (data) {
+                            // console.log("success report:",data);
+                            var parsedData = JSON.parse(JSON.stringify(data));
+                            console.log("parsedData:",parsedData);
+                            if(parsedData.data == "OK"){
+                                growl.success("Report was sent to " + centername);
+                                $uibModalInstance.close('forceclose', 'forceclose'); //close VTS interface
+                            }else{
+                                growl.error("An error occurred while trying to forward report to " + centername);
+                            }
+                        },
+                        function (data) { // error
+                            console.log("error report:",data);
+                            growl.error("An error occurred while trying to send report to " + centername);
+                        });
+            }
+        };
+
 
         $scope.populateInputsWithAisData = function () { //only populates empty fields
             if ($scope.vtsvesselnameinput == "") $scope.vtsvesselnameinput = $scope.aisData.vesselName;
@@ -2140,7 +2203,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         };
 
 
-        console.log("TODO (final task): function to save and load state of report in localstorage");
         $scope.exitInterface = function(state){
             if(state==true){
                 // alert("add function to exit after save to localstorage - also load from localstorage..");

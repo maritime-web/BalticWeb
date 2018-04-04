@@ -1194,25 +1194,265 @@ angular.module('maritimeweb.route')
                         })
                     };
 
+                    // convert degrees to radians
+                    scope.degToRad = function(deg) {
+                        return deg * Math.PI * 2 / 360;
+                    };
+                    scope.calcSinCosFromAngle = function(xy, angle, radius) { //requires ('x' or 'y'), angle in degrees and radius in px.
+                        var SinCos;
+                        if (xy == 'x') SinCos = radius * Math.cos(angle); // Calculate the x position of the element.
+                        if (xy == 'y') SinCos = radius * Math.sin(angle); // Calculate the y position of the element.
+                        return SinCos;
+                    };
+                    // scope.retStyle = function(){
+                    //     var bob = new ol.style.Style({
+                    //         image: new ol.style.Circle({
+                    //             radius: 6,
+                    //             stroke: new ol.style.Stroke({
+                    //                 color: 'white',
+                    //                 width: 2
+                    //             }),
+                    //             fill: new ol.style.Fill({
+                    //                 color: [255, 0, 0, 0.5]
+                    //             })
+                    //         }),
+                    //         text: new ol.style.Text({
+                    //             text: 'wor', // attribute code
+                    //             font: 'bold 14 Verdana',
+                    //             offsetY: 20,
+                    //             stroke: new ol.style.Stroke({color: "white", width: 5})
+                    //             //rotation: 45
+                    //         })
+                    //     })
+                    //     return bob;
+                    // };
+
+
+
+
+                    scope.retWORMWaveStyle = function (scale, wavedir, waveheight, markertext) {
+                        if (!scale) scale = 1;
+                        if (!wavedir) wavedir = 180;
+                        wavedir += 45; //offset for icon
+                        var useimage = (waveheight == "") ? 'img/WeatherOnRoute//WOR_backdropcircle_nowave.png' : 'img/WeatherOnRoute/WOR_backdropcircle.png';
+                        if (markertext == "nodata") useimage = "img/WeatherOnRoute/WOR_nodata.png";
+
+
+                        if (!waveheight || waveheight==0) waveheight = "";
+                        var radOff = 0.47; //text offset in radians for current and wave indicator
+                        var WORMWaveStyle = new ol.style.Style({
+                            zIndex: 50,
+                            image: new ol.style.Icon({
+                                opacity: 0.75,
+                                rotation: scope.degToRad(wavedir), //wavepointer is pointing lowerright
+                                anchor: [(0.5), (0.5)],
+                                anchorXUnits: 'fraction',
+                                anchorYUnits: 'fraction',
+                                src: 'img/WeatherOnRoute/WOR_backdropcircle.png',
+                                scale: (0.5 * scale)
+                            }),
+                                text: new ol.style.Text({
+                                    font: '12px helvetica,sans-serif',
+                                    text: ('' + Math.round( waveheight * 10 ) / 10),
+                                    offsetX: scope.calcSinCosFromAngle('x', scope.degToRad(wavedir) + radOff, (44 * scale)),
+                                    offsetY: scope.calcSinCosFromAngle('y', scope.degToRad(wavedir) + radOff, (44 * scale)),
+                                    scale: (1 * scale),
+                                    fill: new ol.style.Fill({
+                                        color: '#000'
+                                    }),
+                                    stroke: new ol.style.Stroke({
+                                        color: '#fff',
+                                        width: 1
+                                    })
+                                })
+                        });
+                        return WORMWaveStyle;
+                    };
+
+                    scope.retWORMWindStyle = function (scale, winddir, windstr, markertext, wavedir) { //windstr is m/s - wavedir is needed to make offset greater if pointing south so text doesnt overlap.
+                        if (!scale) scale = 1;
+                        var waypointtextoffset = 46;
+                        if (!winddir) winddir = 180; //default north
+                        (!windstr) ? windstr = 1 : windstr * 1.9438444924574; // make 1 knot if nothing, or meter/sec to knots.
+                        var markerImageNamePath = "img/wind/";
+
+
+                        //Determine wind marker image to display
+                        if (windstr < 1.9){
+                            markerImageNamePath += 'mark000.png';
+                        } else if (windstr >= 2 && windstr < 7.5) {
+                            markerImageNamePath += 'mark005.png';
+                        } else if (windstr >= 7.5 && windstr < 12.5) {
+                            markerImageNamePath += 'mark010.png';
+                        } else if (windstr >= 12.5 && windstr < 17.5) {
+                            markerImageNamePath += 'mark015.png';
+                        } else if (windstr >= 17.5 && windstr < 22.5) {
+                            markerImageNamePath += 'mark020.png';
+                        } else if (windstr >= 22.5 && windstr < 27.5) {
+                            markerImageNamePath += 'mark025.png';
+                        } else if (windstr >= 27.5 && windstr < 32.5) {
+                            markerImageNamePath += 'mark030.png';
+                        } else if (windstr >= 32.5 && windstr < 37.5) {
+                            markerImageNamePath += 'mark035.png';
+                        } else if (windstr >= 37.5 && windstr < 42.5) {
+                            markerImageNamePath += 'mark040.png';
+                        } else if (windstr >= 42.5 && windstr < 47.5) {
+                            markerImageNamePath += 'mark045.png';
+                        } else if (windstr >= 47.5 && windstr < 52.5) {
+                            markerImageNamePath += 'mark050.png';
+                        } else if (windstr >= 52.5 && windstr < 57.5) {
+                            markerImageNamePath += 'mark055.png';
+                        } else if (windstr >= 57.5 && windstr < 62.5) {
+                            markerImageNamePath += 'mark060.png';
+                        } else if (windstr >= 62.5 && windstr < 67.5) {
+                            markerImageNamePath += 'mark065.png';
+                        } else if (windstr >= 67.5 && windstr < 72.5) {
+                            markerImageNamePath += 'mark070.png';
+                        } else if (windstr >= 72.5 && windstr < 77.5) {
+                            markerImageNamePath += 'mark075.png';
+                        } else if (windstr >= 77.5 && windstr < 82.5) {
+                            markerImageNamePath += 'mark080.png';
+                        } else if (windstr >= 82.5 && windstr < 87.5) {
+                            markerImageNamePath += 'mark085.png';
+                        } else if (windstr >= 87.5 && windstr < 92.5) {
+                            markerImageNamePath += 'mark090.png';
+                        } else if (windstr >= 92.5 && windstr < 97.5) {
+                            markerImageNamePath += 'mark095.png';
+                        } else if (windstr >= 97.5) {
+                            markerImageNamePath += 'mark100.png';
+                        }
+
+                        //move the text a bit lower if the wavearrow points down
+                        if ((wavedir < 55 && wavedir > 0) || (wavedir > 305)) {
+                            waypointtextoffset = 56;
+                        }
+
+                        var useimage = markerImageNamePath;
+                        if (markertext == "nodata") {
+                            useimage = "img/emptyimage.png";
+                            markertext = "";
+                        }
+
+
+                        var WORMWindStyle = new ol.style.Style({
+                            zIndex: 52,
+                            image: new ol.style.Icon(({
+                                opacity: 1,
+                                rotation: scope.degToRad(winddir), //windpointer is straight is pointing straight down
+                                anchor: [(0.52), (0.25)],
+                                anchorXUnits: 'fraction',
+                                anchorYUnits: 'fraction',
+                                src: useimage, //needs path and windstr to paint correct arrow
+                                scale: (0.80 * scale)
+                            })),
+                            text: new ol.style.Text({
+                                font: 'bold 12px helvetica,sans-serif',
+                                text: "" + markertext,
+                                offsetX: 0,
+                                offsetY: waypointtextoffset * scale,
+                                scale: (1 * scale),
+                                fill: new ol.style.Fill({
+                                    color: '#000'
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: '#fff',
+                                    width: 1
+                                })
+                            })
+                        });
+                        return WORMWindStyle;
+                    };
+
+                    scope.retWORMCurrentStyle = function (scale, currdir, currstr, markertext) {
+                        if (!scale) scale = 1;
+                        if (!currdir) currdir = 180;
+                        currdir += 45; //offset for icon
+                        (!currstr) ? currstr = "" : currstr * 1.9438444924574; // make "" if nothing, or meter/sec to knots.
+                        var useimage = 'img/WOR_innercircle.png';
+                        if (markertext == "nodata") useimage = "img/emptyimage.png";
+
+                        if (!currstr || currstr == 0) currstr = "";
+                        var radOff = 0.25; //text offset in radians for current and wave indicator
+                        var WORMCurrentStyle = new ol.style.Style({
+                            zIndex: 51,
+                            image: new ol.style.Icon({
+                                opacity: (currstr!="")?1:0,
+                                rotation: scope.degToRad(currdir), //currentpointer is pointing lowerright
+                                anchor: [0.5, 0.5],
+                                anchorXUnits: 'fraction',
+                                anchorYUnits: 'fraction',
+                                src: useimage, //needs path
+                                scale: (0.5 * scale)
+                            }),
+                            text: new ol.style.Text({
+                                font: '10px helvetica,sans-serif',
+                                text: ('' + (Math.round( currstr * 10 ) / 10)),
+                                offsetX: scope.calcSinCosFromAngle('x', scope.degToRad(currdir) + radOff, (18 * scale)),
+                                offsetY: scope.calcSinCosFromAngle('y', scope.degToRad(currdir) + radOff, (18 * scale)),
+                                scale: (1 * scale),
+                                fill: new ol.style.Fill({
+                                    color: '#000'
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: '#fff',
+                                    width: 1
+                                })
+                            })
+                        });
+                        return WORMCurrentStyle;
+                    };
+
+                    // scope.retStyle = function(){
+                    //     var scale = 1;
+                    //     // var useimage = (waveheight == "") ? 'img/WeatherOnRoute//WOR_backdropcircle_nowave.png' : 'img/WeatherOnRoute/WOR_backdropcircle.png';
+                    //     var useimage = 'img/WeatherOnRoute/WOR_backdropcircle.png';
+                    //     // if (markertext == "nodata") useimage = "img/WeatherOnRoute/WOR_nodata.png";
+                    //     // var  animatedMarkerStyle = new ol.style.Style({
+                    //     //     image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                    //     //         anchor: [0.5, 0.5],
+                    //     //         anchorXUnits: 'fraction',
+                    //     //         anchorYUnits: 'fraction',
+                    //     //         opacity: 0.85,
+                    //     //         rotation: 0,
+                    //     //         rotateWithView: false,
+                    //     //         src: 'img/vessel_orange_moored.png'
+                    //     //     }))
+                    //     // });
+                    //
+                    //     var bob = new ol.style.Style({
+                    //         //     image: new ol.style.Icon({
+                    //         //         opacity: 0.75,
+                    //         //         rotation: degToRad(wavedir), //wavepointer is pointing lowerright
+                    //         //         anchor: [(0.5), (0.5)],
+                    //         //         anchorXUnits: 'fraction',
+                    //         //         anchorYUnits: 'fraction',
+                    //         //         src: useimage,
+                    //         //         scale: (0.5 * scale)
+                    //         //     }),
+                    //         image: new ol.style.Icon({
+                    //             opacity: 0.75,
+                    //             rotation: scope.degToRad(180), //wavepointer is pointing lowerright
+                    //             anchor: [(0.5), (0.5)],
+                    //             anchorXUnits: 'fraction',
+                    //             anchorYUnits: 'fraction',
+                    //             src: useimage,
+                    //             scale: (0.5 * scale)
+                    //         }),
+                    //         text: new ol.style.Text({
+                    //             text: 'word', // attribute code
+                    //             font: 'bold 14 Verdana',
+                    //             offsetY: 20,
+                    //             stroke: new ol.style.Stroke({color: "white", width: 5})
+                    //             //rotation: 45
+                    //         })
+                    //     });
+                    //     return bob;
+                    // };
+
+
                     var routeLayers;
                     var pathLayer; //With or without weather
 
-                    // if(!scope.wor_enabled) {
-                    //     //ROUTE
-                    //     pathLayer = new ol.layer.Vector({
-                    //         source: new ol.source.Vector({
-                    //             features: []
-                    //         }),
-                    //         style: new ol.style.Style({
-                    //             stroke: new ol.style.Stroke({
-                    //                 lineDash: [5, 10, 0, 10],
-                    //                 lineJoin: 'miter',
-                    //                 width: 2,
-                    //                 color: [255, 0, 0, 0.8]
-                    //             })
-                    //         })
-                    //     });
-                    // }else{
                         pathLayer = new ol.layer.Vector({
                             source: new ol.source.Vector({
                                 features: []
@@ -1311,21 +1551,16 @@ angular.module('maritimeweb.route')
                                     ]
                                 };
                                 var reqx = encodeURI(JSON.stringify(req2)).replace(/[+]/g, '%2B');
-                                var reqxjson = {data:(reqx + "")}
-                                // console.log("reqx",reqx);
+                                var reqxjson = {data:(reqx + "")};
 
                                 if($rootScope.wor_route_oLfeatures.length > 1){ //must be a barely valid route
                                     $http({
-                                        // url: 'http://sejlrute.dmi.dk/SejlRute/SR?req='+reqx,
-                                        // method: "GET", //POST, GET etc.
-                                        // headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                                        url: 'rest/weatherforwarding',
+                                        url: 'rest/weatherforwarding', //needs a forward to circumvent http -> https blocking.
                                         method: "POST", //POST, GET etc.
                                         headers: {'Content-Type': 'application/json'},
                                         data: reqxjson
                                     })
                                         .then(function (data) {
-                                            console.log("data:",data);
                                             var parsedData = JSON.parse(JSON.stringify(data));
                                             //data is in, now find the 6 data types: wave (height & direction), wind (strength & direction), current (strength & direction)
                                             var tmpwd = {error:true,winddir:null,windspd:null,wavedir:null,wavehgt:null,currdir:null,currspd:null};
@@ -1344,38 +1579,14 @@ angular.module('maritimeweb.route')
                                                     }
                                                     tmpwd.error = false;
                                                     scope.worData.push(tmpwd); // add one to the array
-
-                                                    console.log("create a service which returns the markers and styles as needed");
-
-                                                    // worstyle: new ol.style.Style({
-                                                    //     image: new ol.style.Circle({
-                                                    //         radius: 6,
-                                                    //         stroke: new ol.style.Stroke({
-                                                    //             color: 'white',
-                                                    //             width: 2
-                                                    //         }),
-                                                    //         fill: new ol.style.Fill({
-                                                    //             color: [255, 0, 0, 0.5]
-                                                    //         })
-                                                    //     }),
-                                                    //     text: new ol.style.Text({
-                                                    //         text: 'wor', // attribute code
-                                                    //         font: 'bold 14 Verdana',
-                                                    //         offsetY: 20,
-                                                    //         stroke: new ol.style.Stroke({color: "white", width: 5})
-                                                    //         //rotation: 45
-                                                    //     })
-                                                    // })
-
-
-
-                                                    $rootScope.wor_route_oLfeatures[pointnumber].setStyle(styles['worstyle']);
                                                 }
 
                                             }catch(objectReturnedError){
                                                 scope.worData.push({error:true}); //only error
                                                 growl.error("An error occurred while trying to parse weather data");
                                             }
+                                                // $rootScope.wor_route_oLfeatures[pointnumber].setStyle(styles('wormstyle'));
+                                                $rootScope.wor_route_oLfeatures[pointnumber].setStyle([scope.retWORMWaveStyle(1, tmpwd.wavedir, tmpwd.wavehgt, "aa"),scope.retWORMWindStyle(1, tmpwd.winddir, tmpwd.windspd, "", tmpwd.wavedir),scope.retWORMCurrentStyle(1,tmpwd.currdir,tmpwd.currspd,"")]);
 
                                             //create new point content from waypoint
                                             if(pointnumber && pointnumber < $rootScope.wor_route_oLfeatures.length -2){ //good to go
@@ -1394,7 +1605,6 @@ angular.module('maritimeweb.route')
 
                             }
                         };
-                        console.log("make a hop in enav services which does the wor over https");
                         if(scope.wor_enabled) scope.getWeatherDataForWaypoint(1); //get weather on route but skip the starting point
 
                         //RTZ
@@ -1477,6 +1687,81 @@ angular.module('maritimeweb.route')
                                 closer.blur();
                             }
                         });
+
+
+
+                        scope.updateRouteWORMFunction = function(routemarkernumber) { //create route weather marker when data is available.
+                            //
+                            // var winddirection = route.scheduleElement[routemarkernumber].winddirection;
+                            // var windspeed = route.scheduleElement[routemarkernumber].windspeed;
+                            // var currentdirection = route.scheduleElement[routemarkernumber].currentdirection;
+                            // var currentspeed = route.scheduleElement[routemarkernumber].currentspeed;
+                            // var wavedirection = route.scheduleElement[routemarkernumber].wavedirection;
+                            // var waveheight = route.scheduleElement[routemarkernumber].waveheight;
+                            //
+                            // var timehours = (route.scheduleElement[routemarkernumber].eta.split("T")[1]).split(".")[0]; //get hours & minutes from 2017-04-19T11:00:01.000Z
+                            // timehours = timehours.substring(0,timehours.length-3);
+                            //
+                            // var markertext = retDayFromRTZ(route.scheduleElement[routemarkernumber].eta) + "\n" + timehours + " UTC";
+                            // if (!control_displaymarkertext) markertext = "";
+                            // //adds a new clickmarker with updated info
+                            // mapSource.addFeatures(generateWORM('ROUTEWEATHERMARKER', 'routeweathermarker_' + routemarkernumber, route.waypoints[routemarkernumber].lon, route.waypoints[routemarkernumber].lat, control_scale, winddirection, windspeed, currentdirection, currentspeed, wavedirection, waveheight, markertext));
+
+                        };
+
+                        scope.cleanWeatherMarkersOverlapping = function () {
+                            console.log("cleaning overlapping WOR markers on zoom");
+                            // function hideshowmarkerswithindistance(showhidedistance) {
+                            //     var totalDistance = 0;
+                            //     for (var i = 0; i != route.scheduleElement.length - 1; i++) {//loop through all waypoints, remove any that are closer than (distance)
+                            //         for (var y = i; y != route.scheduleElement.length - 1; y++) {
+                            //             totalDistance = parseFloat(route.scheduleElement[i].nextwaypointdistance) + parseFloat(route.scheduleElement[i + 1].nextwaypointdistance); //add up distances
+                            //             if (showhidedistance > totalDistance) {
+                            //                 try { //remove the marker
+                            //                     mapSource.removeFeature(mapSource.getFeatureById("routeweathermarker_" + (i) + "_wavemarker"));
+                            //                     mapSource.removeFeature(mapSource.getFeatureById("routeweathermarker_" + (i) + "_currentmarker"));
+                            //                     mapSource.removeFeature(mapSource.getFeatureById("routeweathermarker_" + (i) + "_windmarker"));
+                            //                 } catch (ExceptionNoFeature) { }
+                            //                 route.scheduleElement[i].zoomdisplay = mapZoomLevel; //save at which zoomlevel to show this marker again
+                            //             }
+                            //         }
+                            //         //add markers that are within acceptable distance again on zoom change
+                            //         if (route.scheduleElement[i].zoomdisplay > 0 && mapZoomLevel > (route.scheduleElement[i].zoomdisplay)) {
+                            //             updateRouteWORMFunction(i);
+                            //             route.scheduleElement[i].zoomdisplay = 0; //reset marker zoom behaviour
+                            //         }
+                            //     }
+                            // }
+                            // var showhidedistance = 0;
+                            // switch (mapZoomLevel) {
+                            //
+                            //     case 11:
+                            //         showhidedistance = 0.9;
+                            //         break;
+                            //     case 10:
+                            //         showhidedistance = 1.8;
+                            //         break;
+                            //     case 9:
+                            //         showhidedistance = 3.5;
+                            //         break;
+                            //     case 8:
+                            //         showhidedistance = 6;
+                            //         break;
+                            //     case 7:
+                            //         showhidedistance = 11;
+                            //         break;
+                            //     case 6:
+                            //         showhidedistance = 22;
+                            //         break;
+                            //     case 5:
+                            //         showhidedistance = 33;
+                            //         break;
+                            //     case 4:
+                            //         showhidedistance = 66;
+                            //         break;
+                            // }
+                            // hideshowmarkerswithindistance(showhidedistance);
+                        };
 
 
                         //animationLayer.getSource().addFeatures(scope.animatedfeatures);
