@@ -615,14 +615,14 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
 
             VtsHelperService.displayTotalSumOfBytesInLocalStorage(); //debugmode must be enabled
-            if (group1valid) console.log("group1valid", group1valid);
-            if (group2valid) console.log("group2valid", group2valid);
-            if (group3valid) console.log("group3valid", group3valid);
-            if (group4valid) console.log("group4valid - fuel", group4valid);
-            if (group5valid) console.log("group5valid - cargo", group5valid);
-            if (group6valid) console.log("group6valid - cargo contact", group6valid);
-            if (group7valid) console.log("group7valid", group7valid);
-            if (group8valid) console.log("group8valid - ETA", group8valid);
+            // if (group1valid) console.log("group1valid", group1valid);
+            // if (group2valid) console.log("group2valid", group2valid);
+            // if (group3valid) console.log("group3valid", group3valid);
+            // if (group4valid) console.log("group4valid - fuel", group4valid);
+            // if (group5valid) console.log("group5valid - cargo", group5valid);
+            // if (group6valid) console.log("group6valid - cargo contact", group6valid);
+            // if (group7valid) console.log("group7valid", group7valid);
+            // if (group8valid) console.log("group8valid - ETA", group8valid);
 
             if (group1valid == false || group2valid == false || group3valid == false || group4valid == false || group5valid == false || group6valid == false || group7valid == false || group8valid == false) {
                 $scope.VTSReadyToSend = false;
