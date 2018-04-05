@@ -745,7 +745,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
         $scope.VTSVesselCallsignValidation = function (validate) {
             if($scope.vtsvesselcallsigninput.length > 1){
                 $scope.setvtsvesselcallsignValid = true;
-                $scope.reportSummary.vtsCallSign = $scope.vtsvesselcallsigninput;
+                $scope.reportSummary.callSign = $scope.vtsvesselcallsigninput;
             }else{
                 $scope.setvtsvesselcallsignValid = false;
                 $scope.reportSummary.vtsCallSign = "";
@@ -1813,7 +1813,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
 
             // debug
             console.log("VTS REPORT:", $scope.reportSummary);
-            growl.success("VTS report could successfully be sent to " + $scope.reportSummary.vtsShortName + "!");
+            // growl.success("VTS report could successfully be sent to " + $scope.reportSummary.vtsShortName + "!");
 
 
             var formattedVtsEtaTime = $scope.reportSummary.voyageVTSETADateTime;
@@ -1832,7 +1832,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                     }
                 ],
                 ShipName: $scope.reportSummary.vesselName,
-                Callsign: $scope.reportSummary.callsign,
+                Callsign: $scope.vtsvesselcallsigninput,
                 MMSI: $scope.reportSummary.vesselMMSI,
                 IMO: $scope.reportSummary.vesselIMO,
                 ccMail: "not@defined.com",
@@ -1855,7 +1855,6 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             //05 Apr 2018 - 16 : 22
             console.log("post:"+JSON.stringify(tmpReport)); //debug
 
-            $scope.sendReport($scope.reportSummary.vtsShortName, tmpReport);
 
 
 
@@ -1886,7 +1885,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             //                 Quantity: 183
             //             }
             //         ],
-            //         ShipName: "BW - FORWARD - TEST 52",
+            //         ShipName: "BW - FORWARD - TEST 69",
             //         Callsign: "YOLO",
             //         MMSI: "266262000-test2",
             //         IMO: "9010163",
@@ -1902,10 +1901,11 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
             //         Route1: "F - Flintrännan",
             //         CargoType: "Passenger",
             //         DangerousCargoOnboard: true,
-            //         EtaSoundRep: "2018-03-05T15:00:00.000Z"
+            //         EtaSoundRep: "2018-03-06T15:00:00.000Z"
             // };
             // $scope.badcontent = {bad:true};
 
+            $scope.sendReport($scope.reportSummary.vtsShortName, tmpReport);
 
 
 
@@ -1939,7 +1939,7 @@ angular.module('maritimeweb.app').controller('VesselTrafficServiceReportCtrl', [
                     headers: {'Content-Type': 'application/json; charset=UTF-8'},
                     url: 'https://beeres.dk/BW/reportforwarding.aspx', //Uses monkeystuff because unknown issue with sending and too little time to fix.
                     method: "POST", //POST, GET etc.
-                    data: JSON.stringify(content),
+                    data: content,
                 })
                     .then(function (data) {
                             // console.log("success report:",data);
