@@ -81,8 +81,8 @@ angular.module('maritimeweb.app')
                     // zoomToVesselMMSI = 219018314; //default
                     // zoomToVesselMMSI = 219592000; //Crown Seaways
                     // zoomToVesselMMSI = 219945000; //Pearl Seaways
-                    zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
-                    // zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
+                    // zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
+                    zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
                     $window.localStorage.setItem('vessel_image','DFDSSeawaysVesselSatelliteImage_small.png'); //hardcoded vessel image
 
                     $scope.hasMMSI = true; //so menu displays zoomtovessel icon
