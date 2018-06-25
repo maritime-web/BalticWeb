@@ -611,7 +611,7 @@ angular.module('maritimeweb.map')
             restrict: 'E',
             replace: true,
             require: '^olMap',
-            template: "<div class='map-mouse-position'>{{(filterPos) ? (currentPos | lonlat:{ decimals : 2, pp: true }) : (currentPos)  }}<div class='map-mouse-position-toggle glyphicon glyphicon-transfer' ng-click='clickToggleDisplayType()'></div></div>",
+            template: "<div class='map-mouse-position'>{{(filterPos) ? (currentPos | lonlat:{ decimals : 2, pp: true }) : (currentPos)  }}<div class='map-mouse-position-toggle' ng-click='clickToggleDisplayType()'><i class='fa fa-exchange'></i></div></div>",
             scope: {},
             link: function (scope, element, attrs, ctrl) {
                 var olScope = ctrl.getOpenlayersScope();
@@ -641,7 +641,7 @@ angular.module('maritimeweb.map')
                             '<position lat=\"'+scope.currentPos.lat+'\" lon=\"'+scope.currentPos.lon+'\"/>\n' +
                             '<leg speedMin=\"12.0\" speedMax=\"12.0\" />\n' +
                             '</waypoint>';
-                        console.log("RTZ:",scope.tmpRtzPoints);
+                        // console.log("RTZ:",scope.tmpRtzPoints);
                         // console.log("rtzeditor");
 
                         MapService.sidebarCollapse();
