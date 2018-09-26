@@ -502,7 +502,12 @@
 					<plugin>
 						<groupId>org.wildfly.plugins</groupId>
 						<artifactId>wildfly-maven-plugin</artifactId>
-						<version>1.1.0.Alpha7</version>
+						<version>1.2.2.Final</version>
+						<configuration>
+                            <!-- These credentials should match the ones in the Docker file -->
+							<username>admin</username>
+                            <password>admin</password>
+						</configuration>
 						<executions>
 							<execution>
 								<id>install-undeploy</id>

@@ -8,6 +8,8 @@ RUN yum remove -y java-1.7.0-openjdk-devel
 
 RUN yum install -y java-1.8.0-openjdk-devel
 
+RUN yum install -y dos2unix
+
 RUN yum clean all
 
 # set locals for image to support UTF-8
@@ -39,6 +41,8 @@ RUN ls -la /opt/jboss/wildfly/standalone/deployments
 COPY wait_for_it.sh /opt/jboss/wildfly/bin/wait_for_it.sh
 
 USER root
+
+RUN dos2unix /opt/jboss/wildfly/bin/wait_for_it.sh
 
 RUN chmod +x /opt/jboss/wildfly/bin/wait_for_it.sh
 

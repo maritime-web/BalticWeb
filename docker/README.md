@@ -2,8 +2,8 @@
 A dockerized container for the BalticWeb project. The container deploys the latest successful build of BalticWeb on a Wildfly 8.2.0 web server. It also has the required CouchDB and MySQL as described in the [BalticWeb](https://github.com/maritime-web/BalticWeb#balticweb) guide. 
 
 ## Prerequisties
-* Docker 1.10.0+
-* Docker Compose 1.6.0+
+* Docker 17.12.0+
+* Docker Compose 1.18.0+
 * A file called balticweb.properties
 * Two configuration files for Keycloak as described in [BalticWeb](https://github.com/maritime-web/BalticWeb#configure-keycloak)
 
@@ -65,3 +65,13 @@ When you want to stop the containers do
 If you want to stop the containers and then remove them do
 
 	$ ./undeploy.sh full
+
+## Development
+
+You can use docker-compose in local development by starting the environment up using the command
+
+    $ docker-compose -f docker-compose.yml -f docker-compose-dev.yml up
+    
+this will start BalticWeb up with the management port `9990` open which mean that you can deploy local changes to the wildfly server using
+
+    $ mvn -P fulldeploy install

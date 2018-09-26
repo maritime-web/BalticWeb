@@ -1,0 +1,14 @@
+version: '3.5'
+services:
+  balticweb:
+    build: .
+    ports:
+      - "9990:9990"
+    restart: "no"
+  mysqldb:
+    restart: "no"
+  couchdb:
+    restart: "no"
+
+
+
