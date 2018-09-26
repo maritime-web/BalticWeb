@@ -63,66 +63,6 @@ angular.module('maritimeweb.app')
                 return undefined;
             };
 
-            $scope.hasMMSI = false; //checked in menu to place zoom to vessel icon
-            //Just for demonstration purposes - useremail is hardcoded as MD5 hashes - sees if specific user, then attaches MMSI to it and sets flag (hasMMSI)
-            $scope.detectUserMmsiByEmail = function(){
-                if($scope.loggedIn){
-                var useremail = $scope.userMrn().email;
-                var userEmailMd5 = CryptoJS.MD5(useremail).toString();
-                var forceZoomToVessel = false;
-                var zoomToVesselMMSI = 0;
-                var curPos = {
-                    lon:0,
-                    lat:0,
-                    cog:0
-                };
-                    console.log("userEmailMd5",userEmailMd5);
-                if(userEmailMd5 == "826af07e5d45f86e84bd586468dde926" || userEmailMd5 == "93a674f2733e380c800501da076b2737"){
-                    // zoomToVesselMMSI = 219018314; //default
-                    // zoomToVesselMMSI = 219592000; //Crown Seaways
-                    // zoomToVesselMMSI = 219945000; //Pearl Seaways
-                    // zoomToVesselMMSI = 230987000 ; //Finnlady - departs Travemünde 0300 05/04
-                    zoomToVesselMMSI = 230982000 ; //Finnmaid - departs Travemünde 0300 06/04
-                    $window.localStorage.setItem('vessel_image','DFDSSeawaysVesselSatelliteImage_small.png'); //hardcoded vessel image
-
-                    $scope.hasMMSI = true; //so menu displays zoomtovessel icon
-                    $window.localStorage.setItem('mmsi', zoomToVesselMMSI);
-                    forceZoomToVessel = true;
-                }else{
-                    $window.localStorage.setItem('mmsi', '');
-                }
-                function locateVesselPos(){
-                    if(forceZoomToVessel) {
-                        try {
-                            $scope.mapTrafficLayers.getLayers().getArray()[0].setVisible(true);
-                        }catch(noLayerYetError){}
-
-                        VesselService.detailsMMSI(zoomToVesselMMSI).then(function (vesselDetails) {
-                            curPos.lon = vesselDetails.data.aisVessel.lon;
-                            curPos.lat = vesselDetails.data.aisVessel.lat;
-                            curPos.cog = vesselDetails.data.aisVessel.cog;
-                            curPos.id = vesselDetails.data.aisVessel.name;
-                            curPos.callsign = vesselDetails.data.aisVessel.callsign;
-                            curPos.mmsi = vesselDetails.data.aisVessel.mmsi;
-                            curPos.angle = vesselDetails.data.aisVessel.rot;
-                            curPos.radian = (vesselDetails.data.aisVessel.rot * (Math.PI / 180));
-                            localStorage.setItem('vts_zoomto_uservessel', "["+curPos.lon+","+curPos.lat+"]");
-                            $window.localStorage.setItem('Vessel_AIS_data',JSON.stringify(curPos));
-                            forceZoomToVessel=false;
-                        });
-                    }
-                }
-                if(forceZoomToVessel) setTimeout(function(){ locateVesselPos(); }, 2000); //keeps trying to locate vessel
-                }else{
-                    //notlogged in
-                    $window.localStorage.setItem('vessel_image',''); //no hardcoded vessel image
-                }
-            };
-            $scope.detectUserMmsiByEmail();
-
-
-
-
 
             /** Enters the Keycloak account management **/
             $scope.accountManagement = function () {
