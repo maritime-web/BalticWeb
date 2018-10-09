@@ -1,12 +1,20 @@
 angular.module('maritimeweb.serviceregistry')
 
-/** Service for accessing AIS vessel data **/
-    .service('ServiceRegistryService', ['$http', 'growl',
-        function ($http, growl) {
+    .service('ServiceRegistryService', ['$http',
+        function ($http) {
 
             this.getServiceInstances = function (wkt) {
                 var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
                 var request = '/rest/service/lookup/' + params;
+                return $http.get(request);
+            };
+
+
+            this.getServiceInstancesForDesign = function (designId, version, wkt) {
+                var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
+                var pathParam1 = encodeURIComponent(designId);
+                var pathParam2 = encodeURIComponent(version);
+                var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 + params;
                 return $http.get(request);
             };
 

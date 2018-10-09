@@ -72,13 +72,8 @@ angular.module('maritimeweb.app')
             // Map state and layers
             $scope.mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
             $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
-            //$scope.mapWeatherLayers = MapService.createStdWeatherLayerGroup();
             $scope.mapMiscLayers = MapService.createStdMiscLayerGroup();
-            //$scope.mapTrafficLayers = ""; // is set in the ais-vessel-layer
             $scope.mapSeaMapLayer = MapService.createSuperSeaMapLayerGroup();
-            // $scope.mapMCLayers = MapService.createMCLayerGroup();
-            // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
-            //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
             $scope.mcServiceRegistryInstances = [];
 
 
@@ -479,6 +474,10 @@ angular.module('maritimeweb.app')
                 var msg = $scope.nwNmMessages[index];
                 return NwNmService.getAreaHeading(msg);
             };
+
+            /*******************************************/
+            /** END NW-NM                             **/
+            /*******************************************/
 
 
             /** Toggle the selected status of the layer **/

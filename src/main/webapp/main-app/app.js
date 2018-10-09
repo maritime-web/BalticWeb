@@ -26,6 +26,7 @@ angular.module('maritimeweb.nasa-satellite', ['yaru22.angular-timeago']);
         'maritimeweb.app',
         'maritimeweb.vessel',
         'maritimeweb.nw-nm',
+        'maritimeweb.s-124',
         'maritimeweb.no-go-area',
         'maritimeweb.weather',
         'maritimeweb.vts-report',

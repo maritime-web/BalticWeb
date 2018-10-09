@@ -43,11 +43,8 @@ angular.module('maritimeweb.serviceregistry')
             // Map state and layers
             $scope.mapState = JSON.parse($window.localStorage.getItem('mapState-storage')) ? JSON.parse($window.localStorage.getItem('mapState-storage')) : {};
 
-            // $scope.mapMCLayers =  $scope.createMCLayerGroup();
             $scope.mapBackgroundLayers = MapService.createStdBgLayerGroup();
 
-            // $scope.mapNoGoLayer =  MapService.createNoGoLayerGroup(); // is set in the no-go-layer
-            //$scope.mcServiceRegistryInstances = ServiceRegistryService.getServiceInstances('POLYGON((9.268411718750002%2053.89831670389188%2C9.268411718750002%2057.58991390302003%2C18.392557226562502%2057.58991390302003%2C18.392557226562502%2053.89831670389188%2C9.268411718750002%2053.89831670389188))');
             $scope.mcServiceRegistryInstances = [];
 
             $scope.clearServiceRegistry = function () {

@@ -90,17 +90,21 @@
                             -->
                             <tr ng-class="{'active':(instance.instanceId===highlightedInstance.instanceId) || isHighlighted(instance.instanceId)}"
                                 ng-click="console.log(instance.name)">
-                                <td><a href="" ng-bind="instance.name" ng-click="highlightInstance(instance)" ></a>
-                                    <span ng-if="!instance.boundary"  uib-popover="Instance has no relevance boundary defined" popover-placement="bottom" popover-trigger="mouseenter" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <td>
+                                    <a href="" ng-bind="instance.name" ng-click="highlightInstance(instance)" ></a>
+                                    <span ng-if="!instance.boundary"
+                                          uib-popover="Instance has no relevance boundary defined"
+                                          popover-placement="bottom" popover-trigger="mouseenter">
+                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                    </span>
 
-                                    <span ng-if="instance.warnings.length>0" class="alert alert-warning" ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                                   <span>length: {{instance.warnings.length}}</span>
-                                    <ul>
-                                     <li ng-repeat="warn in instance.warnings"> {{warn.value}}</li>
-                                     </ul>
-                                 </span>
-                                    <!--<span  ng-bind="instance.description"></span>-->
-                                    <!--span class="label label-success" ng-bind="instance.instanceId"></span-->
+                                    <span ng-if="instance.warnings.length>0" class="alert alert-warning">
+                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                        <span>length: {{instance.warnings.length}}</span>
+                                        <ul>
+                                            <li ng-repeat="warn in instance.warnings"> {{warn.value}}</li>
+                                        </ul>
+                                    </span>
                                 </td>
                             </tr>
 

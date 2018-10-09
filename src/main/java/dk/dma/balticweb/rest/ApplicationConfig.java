@@ -30,6 +30,7 @@ import dk.dma.embryo.vessel.json.RouteUploadRestService;
 import dk.dma.embryo.vessel.json.ScheduleRestService;
 import dk.dma.enav.services.nwnm.NwNmRestService;
 import dk.dma.enav.services.registry.ServiceLookupRestService;
+import dk.dma.enav.services.s124.S124RestService;
 import dk.dma.enav.services.vtsreport.service.VtsInterfacePopulationService;
 import dk.dma.enav.services.vtsreport.service.VtsReportForwardingService;
 import dk.dma.enav.services.vtsreport.service.WeatherRequestForwarding;
@@ -75,6 +76,7 @@ public class ApplicationConfig extends Application {
                 FeedbackRestService.class,
                // AreasOfInterestRestService.class,
                 NwNmRestService.class,
+                S124RestService.class,
                 VtsService.class,
                 VtsInterfacePopulationService.class,
                 VtsReportForwardingService.class,

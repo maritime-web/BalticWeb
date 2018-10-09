@@ -1,13 +1,4 @@
-/**
- * Defines the main AIS vessel layer
- */
-
 angular.module('maritimeweb.serviceregistry')
-/**
- * The map-vessel-layer directive supports drawing a list of vessels on a map layer.
- * It will automatically load the vessels for the current map bounding box,
- * but only if the user is logged in.
- */
     .directive('mapServiceRegistryLayer', ['$rootScope', '$timeout', 'Auth', 'ServiceRegistryService', 'MapService','growl', '$log',
         function ($rootScope, $timeout, Auth, ServiceRegistryService, MapService, growl, $log) {
             return {

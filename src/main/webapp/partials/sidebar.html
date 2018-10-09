@@ -1,6 +1,7 @@
 
 <div ng-mouseover="sidebarUncollapse()" id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar" ng-class="{false:'sidebar-normal', true:'sidebar-minimized'}[sidebarCollapsed]" class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
-    <uib-tabset type="pills" justified="true" active="activeTabIndex" index="$index">
+    <div ng-controller="S124SidebarController as s124Sidebar">
+    <uib-tabset type="pills" justified="false" active="activeTabIndex" index="$index">
 
 
         <!-- NW-NM tab -->
@@ -19,7 +20,7 @@
                         Display &nbsp;&nbsp;
                         <input type="checkbox" ng-model="nwNmType.NW" ng-change="nwNmTypeChanged()" aria-label="Display navigational warnings">&nbsp;NW
                         &nbsp;&nbsp;
-                        <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()" aria-label="Display notices to mariners">&nbsp;NM
+                        <input type="checkbox" ng-model="nwNmType.NM" ng-change="nwNmTypeChanged()" aria-label="Display notices to mariners">&nbsp;NtM
                     </div>
                 </div>
 
@@ -48,6 +49,49 @@
                 </div>
             </div>
 
+        </uib-tab>
+
+        <!-- S-124 tab -->
+        <uib-tab classes="btn-sm">
+
+
+            <uib-tab-heading>
+                <img src="/img/nwnm/nw16x16.png" />
+                S-124
+                <span class="badge sidebar-badge" ng-bind="s124Sidebar.messages.length"></span>
+            </uib-tab-heading>
+
+            <div class="panel"  ng-class="(s124Sidebar.servicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+                <div style="height:60px;" class="panel-heading cursor-default">
+                    Navigational Warnings
+                    <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="s124Sidebar.refreshServices()"></small>
+                </div>
+
+                <div class="panel-body">
+                    <div class="message-service" ng-repeat="s in s124Sidebar.services">
+                        <input type="checkbox" ng-model="s.selected" ng-change="s124Sidebar.selected(s)">&nbsp;{{s.name}}
+                    </div>
+
+                    <table class="table table-striped">
+                        <tr ng-repeat-start="msg in s124Sidebar.messages"
+                            ng-if="$index == 0 || s124Sidebar.areaHeading($index) != s124Sidebar.areaHeading($index - 1)">
+                            <td colspan="2" class="message-area-heading">
+                                {{s124Sidebar.areaHeading($index)}}
+                            </td>
+                        </tr>
+                        <tr ng-repeat-end>
+                            <td width="20" align="left" class="message-item">
+                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm20x20.png" />
+                                <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw20x20.png" />
+                            </td>
+                            <td width="*" class="message-item">
+                                <span class="badge label-message-id">{{msg.id}}</span>
+                                <a href ng-click="s124Sidebar.showDetails(msg)">{{msg.title}}</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </uib-tab>
 
 
@@ -354,4 +398,5 @@
         </uib-tab>
 
     </uib-tabset>
+</div>
 </div>
