@@ -351,7 +351,6 @@ angular.module('maritimeweb.app')
                 $interval($scope.getNextNoGoAreaIncreaseDraught, 2200, 8);
             };
 
-
             /**************************************/
             /** NW-NM sidebar functionality      **/
             /**************************************/
@@ -482,7 +481,7 @@ angular.module('maritimeweb.app')
 
             /** Toggle the selected status of the layer **/
             $scope.toggleLayer = function (layer) {
-                (layer.getVisible() == true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
+                (layer.getVisible() === true) ? layer.setVisible(false) : layer.setVisible(true); // toggle layer visibility
                 if (layer.getVisible()) {
                     growl.info('Activating ' + layer.get('title') + ' layer');
                     $window.localStorage.setItem(layer.get('title'), true);
@@ -493,7 +492,7 @@ angular.module('maritimeweb.app')
 
             /** Toggle the selected status of the service **/
             $scope.toggleService = function (service) {
-                service.selected = (service.selected != true); // toggle layer visibility
+                service.selected = (service.selected !== true); // toggle layer visibility
                 if (service.selected) {
                     growl.info('Activating ' + service.name + ' layer');
                 }
@@ -577,23 +576,6 @@ angular.module('maritimeweb.app')
                 };
                 $timeout(redirect, 100);
             };
-
-
-            $scope.refreshTokenManually = $interval(function () {
-                $http({
-                    url: '/rest/vtsinterface',
-                    method: "GET",
-                    data: "",
-                    headers: {'Content-Type': 'application/text'}
-                })
-                    .then(function (data) {
-                            console.log("Refreshed token with http call");
-                        },
-                        function (data) { // error
-                        });
-            }, 300000); //every 5 minutes
-
-
 
         }]);
 

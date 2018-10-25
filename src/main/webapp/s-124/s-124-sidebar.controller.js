@@ -3,20 +3,30 @@
     angular.module('maritimeweb.s-124')
         .controller("S124SidebarController", S124SidebarController);
 
-    S124SidebarController.$inject = ['$scope', 'S124Service', '$window', 'growl', '$log'];
+    S124SidebarController.$inject = ['$scope', 'S124Service', '$window', 'growl', '$log', 'NotifyService'];
 
-    function S124SidebarController($scope, S124Service, $window, growl, $log) {
+    function S124SidebarController($scope, S124Service, $window, growl, $log, NotifyService) {
         var vm = this;
         vm.messages = [];
         vm.servicesStatus = "true";
         vm.services = [];
+        vm.wkt = {};
+        vm.reloadClass = "";
         vm.refreshServices = refreshServices;
         vm.selected = selected;
         vm.areaHeading = areaHeading;
         vm.showDetails = showDetails;
 
-        var wkt = "POLYGON((-14.475675390625005 40.024168123114805,-14.475675390625005 68.88565248991273,59.92373867187499 68.88565248991273,59.92373867187499 40.024168123114805,-14.475675390625005 40.024168123114805))";
-        function refreshServices() {
+        var getMapState = function () {
+            return JSON.parse($window.localStorage.getItem('mapState-storage'));
+        };
+        $scope.$watch(getMapState, refreshServices, true);
+
+        // var wkt = "POLYGON((-14.475675390625005 40.024168123114805,-14.475675390625005 68.88565248991273,59.92373867187499 68.88565248991273,59.92373867187499 40.024168123114805,-14.475675390625005 40.024168123114805))";
+        function refreshServices(mapState) {
+            if (mapState) {
+                vm.wkt = mapState['wktextent'];
+            }
 
             function emptyResult(status) {
                 return status === 204;
@@ -31,7 +41,8 @@
                 $window.localStorage[S124Service.serviceID()] = newStatus;
             }
 
-            S124Service.getS124ServiceInstances(wkt)
+            growl.info("Looking for S-124 services in the area");
+            S124Service.getS124ServiceInstances(vm.wkt)
                 .then(function (response) {
                     var services = response.data;
                     var status = response.status;
@@ -50,10 +61,13 @@
                             service.selected = $window.localStorage[service.instanceId] === 'true';
                             if (service.selected) {
                                 chosenServiceInstances.push(service.instanceId);
+                                growl.info("Loading S-124 messages from the " + service.name + " service");
                             }
                         });
 
-                        loadMessages({instances: chosenServiceInstances, wkt: wkt, append: false});
+                        NotifyService.notify("S-124-Services-Loaded", vm.services);
+
+                        loadMessages({instances: chosenServiceInstances, wkt: vm.wkt, append: false});
                     }
                 })
                 .catch(function (response) {
@@ -64,11 +78,14 @@
 
                     $log.debug("Error getting S-124 services. Reason=" + error);
                 });
-
         }
 
         function loadMessages(options) {
             var instances = options.instances;
+            if (instances.length === 0) {
+                return;
+            }
+
             var wkt = options.wkt;
             var append = options.append || false;
             S124Service.getS124Messages(instances, wkt)
@@ -78,12 +95,14 @@
                     } else {
                         vm.messages = response.data;
                     }
+
+                    NotifyService.notify("S-124-Messages-Loaded", vm.messages);
+
                 })
                 .catch(function (response) {
                     growl.error("Error loading S-124 messages.");
                     $log.debug("Error loading S-124 messages. Details=" + response.data);
                 });
-
         }
 
         function getAllSelectedServiceInstances() {
@@ -92,12 +111,18 @@
                 .map(function(service) {return service.instanceId;});
         }
 
+        function clearMessagesFor(service) {
+            vm.messages = vm.messages.filter(function (m) { return m.serviceInstanceId !== service.instanceId });
+            NotifyService.notify("S-124-Messages-Loaded", vm.messages);
+        }
+
         function selected(service) {
             $window.localStorage[service.instanceId] = service.selected;
             if (service.selected) {
-                loadMessages({instances: [service.instanceId], wkt: wkt, append: true});
+                loadMessages({instances: [service.instanceId], wkt: vm.wkt, append: true});
             } else {
-                loadMessages({instances: getAllSelectedServiceInstances(), wkt: wkt, append: false});
+                clearMessagesFor(service);
+                // loadMessages({instances: getAllSelectedServiceInstances(), wkt: vm.wkt, append: false});
             }
         }
         
@@ -106,7 +131,7 @@
         }
 
         function showDetails(msg) {
-
+            S124Service.showMessageInfo(msg);
         }
     }
 })();

@@ -1250,6 +1250,23 @@ abbr::after {
 .cursor-default{
     cursor: default !important;
 }
+
+.cursor-hand {
+    cursor: pointer !important;
+}
+
+.reload-default {
+    border: 4px rgba(220, 220, 220, 0.0) solid;
+    border-radius: 14px;
+    background-color: rgba(220, 220, 220, 0.0);
+}
+
+.reload-mouse-over {
+    border: 4px rgba(220, 220, 220, 0.5) solid;
+    border-radius: 14px;
+    background-color: rgba(220, 220, 220, 0.8);
+}
+
 .sidebar-badge {
     background-color: lightgray;
     font-size: 10px;

@@ -33,21 +33,6 @@
 
 	</properties>
 
-<!--
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-6.0</artifactId>
-				<version>${version.org.jboss.spec.javaee6}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-		</dependencies>
-	</dependencyManagement>
--->
-
 	<dependencies>
 		<!-- Added here again because weld jar contains older version of slf4j. 
 			This must be first in the classpath for Eclipse to work -->
@@ -77,11 +62,6 @@
 			<artifactId>vessel</artifactId>
 		</dependency>
 
-	<!--	<dependency>
-            <groupId>dk.dma.enav.services</groupId>
-			<artifactId>dataformats</artifactId>
-		</dependency>-->
-
 		<dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>user</artifactId>
@@ -92,22 +72,6 @@
 			<artifactId>msi</artifactId>
 		</dependency>
 
-<!--
-		<dependency>
-            <groupId>dk.dma.enav.services</groupId>
-			<artifactId>metoc</artifactId>
-		</dependency>
--->
-
-		<!--<dependency>
-            <groupId>dk.dma.enav.services</groupId>
-			<artifactId>reporting</artifactId>
-		</dependency>
-
-                <dependency>
-                    <groupId>dk.dma.enav.services</groupId>
-                    <artifactId>weather</artifactId>
-                </dependency>-->
 		<dependency>
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>service-registry</artifactId>
@@ -117,31 +81,11 @@
 			<groupId>dk.dma.enav.services</groupId>
 			<artifactId>vts-report</artifactId>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>dk.dma.enav.services</groupId>
-			<artifactId>map-tiles</artifactId>
-		</dependency>
--->
 
 		<dependency>
 			<groupId>dk.dma.enav</groupId>
 			<artifactId>enav-model</artifactId>
 		</dependency>
-
-		<!--
-        <dependency>
-            <groupId>dk.dma.enav.services</groupId>
-            <artifactId>sar</artifactId>
-        </dependency>
-        -->
-
-<!--		<dependency>
-			<groupId>org.niord</groupId>
-			<artifactId>niord-model</artifactId>
-            <version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>-->
 
         <!-- Import the Servlet API. -->
 		<dependency>
@@ -197,12 +141,6 @@
 			<artifactId>sanselan</artifactId>
 			<version>0.97-incubator</version>
 		</dependency>
-<!--		<dependency>
-			<groupId>org.niord</groupId>
-			<artifactId>niord-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>-->
     </dependencies>
 
 	<build>

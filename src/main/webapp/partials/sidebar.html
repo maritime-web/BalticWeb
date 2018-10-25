@@ -64,7 +64,7 @@
             <div class="panel"  ng-class="(s124Sidebar.servicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <div style="height:60px;" class="panel-heading cursor-default">
                     Navigational Warnings
-                    <small tooltip="Refresh" class="glyphicon glyphicon-refresh" ng-click="s124Sidebar.refreshServices()"></small>
+                    <small ng-class="s124Sidebar.reloadClass" ng-mouseenter="s124Sidebar.reloadClass='reload-mouse-over'" ng-mouseleave="s124Sidebar.reloadClass=''" class="glyphicon glyphicon-refresh cursor-hand reload-default" ng-click="s124Sidebar.refreshServices()"></small>
                 </div>
 
                 <div class="panel-body">
@@ -81,7 +81,6 @@
                         </tr>
                         <tr ng-repeat-end>
                             <td width="20" align="left" class="message-item">
-                                <img ng-if="msg.mainType == 'NM'" src="/img/nwnm/nm20x20.png" />
                                 <img ng-if="msg.mainType == 'NW'" src="/img/nwnm/nw20x20.png" />
                             </td>
                             <td width="*" class="message-item">

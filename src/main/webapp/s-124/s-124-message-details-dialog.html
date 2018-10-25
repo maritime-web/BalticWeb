@@ -1,0 +1,155 @@
+<div>
+
+    <div class="modal-body print" style="padding-bottom: 0">
+
+        <div ng-if="vm.msg">
+            <div ng-if="vm.msg.warningType">
+                <h2>{{vm.msg.warningType}}</h2>
+            </div>
+
+            <ol-map ng-if="vm.hasGeometry()" class="message-details-map">
+                <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+                <map-s124-layer name="S-124 Message" message="vm.msg" fit-extent="true"></map-s124-layer>
+            </ol-map>
+
+            <button type="button" class="close dialog-close-btn" ng-click="$dismiss('aborted')">x</button>
+
+            <td class="message-details-item">
+
+
+                <!-- Title line -->
+                <div ng-if="vm.msg.originalInformation">&#10029;</div>
+
+                <div ng-if="vm.msg.id"><span class="badge label-message-id">{{vm.msg.id}}</span></div>
+                <div>
+                    <strong>{{vm.msg.title}}</strong>
+                </div>
+
+                <table class="message-details-item-fields">
+
+                    <!-- Reference lines -->
+                    <tr ng-if="vm.msg.references && vm.msg.references.length > 0">
+                        <th>References</th>
+                        <td>
+                            <div ng-repeat="ref in vm.msg.references">
+                                <span>{{ref.id}}</span>
+                                <span>{{ref.reference}}</span>
+                                <!-- TODO Display some information from "messageSeriesIdentifier"? -->
+                            </div>
+                        </td>
+                    </tr>
+
+
+                    <!-- Feature parts -->
+
+
+                    <!-- Part header -->
+                    <tr ng-if="vm.msg.navigationalWarningFeaturePart" ng-repeat-start="part in vm.msg.navigationalWarningFeaturePart">
+                        <td></td>
+                        <td>
+                            <div ng-if="vm.msg.navigationalWarningFeaturePart.length > 1">
+                                <strong>
+                                    Part: {{part.id}}
+                                </strong>
+                                <strong ng-if="part.other.featureName && part.other.featureName.length > 0">
+                                    &nbsp;{{part.other.featureName[0].name}}
+                                </strong>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- date range -->
+                    <tr ng-if="vm.msg.navigationalWarningFeaturePart && part.other.fixedDateRange">
+                        <th>
+                            <span>
+                                Time
+                            </span>
+                        </th>
+                        <td class="message-description"><!-- TODO Make directive to handle this -->
+                            <span ng-if="part.other.fixedDateRange[0].dateStart">{{part.other.fixedDateRange[0].dateStart}}</span>
+                            <span ng-if="part.other.fixedDateRange[0].timeOfDayStart"> {{part.other.fixedDateRange[0].timeOfDayStart}}</span>
+
+                            <span ng-if="(part.other.fixedDateRange[0].dateStart || part.other.fixedDateRange[0].timeOfDayStart) && (part.other.fixedDateRange[0].dateEnd || part.other.fixedDateRange[0].timeOfDayEnd)"> - </span>
+
+                            <span ng-if="part.other.fixedDateRange[0].dateEnd">{{part.other.fixedDateRange[0].dateEnd}}</span>
+                            <span ng-if="part.other.fixedDateRange[0].timeOfDayEnd"> {{part.other.fixedDateRange[0].timeOfDayEnd}}</span>
+                        </td>
+                    </tr>
+
+                    <!-- Information -->
+                    <tr ng-if="vm.msg.navigationalWarningFeaturePart">
+                        <th>
+                            <span>Information</span>
+                        </th>
+                        <td class="message-description">
+                            <div ng-if="part.other.warningInformation[0].headline">
+                                <strong>{{part.other.warningInformation[0].headline}}</strong>
+                            </div>
+
+                            <span>{{part.other.warningInformation[0].text}}</span>
+                        </td>
+                    </tr>
+
+                    <!-- restriction -->
+                    <tr ng-if="vm.msg.navigationalWarningFeaturePart && part.other.restriction">
+                        <th>
+                            <span>Restriction</span>
+                        </th>
+                        <td class="message-description">
+                            <span>{{part.other.restriction[0].name}}</span>
+                        </td>
+                    </tr>
+
+                    <!-- warningHazardType -->
+                    <tr ng-if="vm.msg.navigationalWarningFeaturePart && part.other.warningHazardType && part.other.warningHazardType.length > 0">
+                        <th>
+                            <span>Hazard type(s)</span>
+                        </th>
+                        <td class="message-description">
+                            <ul>
+                                <li ng-repeat="hazard in part.other.warningHazardType">{{hazard.name}}</li>
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <!-- repeat end -->
+                    <tr ng-if="vm.msg.navigationalWarningFeaturePart" ng-repeat-end>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+
+                    <!-- Charts line -->
+                    <tr ng-if="vm.msg.nwPreamble.charts && vm.msg.nwPreamble.charts.length > 0">
+                        <th>Charts</th>
+                        <td>
+                            <span ng-repeat="chart in vm.msg.nwPreamble.charts">
+                                <span ng-if="!$first">, </span>
+                                <span ng-if="chart.chartAffected">{{chart.chartAffected.chartNumber}}</span>
+                                <span ng-if="chart.chartAffected && chart.chartAffected.internationalChartAffected">(INT {{chart.chartAffected.internationalChartAffected}})</span>
+                            </span>
+                        </td>
+                    </tr>
+
+                    <!-- Source line  TODO why isn't there any source info in warnings?-->
+<!--
+                    <tr ng-if="msg.descs[0].source">
+                        <td colspan="2" class="text-right">({{msg.descs[0].source}})</td>
+                    </tr>
+-->
+                    <!-- Publication date -->
+                    <tr ng-if="vm.msg.nwPreamble.publicationDate">
+                        <td colspan="2" class="text-right">Publication date: {{vm.msg.nwPreamble.publicationDate | toDateTime}}</td>
+                    </tr>
+
+                </table>
+            </div>
+
+            <div class="row" style="margin: 10px 0">
+                <div class="col-xs-12" style="text-align: right">
+                    <button class="btn btn-primary btn-sm" ng-click="$dismiss('aborted')">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

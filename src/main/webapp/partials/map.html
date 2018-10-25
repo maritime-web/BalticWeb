@@ -2,6 +2,7 @@
 <div >
     <span id="loadingspinner"><a href ng-if="loadingData"><i class="fa fa-cog fa-spin fa-lg fa-fw fa-5x"></i><span class="sr-only">Loading...</span></a></span>
 </div>
+<div ng-controller="S124MapController as s124">
 <div id="wrap">
     <ol-map class="map col-xs-12 col-sm-12 col-md-12 col-lg-12" style="overflow:hidden;" map-state="mapState" minzoom="3" swlon="-31" swlat="30" nelon="61" nelat="80">
         <map-layer-group layer-group="mapSeaMapLayer"></map-layer-group>
@@ -10,6 +11,7 @@
         <map-layer-group layer-group="mapMiscLayers"></map-layer-group>
         <!--<map-layer-group layer-group="mapMCLayers" ></map-layer-group>-->
         <map-nw-nm-layer message-list="nwNmMessages" services="nwNmServices" name="NW-NM"></map-nw-nm-layer>
+        <map-s124-layer message-list="s124.messages" services="s124.services" name="S-124"></map-s124-layer>
         <map-vessel-layer vessels="vessels" name="Vessels" alerts="alerts" vesselsinfo="vesselsinfo" maxnumberofvessels="1000"></map-vessel-layer>
         <map-vts-area-layer vts-route="vtsRouteWKT" vts-areas="vtsAreasArr" vts-onroute-only="vtsShowIntersecting" vts-visible="vtsLayerEnabled"></map-vts-area-layer>
         <map-no-go-layer name="No-Go"></map-no-go-layer>
@@ -25,6 +27,6 @@
     </ol-map>
     <div class="push"></div>
 </div>
-
+</div>
 
 
