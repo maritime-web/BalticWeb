@@ -1,11 +1,11 @@
 (function () {
 
     angular.module('maritimeweb.s-124')
-        .controller("S124MapController", S124SidebarController);
+        .controller("S124MapController", S124MapController);
 
-    S124SidebarController.$inject = ['$scope', 'S124Service', '$window', 'growl', '$log', 'NotifyService'];
+    S124MapController.$inject = ['$scope', 'S124Service', '$window', 'growl', '$log', 'NotifyService'];
 
-    function S124SidebarController($scope, S124Service, $window, growl, $log, NotifyService) {
+    function S124MapController($scope, S124Service, $window, growl, $log, NotifyService) {
         var vm = this;
         vm.messages = [];
         vm.services = [];
