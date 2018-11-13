@@ -29,7 +29,7 @@
             var response = {data: [dummyServiceInstance], status: 200};
             return $q.when(response);
 */
-            return ServiceRegistryService.getServiceInstancesForDesign(this.serviceID(), this.serviceVersion(), wkt)
+            return ServiceRegistryService.getServiceInstancesForDesign(this.serviceID(), this.serviceVersion(), {wkt: wkt})
         }
 
         function getS124Messages(instanceIds, wkt, status, messageId) {

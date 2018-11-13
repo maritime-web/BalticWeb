@@ -1,0 +1,30 @@
+.near-miss-date-time-wrapper, .near-miss-mmsi-wrapper, .near-miss-service {
+    border-radius: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}
+
+.near-miss-date-time-header, .near-miss-mmsi-header, .near-miss-mmsi, .near-miss-date-time-wrapper, .near-miss-mmsi-wrapper {
+    background-color: #efefef;
+}
+
+.near-miss-date-time-header, .near-miss-mmsi-header, .near-miss-mmsi {
+    text-align: center;
+    width: 100%;
+}
+
+.near-miss-date-time-header, .near-miss-mmsi-header {
+    font-weight: bold
+}
+
+.near-miss-mmsi {
+    font-size: 1.5em;
+}
+
+.near-miss-service {
+    background-color: darkmagenta;
+    color: white;
+    width: 100%;
+    padding-left: 5px;
+}

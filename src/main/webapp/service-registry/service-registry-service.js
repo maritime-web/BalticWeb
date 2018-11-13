@@ -10,8 +10,13 @@ angular.module('maritimeweb.serviceregistry')
             };
 
 
-            this.getServiceInstancesForDesign = function (designId, version, wkt) {
-                var params = wkt ? '?wkt=' + encodeURIComponent(wkt) : '';
+            this.getServiceInstancesForDesign = function (designId, version, filterParams) {
+                var params = '';
+                if (filterParams.wkt) {
+                    params = '?wkt=' + encodeURIComponent(filterParams.wkt);
+                } else if (filterParams.mmsi) {
+                    params = '?mmsi=' + encodeURIComponent(filterParams.mmsi);
+                }
                 var pathParam1 = encodeURIComponent(designId);
                 var pathParam2 = encodeURIComponent(version);
                 var request = '/rest/service/lookup/' + pathParam1 + '/' + pathParam2 + params;

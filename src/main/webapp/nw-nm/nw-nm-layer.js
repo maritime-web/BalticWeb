@@ -51,7 +51,7 @@ angular.module('maritimeweb.nw-nm')
              * Get NW-NM services
              */
             this.getNwNmServices = function (wkt) {
-                return ServiceRegistryService.getServiceInstancesForDesign(this.serviceID(), this.serviceVersion(), wkt)
+                return ServiceRegistryService.getServiceInstancesForDesign(this.serviceID(), this.serviceVersion(), {wkt: wkt})
                     .then(function (response) {
                         if (response.status === 200) {
                             updateCache(response);

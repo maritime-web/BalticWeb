@@ -1,6 +1,7 @@
 
 <div ng-mouseover="sidebarUncollapse()" id="maritimeweb-sidebar" uib-collapse="!$root.showgraphSidebar" ng-class="{false:'sidebar-normal', true:'sidebar-minimized'}[sidebarCollapsed]" class="maritimeweb-sidebar col-xs-4 col-sm-5  col-md-5 sidebar "> <!-- uib-collapse="showgraphSidebar" -->
     <div ng-controller="S124SidebarController as s124Sidebar">
+    <div ng-controller="NearMissSidebarController as nearMiss">
     <uib-tabset type="pills" justified="false" active="activeTabIndex" index="$index">
 
 
@@ -53,8 +54,6 @@
 
         <!-- S-124 tab -->
         <uib-tab classes="btn-sm">
-
-
             <uib-tab-heading>
                 <img src="/img/nwnm/nw16x16.png" />
                 S-124
@@ -93,8 +92,45 @@
             </div>
         </uib-tab>
 
+        <!-- Near miss tab -->
+        <uib-tab classes="btn-sm">
+            <uib-tab-heading>
+                Near miss
+            </uib-tab-heading>
+
+            <div class="panel"  ng-class="(nearMiss.servicesStatus=='true') ? 'panel-primary' : 'panel-default'">
+                <div style="height:40px;" class="panel-heading cursor-default">
+                    Near miss
+                </div>
+
+                <div class="panel-body">
+                    <div class="near-miss-service">
+                        <bold>Service:</bold> <span>{{nearMiss.service.name}}</span>
+                    </div>
+
+                    <div class="near-miss-mmsi-wrapper">
+                        <div class="near-miss-mmsi-header">MMSI</div>
+                        <div class="near-miss-mmsi">{{nearMiss.mmsi}}</div>
+                    </div>
+
+                    <div class="near-miss-date-time-wrapper">
+                        <div class="near-miss-date-time-header">From</div>
+                        <datetime-input datetime="nearMiss.from" on-change="nearMiss.validate(nearMiss.from)" placeholder="From"></datetime-input>
+                    </div>
+                    <div class="near-miss-date-time-wrapper">
+                        <div class="near-miss-date-time-header">To</div>
+                        <datetime-input datetime="nearMiss.to" on-change="nearMiss.validate(nearMiss.to)" placeholder="To"></datetime-input>
+                    </div>
+                    <div style="padding-top: 5px;">
+                        <button class="btn btn-primary btn-block" data-ng-disabled="nearMiss.searchDisabled" name="Search near miss events" ng-click="nearMiss.showEvents()">Search near miss events</button>
+                    </div>
+                </div>
+            </div>
+        </uib-tab>
 
 
+
+        <!-- NO-GO tab -->
         <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading ng-class="(NoGoServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> No-Go
@@ -172,7 +208,7 @@
 
 
 
-
+        <!-- Satellite tab -->
         <uib-tab classes="btn-sm" ng-click="sidebarUncollapse()">
             <uib-tab-heading ng-class="(SatelliteServicesStatus=='true') ? 'panel-primary' : 'panel-default'">
                 <span class="glyphicon glyphicon-globe"></span> Satellite
@@ -397,5 +433,6 @@
         </uib-tab>
 
     </uib-tabset>
+</div>
 </div>
 </div>

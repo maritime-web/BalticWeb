@@ -34,6 +34,7 @@ angular.module('maritimeweb.nasa-satellite', ['yaru22.angular-timeago']);
         'maritimeweb.serviceregistry',
         'maritimeweb.route',
         'maritimeweb.nasa-satellite',
+        'maritimeweb.near-miss',
         'ngFlag',
         'chart.js',
         'yaru22.angular-timeago',

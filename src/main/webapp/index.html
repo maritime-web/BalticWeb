@@ -10,7 +10,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js"></script>
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.3.min.js"></script>
     <script src="//use.fontawesome.com/40f01fd2ee.js"></script>
-    <script src="https://openlayers.org/en/v4.6.4/build/ol.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js" ></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> <!-- still used in the menu dropdowns -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.rawgit.com/abdmob/x2js/master/xml2json.js"></script>
@@ -22,7 +22,7 @@
 
     <link href="//cdn.rawgit.com/indrimuska/angular-moment-picker/master/dist/angular-moment-picker.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.2/css/ol.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="libs/world-flags/flags16.css" />
     <link rel="stylesheet" href="libs/world-flags/flags32.css" />
@@ -30,6 +30,7 @@
 
     <!-- build:css style/balticweb.css -->
     <link rel="stylesheet" href="style/balticweb.css" />
+    <link rel="stylesheet" href="near-miss/near-miss.css" />
     <link rel="stylesheet" href="libs/growl2-lib/angular-growl.min.css" />
     <link rel="stylesheet" href="libs/json-formatter/dist/json-formatter.min.css" />
     <!-- endbuild -->
@@ -106,8 +107,11 @@
 <script src="s-124/s-124-sidebar.controller.js"></script>
 <script src="s-124/s-124-message-details-dialog.controller.js"></script>
 <script src="s-124/s-124.layer.js"></script>
-<script src="s-124/s-124.date-time.filter.js"></script>
 <script src="s-124/s-124-map.controller.js"></script>
+<script src="near-miss/near-miss.module.js"></script>
+<script src="near-miss/near-miss.constants.js"></script>
+<script src="near-miss/near-miss.service.js"></script>
+<script src="near-miss/near-miss-sidebar.controller.js"></script>
 <!-- endbuild -->
 
 <script src="main-app/google-analytics.js"></script>
