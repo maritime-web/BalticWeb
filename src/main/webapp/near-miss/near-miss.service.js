@@ -46,7 +46,8 @@
                 {mmsi: 219945000, lat: 56.157277777777776, lon: 11.734222222222223, time: "2018-10-08 00:52:20", sog: 19, cog: 0, hdg: 0, "near-miss-flag": true, dimensions: {beam: 32, loa: 165}}
                 ]}, status: 200};
 
-            return $q.when(response);
+            // return $q.when(response);
+            return $http.get('/near-miss/near-miss-demo-result.json');
             // return $http.get('/rest/near-miss/' + pathParam +'?' + params);
         }
 

@@ -45,6 +45,7 @@
 
                     if (foundServices(status)) {
                         updateServiceStatus("true");
+                        vm.searchDisabled = false;
                     }
 
                 })
@@ -65,7 +66,7 @@
             var interval = {from: vm.from, to: vm.to};
             NearMissService.getNearMissForInterval(vm.service.instanceId, interval)
                 .then(function (response) {
-                    var vesselStates = response.data['vessel-states'];
+                    var vesselStates = response.data.vesselStates;
                     $log.info(vesselStates);
 
                 })
@@ -73,6 +74,21 @@
                     growl.error("Error loading Near Miss data.");
                     $log.debug("Error loading Near Miss data. Details=" + response.data);
                 });
+        }
+
+        /** Open the message details dialog **/
+        function showNearMissInfo(vesselStates) {
+            return $uibModal.open({
+                controller: "S124MessageDetailsDialogController",
+                controllerAs: 'vm',
+                templateUrl: "near-miss/near-miss-info.html",
+                size: 'lg',
+                resolve: {
+                    vesselStates: function () {
+                        return vesselStates;
+                    }
+                }
+            });
         }
 
     }
