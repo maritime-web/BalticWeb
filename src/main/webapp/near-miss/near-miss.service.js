@@ -13,7 +13,6 @@
         that.serviceVersion = serviceVersion;
         that.getNearMisserviceInstance = getNearMisserviceInstance;
         that.getNearMissForInterval = getNearMissForInterval;
-        that.showMessageInfo = showMessageInfo;
 
         function serviceID(){ return 'urn:mrn:mcp:service:design:dma:near-miss'} //TODO 2018-11-06 Design ID unknown so this is best guess
         function serviceVersion(){ return '0.1'} //TODO 2018-11-06 Version unknown so this is best guess
@@ -50,21 +49,5 @@
             return $http.get('/near-miss/near-miss-demo-result.json');
             // return $http.get('/rest/near-miss/' + pathParam +'?' + params);
         }
-
-        /** Open the message details dialog **/
-        function showMessageInfo(message) {
-            return $uibModal.open({
-                controller: "S124MessageDetailsDialogController",
-                controllerAs: 'vm',
-                templateUrl: "s-124/s-124-message-details-dialog.html",
-                size: 'lg',
-                resolve: {
-                    message: function () {
-                        return message;
-                    }
-                }
-            });
-        }
-
     }
 })();

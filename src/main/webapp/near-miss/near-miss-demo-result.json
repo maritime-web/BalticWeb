@@ -1,1 +1,1948 @@
-{"vesselStates":[{"mmsi":219945000,"position":{"lat":57.74027777777778,"lon":10.976111111111111},"time":"2018-10-08T00:22:40Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74027777777778,"lon":10.976111111111111}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74027777777778,"lon":10.976111111111111},"time":"2018-10-08T00:22:41Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74027777777778,"lon":10.976111111111111}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74027777777778,"lon":10.976111111111111},"time":"2018-10-08T00:22:42Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74027777777778,"lon":10.976111111111111}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74027777777778,"lon":10.97638888888889},"time":"2018-10-08T00:22:43Z","sog":10.0,"cog":0.0,"hdg":4.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74027777777778,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74027777777778,"lon":10.97638888888889},"time":"2018-10-08T00:22:44Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74027777777778,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74027777777778,"lon":10.97638888888889},"time":"2018-10-08T00:22:45Z","sog":10.0,"cog":0.0,"hdg":4.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74027777777778,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74055555555555,"lon":10.97638888888889},"time":"2018-10-08T00:22:46Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74055555555555,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74055555555555,"lon":10.97638888888889},"time":"2018-10-08T00:22:47Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74055555555555,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74055555555555,"lon":10.97638888888889},"time":"2018-10-08T00:22:48Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74055555555555,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74055555555555,"lon":10.97638888888889},"time":"2018-10-08T00:22:49Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74055555555555,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74055555555555,"lon":10.97638888888889},"time":"2018-10-08T00:22:50Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74055555555555,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74055555555555,"lon":10.97638888888889},"time":"2018-10-08T00:22:51Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74055555555555,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74055555555555,"lon":10.97638888888889},"time":"2018-10-08T00:22:52Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74055555555555,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.740833333333335,"lon":10.97638888888889},"time":"2018-10-08T00:22:53Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.740833333333335,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.740833333333335,"lon":10.97638888888889},"time":"2018-10-08T00:22:54Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.740833333333335,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.740833333333335,"lon":10.97638888888889},"time":"2018-10-08T00:22:55Z","sog":10.0,"cog":0.0,"hdg":4.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.740833333333335,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.740833333333335,"lon":10.97638888888889},"time":"2018-10-08T00:22:56Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.740833333333335,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.740833333333335,"lon":10.97638888888889},"time":"2018-10-08T00:22:57Z","sog":10.0,"cog":0.0,"hdg":358.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.740833333333335,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.740833333333335,"lon":10.97638888888889},"time":"2018-10-08T00:22:58Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.740833333333335,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.740833333333335,"lon":10.97638888888889},"time":"2018-10-08T00:22:59Z","sog":10.0,"cog":0.0,"hdg":1.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.740833333333335,"lon":10.97638888888889}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74111111111111,"lon":10.976666666666667},"time":"2018-10-08T00:23:00Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74111111111111,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74111111111111,"lon":10.976666666666667},"time":"2018-10-08T00:23:01Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74111111111111,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74111111111111,"lon":10.976666666666667},"time":"2018-10-08T00:23:02Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74111111111111,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74111111111111,"lon":10.976666666666667},"time":"2018-10-08T00:23:03Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74111111111111,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74111111111111,"lon":10.976666666666667},"time":"2018-10-08T00:23:04Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74111111111111,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74111111111111,"lon":10.976666666666667},"time":"2018-10-08T00:23:05Z","sog":10.0,"cog":0.0,"hdg":4.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74111111111111,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74138888888889,"lon":10.976666666666667},"time":"2018-10-08T00:23:06Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74138888888889,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74138888888889,"lon":10.976666666666667},"time":"2018-10-08T00:23:07Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74138888888889,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74138888888889,"lon":10.976666666666667},"time":"2018-10-08T00:23:08Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74138888888889,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74138888888889,"lon":10.976666666666667},"time":"2018-10-08T00:23:09Z","sog":10.0,"cog":0.0,"hdg":358.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74138888888889,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74138888888889,"lon":10.976666666666667},"time":"2018-10-08T00:23:10Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74138888888889,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74138888888889,"lon":10.976666666666667},"time":"2018-10-08T00:23:11Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74138888888889,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74138888888889,"lon":10.976666666666667},"time":"2018-10-08T00:23:12Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74138888888889,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74166666666667,"lon":10.976666666666667},"time":"2018-10-08T00:23:13Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74166666666667,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74166666666667,"lon":10.976666666666667},"time":"2018-10-08T00:23:14Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74166666666667,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74166666666667,"lon":10.976666666666667},"time":"2018-10-08T00:23:15Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74166666666667,"lon":10.976666666666667}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74166666666667,"lon":10.976944444444445},"time":"2018-10-08T00:23:16Z","sog":10.0,"cog":0.0,"hdg":1.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74166666666667,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74166666666667,"lon":10.976944444444445},"time":"2018-10-08T00:23:17Z","sog":10.0,"cog":0.0,"hdg":1.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74166666666667,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74166666666667,"lon":10.976944444444445},"time":"2018-10-08T00:23:18Z","sog":10.0,"cog":0.0,"hdg":4.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74166666666667,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74194444444444,"lon":10.976944444444445},"time":"2018-10-08T00:23:19Z","sog":11.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":209.0,"b":40.0,"centerPosition":{"lat":57.74194444444444,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74194444444444,"lon":10.976944444444445},"time":"2018-10-08T00:23:20Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74194444444444,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74194444444444,"lon":10.976944444444445},"time":"2018-10-08T00:23:21Z","sog":10.0,"cog":0.0,"hdg":1.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74194444444444,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74194444444444,"lon":10.976944444444445},"time":"2018-10-08T00:23:22Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74194444444444,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74194444444444,"lon":10.976944444444445},"time":"2018-10-08T00:23:23Z","sog":10.0,"cog":0.0,"hdg":1.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74194444444444,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74194444444444,"lon":10.976944444444445},"time":"2018-10-08T00:23:24Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74194444444444,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74194444444444,"lon":10.976944444444445},"time":"2018-10-08T00:23:25Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74194444444444,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742222222222225,"lon":10.976944444444445},"time":"2018-10-08T00:23:26Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742222222222225,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742222222222225,"lon":10.976944444444445},"time":"2018-10-08T00:23:27Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742222222222225,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742222222222225,"lon":10.976944444444445},"time":"2018-10-08T00:23:28Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742222222222225,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742222222222225,"lon":10.976944444444445},"time":"2018-10-08T00:23:29Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742222222222225,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742222222222225,"lon":10.976944444444445},"time":"2018-10-08T00:23:30Z","sog":10.0,"cog":0.0,"hdg":358.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742222222222225,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742222222222225,"lon":10.976944444444445},"time":"2018-10-08T00:23:31Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742222222222225,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742222222222225,"lon":10.976944444444445},"time":"2018-10-08T00:23:32Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742222222222225,"lon":10.976944444444445}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.7425,"lon":10.977222222222222},"time":"2018-10-08T00:23:33Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.7425,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.7425,"lon":10.977222222222222},"time":"2018-10-08T00:23:34Z","sog":10.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.7425,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.7425,"lon":10.977222222222222},"time":"2018-10-08T00:23:35Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.7425,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.7425,"lon":10.977222222222222},"time":"2018-10-08T00:23:36Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.7425,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.7425,"lon":10.977222222222222},"time":"2018-10-08T00:23:37Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.7425,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.7425,"lon":10.977222222222222},"time":"2018-10-08T00:23:38Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.7425,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742777777777775,"lon":10.977222222222222},"time":"2018-10-08T00:23:39Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742777777777775,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742777777777775,"lon":10.977222222222222},"time":"2018-10-08T00:23:40Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742777777777775,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742777777777775,"lon":10.977222222222222},"time":"2018-10-08T00:23:41Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742777777777775,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742777777777775,"lon":10.977222222222222},"time":"2018-10-08T00:23:42Z","sog":10.0,"cog":0.0,"hdg":4.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.742777777777775,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742777777777775,"lon":10.977222222222222},"time":"2018-10-08T00:23:43Z","sog":9.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":201.0,"b":40.0,"centerPosition":{"lat":57.742777777777775,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742777777777775,"lon":10.977222222222222},"time":"2018-10-08T00:23:44Z","sog":9.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":201.0,"b":40.0,"centerPosition":{"lat":57.742777777777775,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.742777777777775,"lon":10.977222222222222},"time":"2018-10-08T00:23:45Z","sog":9.0,"cog":0.0,"hdg":1.0,"nearMissFlag":false,"safetyZone":{"a":201.0,"b":40.0,"centerPosition":{"lat":57.742777777777775,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74305555555556,"lon":10.977222222222222},"time":"2018-10-08T00:23:46Z","sog":9.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":201.0,"b":40.0,"centerPosition":{"lat":57.74305555555556,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74305555555556,"lon":10.977222222222222},"time":"2018-10-08T00:23:47Z","sog":9.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":201.0,"b":40.0,"centerPosition":{"lat":57.74305555555556,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74305555555556,"lon":10.977222222222222},"time":"2018-10-08T00:23:48Z","sog":9.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":201.0,"b":40.0,"centerPosition":{"lat":57.74305555555556,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74305555555556,"lon":10.977222222222222},"time":"2018-10-08T00:23:49Z","sog":9.0,"cog":0.0,"hdg":358.0,"nearMissFlag":false,"safetyZone":{"a":201.0,"b":40.0,"centerPosition":{"lat":57.74305555555556,"lon":10.977222222222222}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74305555555556,"lon":10.9775},"time":"2018-10-08T00:23:50Z","sog":10.0,"cog":0.0,"hdg":358.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74305555555556,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74305555555556,"lon":10.9775},"time":"2018-10-08T00:23:51Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74305555555556,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74305555555556,"lon":10.9775},"time":"2018-10-08T00:23:52Z","sog":10.0,"cog":0.0,"hdg":359.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74305555555556,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74333333333333,"lon":10.9775},"time":"2018-10-08T00:23:53Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74333333333333,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74333333333333,"lon":10.9775},"time":"2018-10-08T00:23:54Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74333333333333,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74333333333333,"lon":10.9775},"time":"2018-10-08T00:23:55Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74333333333333,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74333333333333,"lon":10.9775},"time":"2018-10-08T00:23:56Z","sog":10.0,"cog":0.0,"hdg":357.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74333333333333,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74333333333333,"lon":10.9775},"time":"2018-10-08T00:23:57Z","sog":10.0,"cog":0.0,"hdg":356.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74333333333333,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.74333333333333,"lon":10.9775},"time":"2018-10-08T00:23:58Z","sog":10.0,"cog":0.0,"hdg":0.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.74333333333333,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.743611111111115,"lon":10.9775},"time":"2018-10-08T00:23:59Z","sog":11.0,"cog":0.0,"hdg":2.0,"nearMissFlag":false,"safetyZone":{"a":209.0,"b":40.0,"centerPosition":{"lat":57.743611111111115,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}},{"mmsi":219945000,"position":{"lat":57.743611111111115,"lon":10.9775},"time":"2018-10-08T00:24:00Z","sog":10.0,"cog":0.0,"hdg":3.0,"nearMissFlag":false,"safetyZone":{"a":205.0,"b":40.0,"centerPosition":{"lat":57.743611111111115,"lon":10.9775}},"dimensions":{"beam":32,"loa":165}}]}
+{
+  "vesselStates": [
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74027777777778,
+        "lon": 10.976111111111111
+      },
+      "time": "2018-10-08T00:22:40Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74027777777778,
+          "lon": 10.976111111111111
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74027777777778,
+        "lon": 10.976111111111111
+      },
+      "time": "2018-10-08T00:22:41Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74027777777778,
+          "lon": 10.976111111111111
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74027777777778,
+        "lon": 10.976111111111111
+      },
+      "time": "2018-10-08T00:22:42Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74027777777778,
+          "lon": 10.976111111111111
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74027777777778,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:43Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 4.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74027777777778,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74027777777778,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:44Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74027777777778,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74027777777778,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:45Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 4.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74027777777778,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74055555555555,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:46Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74055555555555,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74055555555555,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:47Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74055555555555,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74055555555555,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:48Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74055555555555,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74055555555555,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:49Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74055555555555,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74055555555555,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:50Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74055555555555,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74055555555555,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:51Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74055555555555,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74055555555555,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:52Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74055555555555,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.740833333333335,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:53Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.740833333333335,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.740833333333335,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:54Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.740833333333335,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.740833333333335,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:55Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 4.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.740833333333335,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.740833333333335,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:56Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.740833333333335,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.740833333333335,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:57Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 358.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.740833333333335,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.740833333333335,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:58Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.740833333333335,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.740833333333335,
+        "lon": 10.97638888888889
+      },
+      "time": "2018-10-08T00:22:59Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 1.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.740833333333335,
+          "lon": 10.97638888888889
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74111111111111,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:00Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74111111111111,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74111111111111,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:01Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74111111111111,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74111111111111,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:02Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74111111111111,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74111111111111,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:03Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74111111111111,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74111111111111,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:04Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74111111111111,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74111111111111,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:05Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 4.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74111111111111,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74138888888889,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:06Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74138888888889,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74138888888889,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:07Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74138888888889,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74138888888889,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:08Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74138888888889,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74138888888889,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:09Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 358.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74138888888889,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74138888888889,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:10Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74138888888889,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74138888888889,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:11Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74138888888889,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74138888888889,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:12Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74138888888889,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74166666666667,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:13Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74166666666667,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74166666666667,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:14Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74166666666667,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74166666666667,
+        "lon": 10.976666666666667
+      },
+      "time": "2018-10-08T00:23:15Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74166666666667,
+          "lon": 10.976666666666667
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74166666666667,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:16Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 1.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74166666666667,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74166666666667,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:17Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 1.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74166666666667,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74166666666667,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:18Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 4.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74166666666667,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74194444444444,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:19Z",
+      "sog": 11.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 209.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74194444444444,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74194444444444,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:20Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74194444444444,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74194444444444,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:21Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 1.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74194444444444,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74194444444444,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:22Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74194444444444,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74194444444444,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:23Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 1.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74194444444444,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74194444444444,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:24Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74194444444444,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74194444444444,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:25Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74194444444444,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742222222222225,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:26Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742222222222225,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742222222222225,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:27Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742222222222225,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742222222222225,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:28Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742222222222225,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742222222222225,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:29Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742222222222225,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742222222222225,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:30Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 358.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742222222222225,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742222222222225,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:31Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742222222222225,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742222222222225,
+        "lon": 10.976944444444445
+      },
+      "time": "2018-10-08T00:23:32Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742222222222225,
+          "lon": 10.976944444444445
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.7425,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:33Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.7425,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.7425,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:34Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.7425,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.7425,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:35Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.7425,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.7425,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:36Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.7425,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.7425,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:37Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.7425,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.7425,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:38Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.7425,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742777777777775,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:39Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742777777777775,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742777777777775,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:40Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742777777777775,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742777777777775,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:41Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742777777777775,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742777777777775,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:42Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 4.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742777777777775,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742777777777775,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:43Z",
+      "sog": 9.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 201.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742777777777775,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742777777777775,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:44Z",
+      "sog": 9.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 201.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742777777777775,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.742777777777775,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:45Z",
+      "sog": 9.0,
+      "cog": 0.0,
+      "hdg": 1.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 201.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.742777777777775,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74305555555556,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:46Z",
+      "sog": 9.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 201.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74305555555556,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74305555555556,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:47Z",
+      "sog": 9.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 201.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74305555555556,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74305555555556,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:48Z",
+      "sog": 9.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 201.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74305555555556,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74305555555556,
+        "lon": 10.977222222222222
+      },
+      "time": "2018-10-08T00:23:49Z",
+      "sog": 9.0,
+      "cog": 0.0,
+      "hdg": 358.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 201.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74305555555556,
+          "lon": 10.977222222222222
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74305555555556,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:50Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 358.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74305555555556,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74305555555556,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:51Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74305555555556,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74305555555556,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:52Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 359.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74305555555556,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74333333333333,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:53Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74333333333333,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74333333333333,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:54Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74333333333333,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74333333333333,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:55Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74333333333333,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74333333333333,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:56Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 357.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74333333333333,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74333333333333,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:57Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 356.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74333333333333,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.74333333333333,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:58Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 0.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.74333333333333,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.743611111111115,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:23:59Z",
+      "sog": 11.0,
+      "cog": 0.0,
+      "hdg": 2.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 209.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.743611111111115,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    },
+    {
+      "mmsi": 219945000,
+      "position": {
+        "lat": 57.743611111111115,
+        "lon": 10.9775
+      },
+      "time": "2018-10-08T00:24:00Z",
+      "sog": 10.0,
+      "cog": 0.0,
+      "hdg": 3.0,
+      "nearMissFlag": false,
+      "safetyZone": {
+        "a": 205.0,
+        "b": 40.0,
+        "centerPosition": {
+          "lat": 57.743611111111115,
+          "lon": 10.9775
+        }
+      },
+      "dimensions": {
+        "beam": 32,
+        "loa": 165
+      }
+    }
+  ]
+}

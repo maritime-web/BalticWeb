@@ -3,9 +3,9 @@
     angular.module('maritimeweb.near-miss')
         .controller("NearMissSidebarController", NearMissSidebarController);
 
-    NearMissSidebarController.$inject = ['$scope', '$window', 'growl', '$log', 'NotifyService', 'moment', 'NearMissService'];
+    NearMissSidebarController.$inject = ['$scope', '$window', 'growl', '$log', 'NotifyService', 'moment', 'NearMissService', '$uibModal'];
 
-    function NearMissSidebarController($scope, $window, growl, $log, NotifyService, moment, NearMissService) {
+    function NearMissSidebarController($scope, $window, growl, $log, NotifyService, moment, NearMissService, $uibModal) {
         var vm = this;
         vm.servicesStatus = "true";
         vm.service = undefined;
@@ -68,6 +68,7 @@
                 .then(function (response) {
                     var vesselStates = response.data.vesselStates;
                     $log.info(vesselStates);
+                    showNearMissInfo(vesselStates);
 
                 })
                 .catch(function (response) {
@@ -78,14 +79,16 @@
 
         /** Open the message details dialog **/
         function showNearMissInfo(vesselStates) {
+            var state = {mmsi: vm.mmsi, vesselStates: vesselStates};
+
             return $uibModal.open({
-                controller: "S124MessageDetailsDialogController",
+                controller: "NearMissInfoController",
                 controllerAs: 'vm',
                 templateUrl: "near-miss/near-miss-info.html",
                 size: 'lg',
                 resolve: {
-                    vesselStates: function () {
-                        return vesselStates;
+                    state: function () {
+                        return state;
                     }
                 }
             });

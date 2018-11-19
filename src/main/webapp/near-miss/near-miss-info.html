@@ -1,0 +1,21 @@
+<div>
+
+    <div class="modal-body print" style="padding-bottom: 0">
+
+
+        <ol-map class="near-miss-map">
+            <map-tile-layer name="OSM" visible="true" source="OSM"></map-tile-layer>
+            <map-near-miss-layer name="Near Miss" own-vessel-mmsi="vm.mmsi" vessel-states="vm.vesselStates" fit-extent="true"></map-near-miss-layer>
+        </ol-map>
+
+        <button type="button" class="close dialog-close-btn" ng-click="$dismiss('aborted')">x</button>
+
+
+        <div class="row" style="margin: 10px 0">
+            <div class="col-xs-12" style="text-align: right">
+                <button class="btn btn-primary btn-sm" ng-click="$dismiss('aborted')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

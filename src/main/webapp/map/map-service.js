@@ -78,6 +78,34 @@ angular.module('maritimeweb.map')
             };
 
 
+            /**
+             * Creates a ol.geom.LineString from a lon lat array.
+             * @param lonLats
+             */
+            this.createLineString = function(lonLats) {
+                /** @type {ol.geom.GeometryLayout|string} */
+                var xy = "XY";
+                var line = new ol.geom.LineString([], xy);
+                lonLats.forEach(function (coord) {
+                    var mercatorCoord = ol.proj.fromLonLat(coord, undefined);
+                    line.appendCoordinate(mercatorCoord);
+                });
+
+                return line;
+            };
+
+            /**
+             * Creates a ol.geom.Polygon from a lon lat array.
+             * @param lonLats
+             */
+            this.createPolygon = function(lonLats) {
+                var coords = [];
+                lonLats.forEach(function (coord) {
+                    var mercatorCoord = ol.proj.fromLonLat(coord, undefined);
+                    coords.push(mercatorCoord);
+                });
+                return new ol.geom.Polygon([coords]);
+            };
 
             /** Converts lon-lat extent array to xy extent array in mercator */
             this.fromLonLatExtent = function (lonLatExtent) {
