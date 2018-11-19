@@ -77,6 +77,13 @@ angular.module('maritimeweb.map')
                 return xy ? ol.proj.transform(xy, projMercator, proj4326) : null;
             };
 
+            /**
+             * Creates a ol.geom.Pooint from a lon-lat coordinate array.
+             * @param lonLat
+             */
+            this.createPoint = function(lonLat) {
+                return new ol.geom.Point(this.fromLonLat(lonLat));
+            };
 
             /**
              * Creates a ol.geom.LineString from a lon lat array.
