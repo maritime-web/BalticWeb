@@ -6,7 +6,6 @@
     NearMissInfoController.$inject = ['state'];
 
     function NearMissInfoController(state) {
-        console.log(state);
         var vm = this;
         vm.mmsi = state.mmsi;
         vm.vesselStates = state.vesselStates;

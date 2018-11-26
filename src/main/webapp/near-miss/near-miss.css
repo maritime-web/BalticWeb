@@ -46,3 +46,36 @@
         height: 400px;
     }
 }
+
+.near-miss-result {
+    margin-top: 10px;
+    background-color: white;
+    border: #FA8072 solid 1px;
+    border-radius: 4px;
+}
+
+.near-miss-result-date-interval {
+    padding-top: 2px;
+    padding-bottom: 5px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #FA8072;
+    color: white;
+}
+
+.near-miss-event {
+    padding: 5px 5px 2px;
+    background-color: #efefef;
+
+    margin-bottom: 4px;
+}
+
+.near-miss-event-mmsi {
+    font-weight: bold;
+    text-align: center;
+}
+
+.near-miss-event-btn-group {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

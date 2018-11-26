@@ -3,9 +3,9 @@
     angular.module('maritimeweb.near-miss')
         .controller("NearMissSidebarController", NearMissSidebarController);
 
-    NearMissSidebarController.$inject = ['$scope', '$window', 'growl', '$log', 'NotifyService', 'moment', 'NearMissService', '$uibModal'];
+    NearMissSidebarController.$inject = ['$scope', '$window', 'growl', '$log', 'NotifyService', 'moment', 'NearMissService'];
 
-    function NearMissSidebarController($scope, $window, growl, $log, NotifyService, moment, NearMissService, $uibModal) {
+    function NearMissSidebarController($scope, $window, growl, $log, NotifyService, moment, NearMissService) {
         var vm = this;
         vm.servicesStatus = "true";
         vm.service = undefined;
@@ -15,6 +15,7 @@
         vm.from = moment.utc().subtract(1, 'hours');
         vm.to = moment.utc();
         vm.searchDisabled = true;
+        vm.searchResult = undefined;
 
         $scope.$watch(vm.mmsi, refreshService, true);
 
@@ -67,8 +68,8 @@
             NearMissService.getNearMissForInterval(vm.service.instanceId, interval)
                 .then(function (response) {
                     var vesselStates = response.data.vesselStates;
-                    $log.info(vesselStates);
-                    showNearMissInfo(vesselStates);
+                    vm.searchResult = new NearMissDataSetModel({mmsi: vm.mmsi, vesselStates: vesselStates});
+                    NotifyService.notify('NearMissResult', vm.searchResult);
 
                 })
                 .catch(function (response) {
@@ -76,23 +77,5 @@
                     $log.debug("Error loading Near Miss data. Details=" + response.data);
                 });
         }
-
-        /** Open the message details dialog **/
-        function showNearMissInfo(vesselStates) {
-            var state = {mmsi: vm.mmsi, vesselStates: vesselStates};
-
-            return $uibModal.open({
-                controller: "NearMissInfoController",
-                controllerAs: 'vm',
-                templateUrl: "near-miss/near-miss-info.html",
-                size: 'lg',
-                resolve: {
-                    state: function () {
-                        return state;
-                    }
-                }
-            });
-        }
-
     }
 })();

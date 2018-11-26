@@ -1,0 +1,17 @@
+<div class="near-miss-result">
+    <div class="near-miss-result-date-interval">
+        {{data.startTime.format('YYYY-MM-DD HH:mm:ss')}} - {{data.endTime.format('YYYY-MM-DD HH:mm:ss')}}
+    </div>
+    <div class="near-miss-event" ng-repeat="nm in data.nearMissEvents">
+        <div class="near-miss-event-mmsi">{{nm.otherMmsi}}</div>
+        <div>Near miss at {{nm.startTime.format('YYYY-MM-DD HH:mm:ss')}}</div>
+        <div class="btn-group btn-group-justified near-miss-event-btn-group">
+            <div class="btn-group  btn-group-xs">
+                <button class="btn btn-primary" name="animate" ng-click="animate(nm)">Animate</button>
+            </div>
+            <div class="btn-group  btn-group-xs">
+                <button class="btn btn-primary" name="zoom" ng-click="zoom(nm)">Zoom</button>
+            </div>
+        </div>
+    </div>
+</div>

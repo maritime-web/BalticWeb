@@ -124,6 +124,10 @@
                     <div style="padding-top: 5px;">
                         <button class="btn btn-primary btn-block" data-ng-disabled="nearMiss.searchDisabled" name="Search near miss events" ng-click="nearMiss.showEvents()">Search near miss events</button>
                     </div>
+
+                    <div ng-if="nearMiss.searchResult">
+                        <near-miss-data-set-display data="nearMiss.searchResult"></near-miss-data-set-display>
+                    </div>
                 </div>
             </div>
         </uib-tab>
