@@ -336,6 +336,7 @@
                                     var otherIndex = 0;
 
                                     var duration = 5000;
+                                    var coolOfFrames = 100;
                                     var start = new Date().getTime();
 
                                     // console.log(ownStates.length);
@@ -352,14 +353,19 @@
                                         var elapsedRatio = elapsed / duration;
 
                                         if (elapsedRatio > 1) {
-                                            map.un('postcompose', moveAlong);
-                                            return;
+                                            if (coolOfFrames > 0) {
+                                                elapsedRatio = 1;
+                                                coolOfFrames--;
+                                            } else {
+                                                map.un('postcompose', moveAlong);
+                                                return;
+                                            }
                                         }
 
                                         ownIndex = Math.round((ownStates.length - 1) * elapsedRatio);
                                         otherIndex =  Math.round((otherStates.length - 1) *elapsedRatio);
 
-                                        // console.log('ownIndex: ' + ownIndex + ' otherIndex: ' + otherIndex + ' elapsed: ' + elapsed + ' elapsedRatio: ' + elapsedRatio);
+                                        console.log('ownIndex: ' + ownIndex + ' otherIndex: ' + otherIndex + ' elapsed: ' + elapsed + ' elapsedRatio: ' + elapsedRatio);
 
                                         if (ownIndex < ownStates.length) {
                                             var own = ownStates[ownIndex];
