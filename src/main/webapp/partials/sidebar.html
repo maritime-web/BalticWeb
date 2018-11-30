@@ -121,10 +121,19 @@
                         <div class="near-miss-date-time-header">To</div>
                         <datetime-input datetime="nearMiss.to" on-change="nearMiss.validate(nearMiss.to)" placeholder="To"></datetime-input>
                     </div>
-                    <div style="padding-top: 5px;">
-                        <button class="btn btn-primary btn-block" data-ng-disabled="nearMiss.searchDisabled" name="Search near miss events" ng-click="nearMiss.showEvents()">Search near miss events</button>
+                    <div class="btn-group btn-group-justified near-miss-search-btn-group">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-primary btn-block" data-ng-disabled="nearMiss.searchDisabled"
+                                    name="Search near miss events" ng-click="nearMiss.showEvents()">Search near miss
+                                events
+                            </button>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-primary btn-block" data-ng-disabled="!nearMiss.searchResult"
+                                    name="Clear result" ng-click="nearMiss.clearResult()">Clear result
+                            </button>
+                        </div>
                     </div>
-
                     <div ng-if="nearMiss.searchResult">
                         <near-miss-data-set-display data="nearMiss.searchResult"></near-miss-data-set-display>
                     </div>

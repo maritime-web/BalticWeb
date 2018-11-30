@@ -11,6 +11,7 @@ function NearMissEventModel(parameters) {
     that.otherStates = parameters.otherStates;
     that.otherMmsi = that.otherStates[0].mmsi;
     that.startTime = that.otherStates[0].time;
+    that.endTime = that.otherStates[that.otherStates.length - 1].time;
 
     that.getOwnLonLats = function () {
         return that.ownStates.map(function (state) {

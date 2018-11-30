@@ -12,10 +12,12 @@
         vm.mmsi = 219945000;
         vm.showEvents = showEvents;
         vm.validate = validate;
-        vm.from = moment.utc().subtract(1, 'hours');
-        vm.to = moment.utc();
+        // TODO 2018-11-27 hard coded dates to match the static data set. Change when a real service is available.
+        vm.from = moment('2018-10-08T00:04:32Z').utc().subtract(1, 'hours');
+        vm.to = moment('2018-10-08T00:07:09Z').utc().add(1, 'hours');
         vm.searchDisabled = true;
         vm.searchResult = undefined;
+        vm.clearResult = clearResult;
 
         $scope.$watch(vm.mmsi, refreshService, true);
 
@@ -76,6 +78,11 @@
                     growl.error("Error loading Near Miss data.");
                     $log.debug("Error loading Near Miss data. Details=" + response.data);
                 });
+        }
+
+        function clearResult() {
+            vm.searchResult = undefined;
+            NotifyService.notify('NearMissResult', vm.searchResult);
         }
     }
 })();

@@ -8,14 +8,14 @@ function NearMissDataSetModel(parameters) {
     var that = this;
     that.ownMmsi = parameters.mmsi;
     var rawStates = parameters.vesselStates;
+    that.isEmpty = rawStates.length === 0;
+    that.startTime = that.isEmpty ? null : moment(rawStates[0].time).utc();
+    that.endTime = that.isEmpty ? null : moment(rawStates[rawStates.length - 1].time).utc();
 
-    that.startTime = moment(rawStates[0].time).utc();
-    that.endTime = moment(rawStates[rawStates.length - 1].time).utc();
+    that.ownStates = that.isEmpty ? [] : extractOwnVesselStates();
+    that.otherStates = that.isEmpty ? {} : extractOtherStates();
 
-    that.ownStates = extractOwnVesselStates();
-    that.otherStates = extractOtherStates();
-
-    that.nearMissEvents = extractNearMissEvents();
+    that.nearMissEvents = that.isEmpty ? [] : extractNearMissEvents();
 
     that.animateTarget = null;
     that.zoomTarget = null;
@@ -30,7 +30,7 @@ function NearMissDataSetModel(parameters) {
 
     function extractOwnVesselStates() {
         return rawStates
-            .filter(ownFilter).filter(sanityFilter)
+            .filter(ownFilter)
             .map(function (state) {
                 return new NearMissVesselStateModel(state);
             });
@@ -42,7 +42,7 @@ function NearMissDataSetModel(parameters) {
 
     function extractOtherStates() {
         var result = {};
-        rawStates.filter(otherFilter).filter(sanityFilter).forEach(function (state) {
+        rawStates.filter(otherFilter).forEach(function (state) {
             var mmsi = state.mmsi;
             if (!result[mmsi]) {
                 result[mmsi] = [];
@@ -119,9 +119,9 @@ function NearMissDataSetModel(parameters) {
         rawStates.forEach(function (state, index) {
             var prevState = getPrevState(state, index);
 
-            if (prevState && !isSane(state, prevState)) {
-                return;
-            }
+            // if (prevState && !isSane(state, prevState)) {
+            //     return;
+            // }
             var otherMmsi = state.mmsi !== that.ownMmsi;
 
             if (!nm && otherMmsi && state.nearMissFlag) {

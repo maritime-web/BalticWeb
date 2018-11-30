@@ -191,11 +191,13 @@
 
                         function createOwnSafetyZone(options) {
                             var vesselState = options.state;
-                            var cog = vesselState.cog;
+                            // var cog = vesselState.cog;
+                            var hdg = vesselState.getRadianHdg();
                             var c = vesselState.getSafetyZoneCenterPosition();
 
                             var poly = MapService.createPolygon(vesselState.getPointsForSafetyZone());
-                            poly.rotate(-Math.PI/2 + (-cog) * ((Math.PI / 180)), MapService.fromLonLat(c));
+                            poly.rotate(-Math.PI/2 + hdg, MapService.fromLonLat(c));
+                            // poly.rotate(-Math.PI/2 + (-cog) * ((Math.PI / 180)), MapService.fromLonLat(c));
 
                             var safetyZoneFeature = new ol.Feature({
                                 geometry: poly
@@ -296,8 +298,8 @@
                         }
 
                         function updateDataSet() {
-                            if (scope.nearMissDataSet) {
-                                nearMissLayer.getSource().clear();
+                            nearMissLayer.getSource().clear();
+                            if (scope.nearMissDataSet && !scope.nearMissDataSet.isEmpty) {
 
                                 nearMissLayer.getSource().addFeature(createRouteFeature({vesselStates: scope.nearMissDataSet.ownStates, style: routeStyle}));
                                 var ownVesselLastState = scope.nearMissDataSet.ownStates[scope.nearMissDataSet.ownStates.length - 1];
@@ -365,7 +367,7 @@
                                         ownIndex = Math.round((ownStates.length - 1) * elapsedRatio);
                                         otherIndex =  Math.round((otherStates.length - 1) *elapsedRatio);
 
-                                        console.log('ownIndex: ' + ownIndex + ' otherIndex: ' + otherIndex + ' elapsed: ' + elapsed + ' elapsedRatio: ' + elapsedRatio);
+                                        // console.log('ownIndex: ' + ownIndex + ' otherIndex: ' + otherIndex + ' elapsed: ' + elapsed + ' elapsedRatio: ' + elapsedRatio);
 
                                         if (ownIndex < ownStates.length) {
                                             var own = ownStates[ownIndex];

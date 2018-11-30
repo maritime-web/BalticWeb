@@ -1,10 +1,21 @@
 <div class="near-miss-result">
-    <div class="near-miss-result-date-interval">
-        {{data.startTime.format('YYYY-MM-DD HH:mm:ss')}} - {{data.endTime.format('YYYY-MM-DD HH:mm:ss')}}
+    <div ng-if="!data.isEmpty" class="near-miss-result-date-interval">
+        <div style="text-align: center; font-weight: bold">Result</div>
+        <div style="padding-left: 10px; padding-right: 10px">
+            <div>
+                First vessel state <span class="pull-right">{{data.startTime.format('YYYY-MM-DD HH:mm:ss')}}</span>
+            </div>
+            <div>
+                Last vessel state <span class="pull-right">{{data.endTime.format('YYYY-MM-DD HH:mm:ss')}}</span>
+            </div>
+        </div>
+    </div>
+    <div ng-if="data.isEmpty" class="near-miss-result-date-interval">
+        No data found in the searched time interval
     </div>
     <div class="near-miss-event" ng-repeat="nm in data.nearMissEvents">
-        <div class="near-miss-event-mmsi">{{nm.otherMmsi}}</div>
-        <div>Near miss at {{nm.startTime.format('YYYY-MM-DD HH:mm:ss')}}</div>
+        <div class="near-miss-event-mmsi">Near miss with {{nm.otherMmsi}}</div>
+        <div>Started at {{nm.startTime.format('YYYY-MM-DD HH:mm:ss')}} and lasted {{nm.endTime.from(nm.startTime, true)}}</div>
         <div class="btn-group btn-group-justified near-miss-event-btn-group">
             <div class="btn-group  btn-group-xs">
                 <button class="btn btn-primary" name="animate" ng-click="animate(nm)">Animate</button>
