@@ -18,16 +18,7 @@
     "grunt-cdnify": "~0.1.1",
     "grunt-text-replace": "~0.4.0",
     "path": "~0.4.9",
-    "karma": "~0.12.31",
-    "phantomjs-prebuilt": "latest",
-    "grunt-karma": "~0.10.1",
-    "karma-jasmine": "~0.3.5",
-    "karma-chrome-launcher": "~0.1.8",
-    "karma-firefox-launcher": "~0.1.6",
-    "karma-junit-reporter": "~0.2.2",
-    "karma-phantomjs-launcher": "~0.1.4",
-    "grunt-appcache": "~0.1.8",
-    "jasmine-core": "latest"
+    "grunt-appcache": "~0.1.8"
   },
   "dependencies": {
     "angular": "^1.5.8",

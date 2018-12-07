@@ -272,25 +272,6 @@
 						<name>balticweb.war</name>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>com.kelveden</groupId>
-					<artifactId>maven-karma-plugin</artifactId>
-					<version>1.3</version>
-					<configuration>
-						<browsers>PhantomJS</browsers>
-					</configuration>
-					<executions>
-
-                    <execution>
-							<id>karma</id>
-							<goals>
-								<goal>start</goal>
-							</goals>
-							<!-- execute karma before test phase to let Jenkins collet the target/surefire-reports/karmaUnit.xml -->
-							<phase>process-test-classes</phase>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 

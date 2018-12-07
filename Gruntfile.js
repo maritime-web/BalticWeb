@@ -73,18 +73,7 @@ module.exports = function (grunt) {
                         // proxySnippet ];
                     }
                 }
-            },
-            // test : {
-            // options : {
-            // port : 9001,
-            // base : [ '.tmp', 'test', '<%= yeoman.app %>' ]
-            // }
-            // },
-            // dist : {
-            // options : {
-            // base : '<%= yeoman.dist %>'
-            // }
-            // }
+            }
         },
 
         // concat : {
@@ -253,7 +242,7 @@ module.exports = function (grunt) {
                     {
                         from: 'js/cached/map/cdn.firebase', // string replacement
                         to: '//cdn.firebase.com/'
-                    },
+                    }
                 ]
             }
         },
@@ -283,24 +272,6 @@ module.exports = function (grunt) {
             // test : [ 'coffee', 'copy:styles' ],
             build: [ 'copy:styles2Build', 'copy:html2Build' ]
         }
-        ,
-        karma: {
-            options: {
-                configFile: 'src/test/resources/karma.conf.js',
-                browsers: [ 'Chrome', 'Firefox', 'PhantomJS' ]
-            },
-            continuous: {
-                port: 5678,
-                singleRun: true,
-                browsers: [ 'PhantomJS' ]
-            },
-            unit: {
-                singleRun: false,
-                autoWatch: true,
-                keepalive: true
-            }
-
-        }
     });
 
     // Load the plugin that provides the "uglify" task.
@@ -313,7 +284,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-usemin');
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-connect-proxy');
-    grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-cdnify');
     grunt.loadNpmTasks('grunt-text-replace');
 
@@ -327,33 +297,8 @@ module.exports = function (grunt) {
                 'watch' ]);
         });
 
-    // grunt.registerTask('test', [ 'clean:server', 'concurrent:test',
-    // 'autoprefixer', 'connect:test', 'karma' ]);
-
-     grunt.registerTask('test', [ 'karma:continuous' ]);
-
-    //grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'concat', 'usemin',
-    //   'copy:gen2Build', 'copy:toTarget', 'appcache:map', 'appcache:front']);
-
     grunt.registerTask('build', [ 'useminPrepare', 'copy:unMod2Build', 'replace:run', 'concat', 'usemin',
         'copy:gen2Build', 'replace:run', 'copy:toTarget']);
-
-    // 'clean:dist',
-    // 'useminPrepare',
-    // 'concurrent:dist',
-    // 'autoprefixer',
-    // 'concat',
-    // 'copy:dist',
-    // 'cdnify',
-    // 'ngmin',
-    // 'cssmin',
-    // 'uglify',
-    // 'rev',
-    // 'usemin'
-
-    // grunt.registerTask('build', [ 'clean:dist', 'useminPrepare',
-    // 'concurrent:dist', 'autoprefixer', 'concat',
-    // 'copy:dist', 'cdnify', 'ngmin', 'cssmin', 'uglify', 'rev', 'usemin' ]);
 
     grunt.registerTask('default', [ 'build' ]);
 
