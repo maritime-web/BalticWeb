@@ -5,12 +5,20 @@ pipeline {
         maven 'apache-maven-3.3.9'
     }
 
-    stage('checkout') {
-        checkout scm
-    }
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-    stage('build') {
-        sh 'mvn -e -U -DincludeSrcJavadocs clean source:jar compile checkstyle:check jslint4java:lint install'
+        stage('build') {
+            steps {
+                withMaven() {
+                    sh 'mvn -e -U -DincludeSrcJavadocs clean source:jar compile checkstyle:check jslint4java:lint install'
+                }
+            }
+        }
     }
 
     post {
