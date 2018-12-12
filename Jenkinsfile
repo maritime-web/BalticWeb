@@ -5,6 +5,11 @@ pipeline {
         maven 'M3.3.9'
     }
 
+    triggers {
+        pollSCM('H/5 * * * *')
+        upstream(upstreamProjects: 'Enav-Services', threshold: hudson.model.Result.SUCCESS)
+    }
+
     stages {
         stage('checkout') {
             steps {
