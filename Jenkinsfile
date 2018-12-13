@@ -11,12 +11,6 @@ pipeline {
     }
 
     stages {
-        stage('checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('build') {
             steps {
                 withMaven() {
@@ -24,7 +18,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Docker deploy') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh 'curl -H "Content-Type: application/json" --data "{"source_type": "Branch", "source_name": "master"}" -X POST https://registry.hub.docker.com/u/dmadk/balticweb/trigger/8c29776d-ddd7-4b19-8919-9df0366af7eb/'
+            }
+        }
     }
+
 
     post {
         failure {
