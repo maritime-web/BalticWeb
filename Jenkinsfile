@@ -7,7 +7,7 @@ pipeline {
 
     triggers {
         pollSCM('H/5 * * * *')
-        upstream(upstreamProjects: 'Enav-Services', threshold: hudson.model.Result.SUCCESS)
+        upstream(upstreamProjects: 'Enav-Services/master', threshold: hudson.model.Result.SUCCESS)
     }
 
     stages {
