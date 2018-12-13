@@ -13,13 +13,13 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                withMaven() {
+                withMaven(options: [junitPublisher(ignoreAttachments: false), artifactsPublisher()]) {
                     sh 'mvn -e -U -DincludeSrcJavadocs clean source:jar compile checkstyle:check jslint4java:lint install'
                 }
             }
         }
 
-        stage('Docker deploy') {
+        stage('Docker Build on DockerHub') {
             when {
                 branch 'master'
             }
