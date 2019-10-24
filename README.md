@@ -1,5 +1,7 @@
 BalticWeb
+[![Build Status](https://travis-ci.com/maritime-web/BalticWeb.svg?branch=master)](https://travis-ci.com/maritime-web/BalticWeb)
 =========
+
 The live system is available at https://balticweb.e-navigation.net and the latest development version is here https://balticweb-test.e-navigation.net 
 
 
